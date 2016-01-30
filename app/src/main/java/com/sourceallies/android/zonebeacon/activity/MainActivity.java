@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package com.sourceallies.android.zonebeacon;
+package com.sourceallies.android.zonebeacon.activity;
 
-import org.junit.Test;
-
-import static org.junit.Assert.*;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 
 /**
- * To work on unit tests, switch the Test Artifact in the Build Variants view.
+ * Main activity that the user will be interacting with when using the app.
  */
-public class ExampleUnitTest {
-    @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
+
 }

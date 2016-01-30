@@ -14,16 +14,28 @@
  * limitations under the License.
  */
 
-package com.sourceallies.android.zonebeacon;
+package com.sourceallies.android.zonebeacon.activity;
 
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 
-public class MainActivity extends AppCompatActivity {
+import org.junit.Before;
+import org.junit.Test;
+import org.robolectric.Robolectric;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+import static org.junit.Assert.*;
+
+public class MainActivityTest extends ZoneBeaconRobolectricSuite {
+
+    private MainActivity activity;
+
+    @Before
+    public void setUp() {
+        activity = Robolectric.setupActivity(MainActivity.class);
+    }
+
+    @Test
+    public void test_notNull() {
+        assertNotNull(activity);
     }
 
 }
