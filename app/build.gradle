@@ -73,4 +73,6 @@ dependencies {
     compile "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:cardview-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:support-annotations:${ANDROID_SUPPORT_VERSION}"
+
+    compile 'commons-net:commons-net:2.0'
 }

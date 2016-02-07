@@ -18,6 +18,8 @@
 <manifest package="com.sourceallies.android.zonebeacon"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".ZoneBeaconApplication"
         android:allowBackup="true"
@@ -32,6 +34,8 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <activity android:name=".activity.SendTCPActivity" android:windowSoftInputMode="adjustResize" />
 
     </application>
 
