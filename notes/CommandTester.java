@@ -34,13 +34,9 @@ public class CommandTester {
 			    BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			    int value = 0;
 
-			    while((value = br.read()) != -1) {
+			    while(br.ready() && (value = br.read()) != -1) {
 		        	char c = (char)value;
 		            System.out.print(c);
-
-		            if (!br.ready()) {
-		            	break;
-		            }
 		        }
 
 			    socket.close();

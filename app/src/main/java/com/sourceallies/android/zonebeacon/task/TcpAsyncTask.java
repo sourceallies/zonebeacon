@@ -59,13 +59,9 @@ public class TcpAsyncTask extends AsyncTask<String, Integer, String> {
             StringBuilder sb = new StringBuilder();
             int value;
 
-            while((value = br.read()) != -1) {
+            while(br.ready() && (value = br.read()) != -1) {
                 char c = (char)value;
                 sb.append(c);
-
-                if (!br.ready()) {
-                    break;
-                }
             }
 
             socket.close();
