@@ -6,7 +6,7 @@ import lombok.Getter;
 
 /**
  * Command that we are going to send to the system.
- *
+ * <p/>
  * Contains a host/IP, port, and command string at a minimum
  * Can provide a command callback as well, to handle the response.
  */
@@ -20,14 +20,16 @@ public class Command {
     }
 
     // A handler is created so that we can set a timeout in case this command fails to return a response.
-    @Getter private Handler handler;
-
-    @Getter private String host;
-    @Getter private int port;
-
-    @Getter private String command;
-
-    @Getter private CommandCallback callback;
+    @Getter
+    private Handler handler;
+    @Getter
+    private String host;
+    @Getter
+    private int port;
+    @Getter
+    private String command;
+    @Getter
+    private CommandCallback callback;
 
     public Command(String hostIp, int port) {
         handler = new Handler();

@@ -6,9 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-public class SendTCPActivityTest extends ZoneBeaconRobolectricSuite{
+public class SendTCPActivityTest extends ZoneBeaconRobolectricSuite {
 
     private SendTCPActivity activity;
 

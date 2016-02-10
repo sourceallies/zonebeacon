@@ -30,9 +30,6 @@ import org.robolectric.annotation.Config;
 
 import roboguice.activity.RoboFragmentActivity;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.when;
-
 /**
  * Superclass for running tests with Robolectric. These will be slower than normal unit tests.
  */

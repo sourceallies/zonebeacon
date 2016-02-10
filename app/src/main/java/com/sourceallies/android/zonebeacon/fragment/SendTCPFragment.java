@@ -21,7 +21,7 @@ import roboguice.inject.InjectView;
 /**
  * Fragment that allows you to send plain text commands to the centralite briefcase.
  * It will display the responses in the top TextView section.
- *
+ * <p/>
  * It sends the commands to 192.168.1.150:11000 by default
  */
 public class SendTCPFragment extends RoboFragment {
@@ -30,12 +30,20 @@ public class SendTCPFragment extends RoboFragment {
     private static final int PORT = 11000;
 
     // injecting this singleton allows you to execute the commands serially (with a queue).
-    @Setter @Inject private CommandExecutor commandExecuter;
+    @Setter
+    @Inject
+    private CommandExecutor commandExecuter;
 
     // inject the views so that we don't have to manually set them
-    @Getter @InjectView(R.id.response)      private TextView responseText;
-    @Getter @InjectView(R.id.command_text)  private EditText commandText;
-    @Getter @InjectView(R.id.send_command)  private Button sendButton;
+    @Getter
+    @InjectView(R.id.response)
+    private TextView responseText;
+    @Getter
+    @InjectView(R.id.command_text)
+    private EditText commandText;
+    @Getter
+    @InjectView(R.id.send_command)
+    private Button sendButton;
 
     // creates the layout for the fragment
     @Override
