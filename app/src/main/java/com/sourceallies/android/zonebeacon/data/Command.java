@@ -1,5 +1,7 @@
 package com.sourceallies.android.zonebeacon.data;
 
+import android.os.Handler;
+
 import lombok.Getter;
 
 /**
@@ -17,6 +19,9 @@ public class Command {
         void onResponse(String text);
     }
 
+    // A handler is created so that we can set a timeout in case this command fails to return a response.
+    @Getter private Handler handler;
+
     @Getter private String host;
     @Getter private int port;
 
@@ -25,6 +30,8 @@ public class Command {
     @Getter private CommandCallback callback;
 
     public Command(String hostIp, int port) {
+        handler = new Handler();
+
         this.host = hostIp;
         this.port = port;
     }

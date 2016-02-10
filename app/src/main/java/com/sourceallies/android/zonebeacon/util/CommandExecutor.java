@@ -1,6 +1,9 @@
 package com.sourceallies.android.zonebeacon.util;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
 import com.google.inject.Inject;
@@ -15,8 +18,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Manages the serial communication with the system.
@@ -26,80 +37,87 @@ import java.util.Queue;
  *
  * This is a singleton so that it can be injected and we don't have to worry about different
  * modules trying to send commands all at once.
+ *
+ * Usage:
+ *      1. Just call sendCommand(Command) and it will send an individual command
+ *      2. Call addCommand(Command)..., then execute() if you know you are sending more than one
  */
 @Singleton
 public class CommandExecutor {
 
-    @Inject Activity activity;
+    @Setter @Inject Activity activity;
 
     private static final String TAG = "CommandExecutor";
+    private static final long READER_TIMEOUT = 5000;
 
-    // store the commands in a queue
-    private Queue<Command> commands = new LinkedList<>();
+    // store the commands
+    @Setter @Getter private List<Command> commands = new ArrayList<>();
+    private Map<String, SocketConnection> connections = new HashMap<>();
     private boolean isRunning = false;
 
     /**
-     * called to send a command to the system
+     * adds a command and executes it
      *
      * @param command what we want to send and wherre we are sending it too
+     * @return number of commands on the stack
      */
-    public synchronized void sendCommand(Command command) {
+    public int sendCommand(Command command) {
         addCommand(command);
         execute();
+        return commands.size();
     }
 
     /**
-     * Adds valid commands to the queue
+     * Add valid commands to the queue.
      *
      * @param command what we want to send and where we are sending it too.
+     * @return instance of the command executor so that calls can be chained.
      */
-    private synchronized void addCommand(Command command) {
+    public CommandExecutor addCommand(Command command) {
         if (command.getCommand() == null) {
             throw new RuntimeException("Commands cannot be null.");
         }
 
         commands.add(command);
+
+        return this;
     }
 
     /**
-     * Ensure the executer isn't already running, for thread safety.
+     * Ensure the executor isn't already running, for thread safety.
      *
      * If it is already running, no reason to do anything, because the commands will be
      * pulled from the queue and sent.
      */
-    private synchronized void execute() {
+    public void execute() {
         if (!isRunning) {
-            executeCommands();
-        }
-    }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    isRunning = true;
 
-    /**
-     * Execute the commands on a background thread.
-     */
-    private void executeCommands() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                isRunning = true;
+                    while (commands.size() > 0) {
+                        Command command = commands.get(0);
+                        commands.remove(0);
 
-                while (!commands.isEmpty()) {
-                    Command command = commands.remove();
-                    String response = null;
+                        String response = sendCommandOverSocket(command);
 
-                    try {
-                        response = sendCommandOverSocket(command);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                        if (response != null) {
+                            provideResponse(command, response);
+                        }
                     }
 
-                    if (response != null) {
-                        provideResponse(command, response);
+                    shutDownConnections();
+
+                    // if there were more commands added during the shutdown time
+                    if (commands.size() > 0) {
+                        execute();
                     }
+
+                    isRunning = false;
                 }
-
-                isRunning = false;
-            }
-        }).start();
+            }).start();
+        }
     }
 
     /**
@@ -109,32 +127,73 @@ public class CommandExecutor {
      * @return the system response
      * @throws IOException
      */
-    private String sendCommandOverSocket(Command command) throws IOException {
-        Socket socket = new Socket(command.getHost(), command.getPort());
+    public String sendCommandOverSocket(Command command) {
+        try {
+            SocketConnection connection = getOrCreateSocketConnection(command);
 
-        InputStream is = socket.getInputStream();
-        OutputStream out = socket.getOutputStream();
+            PrintWriter w = new PrintWriter(connection.getOutputStream(), true);
+            w.print(command.getCommand() + "\r\n");
+            w.flush();
 
-        PrintWriter w = new PrintWriter(out, true);
-        w.print(command.getCommand() + "\r\n");
-        w.flush();
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder sb = new StringBuilder();
+            int value;
 
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        int value;
+            setTimeoutOnSocket(connection.getSocket(), command);
+            while ((value = br.read()) != -1) {
+                char c = (char) value;
+                sb.append(c);
 
-        Log.v(TAG, "reader ready: " + br.ready());
+                if (!br.ready())
+                    break;
+                else
+                    setTimeoutOnSocket(connection.getSocket(), command);
 
-        while((value = br.read()) != -1) {
-            char c = (char)value;
-            sb.append(c);
+            }
 
-            if (!br.ready()) break;
+            command.getHandler().removeCallbacksAndMessages(null);
+
+            return sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
+    }
 
-        socket.close();
+    /**
+     * if the socket doesn't provide an output, we do not want it to hang here forever, since br.read()
+     * is a blocking method.
+     * So, if we haven't gotten a response in 5 seconds, we will close the socket and continue
+     * to the next command.
+     *
+     * No response only happens if the command does not do anything.
+     * EX: the channel 1 light is already on and you try to turn it on again (^A001).
+     *
+     * @param socket that we are reading from.
+     */
+    private void setTimeoutOnSocket(final Socket socket, final Command command) {
+        // remove any old timeouts
+        command.getHandler().removeCallbacksAndMessages(null);
+        command.getHandler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeSocket(socket);
+                provideResponse(command, "No Response");
+            }
+        }, READER_TIMEOUT);
+    }
 
-        return sb.toString();
+    /**
+     * Closes the socket for cleanup
+     *
+     * @param socket you want to close.
+     */
+    private void closeSocket(Socket socket) {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -151,5 +210,80 @@ public class CommandExecutor {
                     command.getCallback().onResponse(response);
             }
         });
+    }
+
+    /**
+     * We want to be able to keep the socket open over multiple commands.
+     * So, store them in a HashMap and be able to access them.
+     * @param command contains the host ip and port
+     * @return connection that was created or found.
+     */
+    private SocketConnection getOrCreateSocketConnection(Command command) {
+        String key = buildKey(command);
+        if (connections.containsKey(key)) {
+            return connections.get(key);
+        } else {
+            SocketConnection connection = new SocketConnection(command);
+            connections.put(key, connection);
+
+            return connection;
+        }
+    }
+
+    /**
+     * Shutdown the connections to save resources after all commands have been sent
+     */
+    private void shutDownConnections() {
+        Iterator it = connections.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            shutdownConnection((SocketConnection) pair.getValue());
+
+            it.remove();
+        }
+    }
+
+    /**
+     * Shutdown the components of the connection individually. Catch any exceptions.
+     * @param connection the connection we want to shut down.
+     */
+    private void shutdownConnection(SocketConnection connection) {
+        try {
+            connection.getSocket().close();
+        } catch (IOException e) { }
+        try {
+            connection.getInputStream().close();
+        } catch (IOException e) { }
+        try {
+            connection.getOutputStream().close();
+        } catch (IOException e) { }
+    }
+
+    /**
+     * Returns of string of the address plus port number to communicate on.
+     * @param command contains address and port number
+     * @return string of host.ip:port
+     */
+    private String buildKey(Command command) {
+        return command.getHost() + ":" + command.getPort();
+    }
+
+    /**
+     * Holds the components of the socket connection we are keeping active.
+     */
+    private static class SocketConnection {
+        @Getter private Socket socket;
+        @Getter private InputStream inputStream;
+        @Getter private OutputStream outputStream;
+
+        public SocketConnection(Command command) {
+            try {
+                socket = new Socket(command.getHost(), command.getPort());
+                inputStream = socket.getInputStream();
+                outputStream = socket.getOutputStream();
+            } catch (IOException e) {
+
+            }
+        }
     }
 }
