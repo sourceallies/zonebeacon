@@ -16,6 +16,12 @@
 
 apply plugin: 'com.android.application'
 
+android.testOptions.unitTests.all {
+    afterTest { descriptor, result ->
+        println "Executing: ${descriptor.name}. Result: ${result.resultType}"
+    }
+}
+
 android {
     compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
     buildToolsVersion BUILD_TOOLS_VERSION
