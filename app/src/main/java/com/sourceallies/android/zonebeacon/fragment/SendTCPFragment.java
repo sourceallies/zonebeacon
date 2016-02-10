@@ -13,6 +13,8 @@ import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.data.Command;
 import com.sourceallies.android.zonebeacon.util.CommandExecutor;
 
+import lombok.Getter;
+import lombok.Setter;
 import roboguice.fragment.RoboFragment;
 import roboguice.inject.InjectView;
 
@@ -28,12 +30,12 @@ public class SendTCPFragment extends RoboFragment {
     private static final int PORT = 11000;
 
     // injecting this singleton allows you to execute the commands serially (with a queue).
-    @Inject CommandExecutor commandExecuter;
+    @Setter @Inject private CommandExecutor commandExecuter;
 
     // inject the views so that we don't have to manually set them
-    @InjectView(R.id.response)      TextView responseText;
-    @InjectView(R.id.command_text)  EditText commandText;
-    @InjectView(R.id.send_command)  Button sendButton;
+    @Getter @InjectView(R.id.response)      private TextView responseText;
+    @Getter @InjectView(R.id.command_text)  private EditText commandText;
+    @Getter @InjectView(R.id.send_command)  private Button sendButton;
 
     // creates the layout for the fragment
     @Override
@@ -54,11 +56,14 @@ public class SendTCPFragment extends RoboFragment {
                         .setResponseCallback(new Command.CommandCallback() {
                             @Override
                             public void onResponse(String text) {
-                                responseText.setText(text);
+                                responseText.append("\nResponse: " + text);
+                                sendButton.setEnabled(true);
                             }
                         });
 
                 commandExecuter.sendCommand(command);
+
+                responseText.append("\nCommand: " + command.getCommand());
             }
         });
     }
