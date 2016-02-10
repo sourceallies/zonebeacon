@@ -22,6 +22,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:${GRADLE_PLUGIN_VERSION}"
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.2.1'
     }
 }
 

@@ -17,5 +17,7 @@
 <resources>
 
     <string name="app_name">Zone Beacon</string>
+    <string name="enter_command">Enter Command</string>
+    <string name="send">Send</string>
 
 </resources>

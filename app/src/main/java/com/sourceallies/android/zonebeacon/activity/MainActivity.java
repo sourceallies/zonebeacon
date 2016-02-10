@@ -17,8 +17,8 @@
 package com.sourceallies.android.zonebeacon.activity;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * Main activity that the user will be interacting with when using the app.

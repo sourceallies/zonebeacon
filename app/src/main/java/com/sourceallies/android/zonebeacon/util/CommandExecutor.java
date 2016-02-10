@@ -1,15 +1,10 @@
 package com.sourceallies.android.zonebeacon.util;
 
 import android.app.Activity;
-import android.os.Handler;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.sourceallies.android.zonebeacon.data.Command;
-
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,37 +16,39 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
  * Manages the serial communication with the system.
- *
+ * <p/>
  * Commands are added and stored in a Queue.
  * Once we get a response on the command, the next command will be executed.
- *
+ * <p/>
  * This is a singleton so that it can be injected and we don't have to worry about different
  * modules trying to send commands all at once.
- *
+ * <p/>
  * Usage:
- *      1. Just call sendCommand(Command) and it will send an individual command
- *      2. Call addCommand(Command)..., then execute() if you know you are sending more than one
+ * 1. Just call sendCommand(Command) and it will send an individual command
+ * 2. Call addCommand(Command)..., then execute() if you know you are sending more than one
  */
 @Singleton
 public class CommandExecutor {
 
-    @Setter @Inject Activity activity;
+    @Setter
+    @Inject
+    Activity activity;
 
     private static final String TAG = "CommandExecutor";
     private static final long READER_TIMEOUT = 5000;
 
     // store the commands
-    @Setter @Getter private List<Command> commands = new ArrayList<>();
+    @Setter
+    @Getter
+    private List<Command> commands = new ArrayList<>();
     private Map<String, SocketConnection> connections = new HashMap<>();
     private boolean isRunning = false;
 
@@ -85,7 +82,7 @@ public class CommandExecutor {
 
     /**
      * Ensure the executor isn't already running, for thread safety.
-     *
+     * <p/>
      * If it is already running, no reason to do anything, because the commands will be
      * pulled from the queue and sent.
      */
@@ -165,7 +162,7 @@ public class CommandExecutor {
      * is a blocking method.
      * So, if we haven't gotten a response in 5 seconds, we will close the socket and continue
      * to the next command.
-     *
+     * <p/>
      * No response only happens if the command does not do anything.
      * EX: the channel 1 light is already on and you try to turn it on again (^A001).
      *
@@ -199,7 +196,7 @@ public class CommandExecutor {
     /**
      * Run the callback on the UI thread if one is provided
      *
-     * @param command contains a callback
+     * @param command  contains a callback
      * @param response text to send to the callback
      */
     private void provideResponse(final Command command, final String response) {
@@ -215,6 +212,7 @@ public class CommandExecutor {
     /**
      * We want to be able to keep the socket open over multiple commands.
      * So, store them in a HashMap and be able to access them.
+     *
      * @param command contains the host ip and port
      * @return connection that was created or found.
      */
@@ -236,7 +234,7 @@ public class CommandExecutor {
     private void shutDownConnections() {
         Iterator it = connections.entrySet().iterator();
         while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry)it.next();
+            Map.Entry pair = (Map.Entry) it.next();
             shutdownConnection((SocketConnection) pair.getValue());
 
             it.remove();
@@ -245,22 +243,27 @@ public class CommandExecutor {
 
     /**
      * Shutdown the components of the connection individually. Catch any exceptions.
+     *
      * @param connection the connection we want to shut down.
      */
     private void shutdownConnection(SocketConnection connection) {
         try {
             connection.getSocket().close();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
         try {
             connection.getInputStream().close();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
         try {
             connection.getOutputStream().close();
-        } catch (IOException e) { }
+        } catch (IOException e) {
+        }
     }
 
     /**
      * Returns of string of the address plus port number to communicate on.
+     *
      * @param command contains address and port number
      * @return string of host.ip:port
      */
@@ -272,9 +275,12 @@ public class CommandExecutor {
      * Holds the components of the socket connection we are keeping active.
      */
     private static class SocketConnection {
-        @Getter private Socket socket;
-        @Getter private InputStream inputStream;
-        @Getter private OutputStream outputStream;
+        @Getter
+        private Socket socket;
+        @Getter
+        private InputStream inputStream;
+        @Getter
+        private OutputStream outputStream;
 
         public SocketConnection(Command command) {
             try {

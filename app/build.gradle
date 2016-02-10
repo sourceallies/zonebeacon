@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 android.testOptions.unitTests.all {
     afterTest { descriptor, result ->
@@ -55,7 +56,7 @@ android {
 
     lintOptions {
         abortOnError true
-        disable 'GoogleAppIndexingWarning', 'AllowBackup'
+        disable 'GoogleAppIndexingWarning', 'AllowBackup', 'InvalidPackage'
         textReport true
         textOutput 'stdout'
         xmlReport false

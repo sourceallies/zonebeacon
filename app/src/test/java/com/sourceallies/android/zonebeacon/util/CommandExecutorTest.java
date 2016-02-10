@@ -2,7 +2,6 @@ package com.sourceallies.android.zonebeacon.util;
 
 import android.app.Activity;
 
-import com.google.inject.Inject;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.data.Command;
 
@@ -13,17 +12,17 @@ import org.mockito.Mockito;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
-
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class CommandExecutorTest extends ZoneBeaconRobolectricSuite {
 
-    @Mock Activity activity;
-    @Mock List<Command> commands;
+    @Mock
+    Activity activity;
+    @Mock
+    List<Command> commands;
 
     private CommandExecutor commandExecutor;
 

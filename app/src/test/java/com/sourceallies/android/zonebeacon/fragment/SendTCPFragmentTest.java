@@ -7,16 +7,16 @@ import com.sourceallies.android.zonebeacon.util.CommandExecutor;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
-
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 public class SendTCPFragmentTest extends ZoneBeaconRobolectricSuite {
 
-    @Mock CommandExecutor commandExecutor;
+    @Mock
+    CommandExecutor commandExecutor;
     SendTCPFragment fragment;
 
     @Before

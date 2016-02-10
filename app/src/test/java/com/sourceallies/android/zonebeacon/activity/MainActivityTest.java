@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.Robolectric;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
