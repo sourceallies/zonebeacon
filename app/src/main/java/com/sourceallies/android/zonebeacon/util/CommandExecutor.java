@@ -1,6 +1,7 @@
 package com.sourceallies.android.zonebeacon.util;
 
 import android.app.Activity;
+import android.support.annotation.VisibleForTesting;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -128,7 +129,7 @@ public class CommandExecutor {
         try {
             SocketConnection connection = getOrCreateSocketConnection(command);
 
-            PrintWriter w = new PrintWriter(connection.getOutputStream(), true);
+            PrintWriter w = createPrintWriter(connection);
             w.print(command.getCommand() + "\r\n");
             w.flush();
 
@@ -155,6 +156,11 @@ public class CommandExecutor {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @VisibleForTesting
+    public PrintWriter createPrintWriter(SocketConnection socketConnection) {
+        return new PrintWriter(socketConnection.getOutputStream(), true);
     }
 
     /**
@@ -216,7 +222,8 @@ public class CommandExecutor {
      * @param command contains the host ip and port
      * @return connection that was created or found.
      */
-    private SocketConnection getOrCreateSocketConnection(Command command) {
+    @VisibleForTesting
+    public SocketConnection getOrCreateSocketConnection(Command command) {
         String key = buildKey(command);
         if (connections.containsKey(key)) {
             return connections.get(key);
@@ -274,7 +281,8 @@ public class CommandExecutor {
     /**
      * Holds the components of the socket connection we are keeping active.
      */
-    private static class SocketConnection {
+    @VisibleForTesting
+    public static class SocketConnection {
         @Getter
         private Socket socket;
         @Getter
