@@ -24,7 +24,7 @@ import roboguice.inject.InjectView;
  * <p/>
  * It sends the commands to 192.168.1.150:11000 by default
  */
-public class SendTCPFragment extends RoboFragment {
+public class SendTCPFragment extends RoboFragment implements Command.CommandCallback {
 
     private static final String IP = "192.168.1.150";
     private static final int PORT = 11000;
@@ -61,13 +61,7 @@ public class SendTCPFragment extends RoboFragment {
             public void onClick(View view) {
                 Command command = new Command(IP, PORT)
                         .setCommand(commandText.getText().toString())
-                        .setResponseCallback(new Command.CommandCallback() {
-                            @Override
-                            public void onResponse(String text) {
-                                responseText.append("\nResponse: " + text);
-                                sendButton.setEnabled(true);
-                            }
-                        });
+                        .setResponseCallback(SendTCPFragment.this);
 
                 commandExecuter.sendCommand(command);
 
@@ -75,4 +69,11 @@ public class SendTCPFragment extends RoboFragment {
             }
         });
     }
+
+    @Override
+    public void onResponse(String text) {
+        responseText.append("\nResponse: " + text);
+        sendButton.setEnabled(true);
+    }
+
 }

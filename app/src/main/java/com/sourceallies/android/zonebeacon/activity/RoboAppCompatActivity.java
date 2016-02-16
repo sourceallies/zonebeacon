@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NavUtils;
 import android.support.v4.app.TaskStackBuilder;
@@ -244,34 +245,6 @@ public class RoboAppCompatActivity extends RoboFragmentActivity implements AppCo
     }
 
     /**
-     * @deprecated Progress bars are no longer provided in AppCompat.
-     */
-    @Deprecated
-    public void setSupportProgressBarVisibility(boolean visible) {
-    }
-
-    /**
-     * @deprecated Progress bars are no longer provided in AppCompat.
-     */
-    @Deprecated
-    public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
-    }
-
-    /**
-     * @deprecated Progress bars are no longer provided in AppCompat.
-     */
-    @Deprecated
-    public void setSupportProgressBarIndeterminate(boolean indeterminate) {
-    }
-
-    /**
-     * @deprecated Progress bars are no longer provided in AppCompat.
-     */
-    @Deprecated
-    public void setSupportProgress(int progress) {
-    }
-
-    /**
      * Support version of {@link #onCreateNavigateUpTaskStack(android.app.TaskStackBuilder)}.
      * This method will be called on all platform versions.
      * <p/>
@@ -460,5 +433,10 @@ public class RoboAppCompatActivity extends RoboFragmentActivity implements AppCo
             mDelegate = AppCompatDelegate.create(this, this);
         }
         return mDelegate;
+    }
+
+    @VisibleForTesting
+    public void setDelegate(AppCompatDelegate delegate) {
+        this.mDelegate = delegate;
     }
 }

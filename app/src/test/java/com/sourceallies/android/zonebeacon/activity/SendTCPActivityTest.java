@@ -21,4 +21,9 @@ public class SendTCPActivityTest extends ZoneBeaconRobolectricSuite {
     public void test_notNull() {
         assertNotNull(activity);
     }
+
+    @Test
+    public void test_hasFragment() {
+        assertNotNull(activity.getFragment());
+    }
 }

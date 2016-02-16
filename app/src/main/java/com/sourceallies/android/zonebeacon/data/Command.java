@@ -19,7 +19,8 @@ public class Command {
         void onResponse(String text);
     }
 
-    // A handler is created so that we can set a timeout in case this command fails to return a response.
+    // A handler is created so that we can set a timeout in case this command fails
+    // to return a response.
     @Getter
     private Handler handler;
     @Getter
