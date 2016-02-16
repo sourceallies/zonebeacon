@@ -44,4 +44,14 @@ public class SendTCPFragmentTest extends ZoneBeaconRobolectricSuite {
         // since the button writes to our text view, we can assert that it did write.
         assertTrue(fragment.getResponseText().getText().length() > 0);
     }
+
+    @Test
+    public void test_onResponse() {
+        fragment.onResponse("Test");
+
+        assertTrue(fragment.getResponseText().getText().toString().endsWith(
+                "\nResponse: Test"
+        ));
+        assertTrue(fragment.getSendButton().isEnabled());
+    }
 }
