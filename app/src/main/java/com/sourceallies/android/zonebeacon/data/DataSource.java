@@ -1,10 +1,16 @@
 package com.sourceallies.android.zonebeacon.data;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -96,6 +102,16 @@ public class DataSource {
     }
 
     /**
+     * Execute a raw sql query on the database.
+     *
+     * @param sql the sql statement
+     * @return cursor for the data
+     */
+    public Cursor rawQuery(String sql) {
+        return database.rawQuery(sql, null);
+    }
+
+    /**
      * Sets the transaction into a successful state so that it can be committed to the database.
      * Should be used in conjunction with beginTransaction() and endTransaction().
      */
@@ -108,6 +124,39 @@ public class DataSource {
      */
     public void endTransaction() {
         database.endTransaction();
+    }
+
+
+    /*
+            Methods for manipulating the database
+     */
+
+
+
+    /**
+     * Insert a new gateway into the database
+     *
+     * @param name Gateway name
+     * @param ip ip address for the gateway
+     * @param port port number for the gateway
+     * @return id of the inserted row
+     */
+    public long insertNewGateway(String name, String ip, int port) {
+        ContentValues values = new ContentValues();
+        values.put(Gateway.COLUMN_NAME, name);
+        values.put(Gateway.COLUMN_IP_ADDRESS, ip);
+        values.put(Gateway.COLUMN_PORT_NUMBER, port);
+        values.put(Gateway.COLUMN_SYSTEM_TYPE_ID, 1); // just one for now. Since there is only elegance.
+
+        return database.insert(Gateway.TABLE_GATEWAY, null, values);
+    }
+
+    public List<Gateway> findGateways() {
+        Cursor cursor = rawQuery("select * from gateway");
+        List<Gateway> gateways = new ArrayList<>();
+
+        // todo: parse the data and return the gateway
+        return gateways;
     }
 
 }
