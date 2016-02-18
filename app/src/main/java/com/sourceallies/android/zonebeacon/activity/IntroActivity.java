@@ -2,11 +2,13 @@ package com.sourceallies.android.zonebeacon.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.AppIntroViewPager;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.fragment.InitialGatewaySetup;
 
 import lombok.Getter;
 
@@ -17,6 +19,9 @@ public class IntroActivity extends AppIntro2 {
 
     @Getter
     private AppIntroViewPager viewPager;
+
+    @Getter
+    private InitialGatewaySetup setupFragment;
 
     @Override
     public void init(@Nullable Bundle savedInstanceState) {
@@ -30,29 +35,34 @@ public class IntroActivity extends AppIntro2 {
                 getResources().getColor(R.color.appIntro1)
         ));
 
-        addSlide(AppIntroFragment.newInstance(
-                "Let's get set up!",
-                "We will make this our own fragment and add a gateway next.",
-                R.drawable.intro_image,
-                getResources().getColor(R.color.colorPrimary)
-        ));
+        setupFragment = new InitialGatewaySetup();
+        addSlide(setupFragment);
 
         setFadeAnimation();
     }
 
     @Override
     public void onDonePressed() {
-        setResult(RESULT_OK);
-        finish();
+        if (setupFragment.isComplete()) {
+            saveGateway();
+
+            setResult(RESULT_OK);
+            finish();
+        }
     }
 
-    @Override
-    public void onNextPressed() {
+    @Override public void onNextPressed() { }
+    @Override public void onSlideChanged() { }
 
+    public void saveGateway() {
+        String name = getText(setupFragment.getName());
+        String ipAddress = getText(setupFragment.getIpAddress());
+        int port =  Integer.parseInt(getText(setupFragment.getPort()));
+
+        // TODO: Save this information to the database when it is created.
     }
 
-    @Override
-    public void onSlideChanged() {
-
+    private String getText(TextInputLayout input) {
+        return input.getEditText().getText().toString();
     }
 }
