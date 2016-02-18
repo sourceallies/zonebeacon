@@ -19,17 +19,29 @@ package com.sourceallies.android.zonebeacon.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.inject.Inject;
 import com.sourceallies.android.zonebeacon.R;
 
 import lombok.Getter;
 import lombok.Setter;
+import roboguice.inject.ContentView;
+import roboguice.inject.InjectView;
 
 /**
  * Main activity that the user will be interacting with when using the app.
  */
+@ContentView(R.layout.activity_main)
 public class MainActivity extends RoboAppCompatActivity {
 
     private static final int RESULT_INTRO = 1;
@@ -37,11 +49,49 @@ public class MainActivity extends RoboAppCompatActivity {
     @Inject @Setter
     private SharedPreferences sharedPrefs;
 
+    @Getter private CoordinatorLayout rootLayout;
+    @Getter private Toolbar toolbar;
+    @Getter private FloatingActionsMenu fabMenu;
+
+    @Getter private FloatingActionButton addZone;
+    @Getter private FloatingActionButton addButton;
+    @Getter private FloatingActionButton addCommand;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         startIntro();
+
+        rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
+
+        addZone = (FloatingActionButton) findViewById(R.id.add_zone);
+        addButton = (FloatingActionButton) findViewById(R.id.add_button);
+        addCommand = (FloatingActionButton) findViewById(R.id.add_command);
+
+        setSupportActionBar(toolbar);
+
+        setFabTitle(addZone);
+        setFabTitle(addButton);
+        setFabTitle(addCommand);
+    }
+
+    private void setFabTitle(final FloatingActionButton fab) {
+        fab.setTitle(fab.getTitle().replace("%s", getGatewayName()));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fabMenu.collapse();
+                makeSnackbar(fab.getTitle());
+            }
+        });
+    }
+
+    private String getGatewayName() {
+        // TODO: this will come from the spinner in the toolbar. Whatever gateway they have selected.
+        return "Gateway 1";
     }
 
     /**
@@ -57,6 +107,10 @@ public class MainActivity extends RoboAppCompatActivity {
         return false;
     }
 
+    private void makeSnackbar(String text) {
+        Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG).show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // we want to restart the main activity after setup to account for new information that gets entered.
@@ -65,6 +119,29 @@ public class MainActivity extends RoboAppCompatActivity {
             recreate();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.settings: makeSnackbar("Settings");
+                return true;
+            case R.id.diagnosis: makeSnackbar("Diagnosis");
+                return true;
+            case R.id.get_help: makeSnackbar("Get Help");
+                return true;
+            case R.id.transfer_settings: makeSnackbar("Transfer Settings");
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
