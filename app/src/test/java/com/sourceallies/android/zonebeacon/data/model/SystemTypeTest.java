@@ -26,7 +26,9 @@ public class SystemTypeTest extends DatabaseTableTest {
 
     @Test
     public void test_defaults() {
-        assertEquals(0, type.getDefaultDataStatements().length);
+        assertEquals(1, type.getDefaultDataStatements().length);
+        assertEquals("INSERT INTO 'system_type' ('_id', 'name', 'version') VALUES (1, 'CentraLite Elegance', '1.0');",
+                type.getDefaultDataStatements()[0]);
     }
 
     @Test

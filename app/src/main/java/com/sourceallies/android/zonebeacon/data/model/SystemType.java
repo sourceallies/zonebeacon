@@ -26,6 +26,10 @@ public class SystemType implements DatabaseTable {
             COLUMN_VERSION + " varchar(32)" +
             ");";
 
+    private static final String[] DEFAULTS = {
+            "1, 'CentraLite Elegance', '1.0'"
+    };
+
     @Setter
     @Getter
     private int id;
@@ -55,7 +59,13 @@ public class SystemType implements DatabaseTable {
 
     @Override
     public String[] getDefaultDataStatements() {
-        return new String[0];
+        String[] defaults = new String[DEFAULTS.length];
+        for (int i = 0; i < DEFAULTS.length; i++) {
+            defaults[i] = "INSERT INTO '" + TABLE_SYSTEM_TYPE + "' ('" + COLUMN_ID + "', '" +
+                    COLUMN_NAME + "', '" + COLUMN_VERSION + "') VALUES (" + DEFAULTS[i] + ");";
+        }
+
+        return defaults;
     }
 
 }
