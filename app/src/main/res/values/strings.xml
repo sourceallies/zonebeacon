@@ -19,5 +19,7 @@
     <string name="app_name">Zone Beacon</string>
     <string name="enter_command">Enter Command</string>
     <string name="send">Send</string>
+    <string name="app_intro_title">Welcome to\nZone Beacon!</string>
+    <string name="powered_by_sai">Powered by Source Allies, Inc.</string>
 
 </resources>

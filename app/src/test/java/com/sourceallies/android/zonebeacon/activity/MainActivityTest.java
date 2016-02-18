@@ -16,16 +16,27 @@
 
 package com.sourceallies.android.zonebeacon.activity;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.when;
 
 public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
+    @Mock
+    private SharedPreferences sharedPrefs;
     private MainActivity activity;
 
     @Before
@@ -36,6 +47,22 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_notNull() {
         assertNotNull(activity);
+    }
+
+    @Test
+    public void test_startIntro() {
+        when(sharedPrefs.getBoolean(eq("pref_intro"), eq(false))).thenReturn(false);
+
+        activity.setSharedPrefs(sharedPrefs);
+        assertTrue(activity.startIntro());
+    }
+
+    @Test
+    public void test_noIntro() {
+        when(sharedPrefs.getBoolean(eq("pref_intro"), eq(false))).thenReturn(true);
+
+        activity.setSharedPrefs(sharedPrefs);
+        assertFalse(activity.startIntro());
     }
 
 }
