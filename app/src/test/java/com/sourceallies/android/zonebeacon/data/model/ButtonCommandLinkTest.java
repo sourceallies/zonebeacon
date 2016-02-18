@@ -41,6 +41,16 @@ public class ButtonCommandLinkTest extends DatabaseTableTest {
         assertEquals(0, link.getDefaultDataStatements().length);
     }
 
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(ButtonCommandLink.ALL_COLUMNS);
+        link.fillFromCursor(cursor);
+
+        assertColumnFilled(link.getId());
+        assertColumnFilled(link.getButtonId());
+        assertColumnFilled(link.getCommandId());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return link;

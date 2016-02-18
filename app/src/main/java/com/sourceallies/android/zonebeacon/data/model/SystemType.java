@@ -1,5 +1,7 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
+import android.database.Cursor;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -66,6 +68,21 @@ public class SystemType implements DatabaseTable {
         }
 
         return defaults;
+    }
+
+    @Override
+    public void fillFromCursor(Cursor cursor) {
+        for (int i = 0; i < cursor.getColumnCount(); i++) {
+            String column = cursor.getColumnName(i);
+
+            if (column.equals(COLUMN_ID)) {
+                id = cursor.getInt(i);
+            } else if (column.equals(COLUMN_NAME)) {
+                name = cursor.getString(i);
+            } else if (column.equals(COLUMN_VERSION)) {
+                version = cursor.getString(i);
+            }
+        }
     }
 
 }

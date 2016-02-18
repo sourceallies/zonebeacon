@@ -1,7 +1,11 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
+import android.database.Cursor;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
@@ -33,6 +37,15 @@ public class ButtonTest extends DatabaseTableTest {
     @Test
     public void test_defaults() {
         assertEquals(0, button.getDefaultDataStatements().length);
+    }
+
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(Button.ALL_COLUMNS);
+        button.fillFromCursor(cursor);
+
+        assertColumnFilled(button.getId());
+        assertColumnFilled(button.getName());
     }
 
     @Override
