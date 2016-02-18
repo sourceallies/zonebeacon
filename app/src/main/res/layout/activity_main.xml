@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        fab:layout_behavior="com.sourceallies.android.zonebeacon.util.FloatingActionButtonBehavior"
+        android:gravity="bottom|end">
+
+        <com.getbase.floatingactionbutton.FloatingActionsMenu
+            android:id="@+id/fab_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            fab:fab_addButtonColorNormal="@color/colorAccent"
+            fab:fab_addButtonColorPressed="@color/colorAccentDark"
+            fab:fab_addButtonPlusIconColor="@color/white"
+            fab:fab_labelStyle="@style/menu_labels_style"
+            android:layout_marginBottom="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp">
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_zone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_size="mini"
+                fab:fab_title="@string/add_zone"
+                fab:fab_colorPressed="@color/white_pressed"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_size="mini"
+                fab:fab_title="@string/add_button"
+                fab:fab_colorPressed="@color/white_pressed"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_command"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_size="mini"
+                fab:fab_title="@string/add_command"
+                fab:fab_colorPressed="@color/white_pressed"/>
+
+        </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    </LinearLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

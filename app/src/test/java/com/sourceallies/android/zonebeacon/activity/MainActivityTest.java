@@ -18,6 +18,7 @@ package com.sourceallies.android.zonebeacon.activity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.widget.Toolbar;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 
@@ -27,7 +28,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.eq;
@@ -47,6 +50,16 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_notNull() {
         assertNotNull(activity);
+    }
+
+    @Test
+    public void test_viewsCreated() {
+        assertNotNull(activity.getRootLayout());
+        assertNotNull(activity.getToolbar());
+        assertNotNull(activity.getFabMenu());
+        assertNotNull(activity.getAddZone());
+        assertNotNull(activity.getAddButton());
+        assertNotNull(activity.getAddCommand());
     }
 
     @Test

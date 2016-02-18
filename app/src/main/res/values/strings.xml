@@ -27,5 +27,12 @@
     <string name="ip_address">IP address</string>
     <string name="port">Port</string>
     <string name="fill_field">Cannot be empty!</string>
+    <string name="add_zone">Add Zone to %s</string>
+    <string name="add_button">Add Button to %s</string>
+    <string name="add_command">Add Command to %s</string>
+    <string name="settings">Settings</string>
+    <string name="diagnosis">Diagnosis</string>
+    <string name="get_help">Get Help</string>
+    <string name="transfer_settings">Transer Settings</string>
 
 </resources>
