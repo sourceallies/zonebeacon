@@ -42,6 +42,21 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertTrue(numTables > 0);
     }
 
+    @Test
+    public void test_insertNewGateway() {
+        source.insertNewGateway("Test Gateway", "192.168.1.100", 11000);
+
+        int numGateways = 0;
+        Cursor cursor = source.getDatabase().rawQuery("SELECT count(*) FROM gateway", null);
+        if (cursor != null && cursor.moveToFirst()) {
+            numGateways = cursor.getInt(0);
+            cursor.close();
+        }
+
+        assertEquals(1, numGateways);
+
+    }
+
     private void insertData() throws Exception {
         SQLiteDatabase database = source.getDatabase();
         FixtureLoader loader = new FixtureLoader();

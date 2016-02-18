@@ -8,6 +8,7 @@ import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.AppIntroViewPager;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.fragment.InitialGatewaySetup;
 
 import lombok.Getter;
@@ -59,7 +60,10 @@ public class IntroActivity extends AppIntro2 {
         String ipAddress = getText(setupFragment.getIpAddress());
         int port =  Integer.parseInt(getText(setupFragment.getPort()));
 
-        // TODO: Save this information to the database when it is created.
+        DataSource source = DataSource.getInstance(this);
+        source.open();
+        source.insertNewGateway(name, ipAddress, port);
+        source.close();
     }
 
     private String getText(TextInputLayout input) {
