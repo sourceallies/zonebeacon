@@ -62,6 +62,13 @@ public class DatabaseSQLiteHelperTest extends ZoneBeaconRobolectricSuite {
         verify(database).execSQL(new Gateway().getIndexStatements()[0]);
         verify(database).execSQL(new ZoneButtonLink().getIndexStatements()[0]);
         verify(database).execSQL(new ZoneButtonLink().getIndexStatements()[1]);
+        verify(database).execSQL(new SystemType().getDefaultDataStatements()[0]);
+        verify(database).execSQL(new CommandType().getDefaultDataStatements()[0]);
+        verify(database).execSQL(new CommandType().getDefaultDataStatements()[1]);
+        verify(database).execSQL(new CommandType().getDefaultDataStatements()[2]);
+        verify(database).execSQL(new CommandType().getDefaultDataStatements()[3]);
+        verify(database).execSQL(new CommandType().getDefaultDataStatements()[4]);
+        verify(database).execSQL(new CommandType().getDefaultDataStatements()[5]);
         verifyNoMoreInteractions(database);
     }
 
