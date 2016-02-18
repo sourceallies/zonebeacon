@@ -115,6 +115,7 @@ public class MainActivity extends RoboAppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // we want to restart the main activity after setup to account for new information that gets entered.
         if (requestCode == RESULT_INTRO && resultCode == RESULT_OK) {
+            //noinspection AndroidLintCommitPrefEdits
             sharedPrefs.edit().putBoolean(getString(R.string.pref_intro), true).commit();
             recreate();
         } else {
