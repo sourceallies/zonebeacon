@@ -1,5 +1,7 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
+import android.database.Cursor;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,6 +61,10 @@ public class CommandType implements DatabaseTable {
     @Getter
     private int systemTypeId;
 
+    @Setter
+    @Getter
+    private boolean activateControllerSelection;
+
     @Override
     public String getCreateStatement() {
         return DATABASE_CREATE;
@@ -86,4 +92,22 @@ public class CommandType implements DatabaseTable {
         return defaults;
     }
 
+    @Override
+    public void fillFromCursor(Cursor cursor) {
+        for (int i = 0; i < cursor.getColumnCount(); i++) {
+            String column = cursor.getColumnName(i);
+
+            if (column.equals(COLUMN_ID)) {
+                id = cursor.getInt(i);
+            } else if (column.equals(COLUMN_NAME)) {
+                name = cursor.getString(i);
+            } else if (column.equals(COLUMN_BASE_SERIAL_CODE)) {
+                baseSerialCode = cursor.getString(i);
+            } else if (column.equals(COLUMN_SYSTEM_TYPE_ID)) {
+                systemTypeId = cursor.getInt(i);
+            } else if (column.equals(COLUMN_ACTIVATE_CONTROLLER_SELECTION)) {
+                activateControllerSelection = cursor.getInt(i) == 1;
+            }
+        }
+    }
 }

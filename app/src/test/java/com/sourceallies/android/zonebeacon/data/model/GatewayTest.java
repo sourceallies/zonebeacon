@@ -39,6 +39,18 @@ public class GatewayTest extends DatabaseTableTest {
                 "integer not null, system_type_id integer not null);", gateway.getCreateStatement());
     }
 
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(Gateway.ALL_COLUMNS);
+        gateway.fillFromCursor(cursor);
+
+        assertColumnFilled(gateway.getId());
+        assertColumnFilled(gateway.getName());
+        assertColumnFilled(gateway.getSystemTypeId());
+        assertColumnFilled(gateway.getIpAddress());
+        assertColumnFilled(gateway.getPortNumber());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return gateway;

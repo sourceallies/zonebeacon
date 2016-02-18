@@ -47,6 +47,17 @@ public class CommandTypeTest extends DatabaseTableTest {
                 "not null);", type.getCreateStatement());
     }
 
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(CommandType.ALL_COLUMNS);
+        type.fillFromCursor(cursor);
+
+        assertColumnFilled(type.getId());
+        assertColumnFilled(type.getName());
+        assertColumnFilled(type.getBaseSerialCode());
+        assertColumnFilled(type.getSystemTypeId());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return type;

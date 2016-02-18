@@ -41,6 +41,16 @@ public class ZoneButtonLinkTest extends DatabaseTableTest {
                 link.getCreateStatement());
     }
 
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(ZoneButtonLink.ALL_COLUMNS);
+        link.fillFromCursor(cursor);
+
+        assertColumnFilled(link.getId());
+        assertColumnFilled(link.getButtonId());
+        assertColumnFilled(link.getZoneId());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return link;

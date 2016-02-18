@@ -42,6 +42,19 @@ public class CommandTest extends DatabaseTableTest {
                 command.getCreateStatement());
     }
 
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(Command.ALL_COLUMNS);
+        command.fillFromCursor(cursor);
+
+        assertColumnFilled(command.getId());
+        assertColumnFilled(command.getName());
+        assertColumnFilled(command.getCommandTypeId());
+        assertColumnFilled(command.getControllerNumber());
+        assertColumnFilled(command.getGatewayId());
+        assertColumnFilled(command.getNumber());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return command;

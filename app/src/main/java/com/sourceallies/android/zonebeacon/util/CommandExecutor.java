@@ -44,7 +44,7 @@ public class CommandExecutor {
     Activity activity;
 
     private static final String TAG = "CommandExecutor";
-    private static final long READER_TIMEOUT = 5000;
+    private static final long READER_TIMEOUT = 1000;
 
     // store the commands
     @Setter

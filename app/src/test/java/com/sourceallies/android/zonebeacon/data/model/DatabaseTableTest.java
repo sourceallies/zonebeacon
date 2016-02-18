@@ -1,10 +1,19 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
+import android.database.Cursor;
+
+import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
-public abstract class DatabaseTableTest {
+public abstract class DatabaseTableTest extends ZoneBeaconRobolectricSuite {
+
+    @Mock
+    public Cursor cursor;
 
     public abstract DatabaseTable getDatabaseTable();
 
@@ -26,6 +35,29 @@ public abstract class DatabaseTableTest {
     @Test
     public void test_defaultDataNotNull() {
         assertNotNull(getDatabaseTable().getDefaultDataStatements());
+    }
+
+    protected void setupMockCursor(String[] columns) {
+        Mockito.when(cursor.getColumnCount()).thenReturn(columns.length);
+
+        for (int i = 0; i < columns.length; i++) {
+            Mockito.when(cursor.getColumnName(i)).thenReturn(columns[i]);
+        }
+
+        Mockito.when(cursor.getString(Mockito.anyInt())).thenReturn("Test String");
+        Mockito.when(cursor.getInt(Mockito.anyInt())).thenReturn(1);
+    }
+
+    protected void assertColumnFilled(String string) {
+        assertEquals("Test String", string);
+    }
+
+    protected void assertColumnFilled(int integer) {
+        assertEquals(1, integer);
+    }
+
+    protected void assertColumnFilled(boolean bool) {
+        assertTrue(bool);
     }
 
 }

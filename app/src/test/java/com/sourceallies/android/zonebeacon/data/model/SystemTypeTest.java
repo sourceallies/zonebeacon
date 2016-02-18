@@ -38,6 +38,16 @@ public class SystemTypeTest extends DatabaseTableTest {
                 type.getCreateStatement());
     }
 
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(SystemType.ALL_COLUMNS);
+        type.fillFromCursor(cursor);
+
+        assertColumnFilled(type.getId());
+        assertColumnFilled(type.getName());
+        assertColumnFilled(type.getVersion());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return type;

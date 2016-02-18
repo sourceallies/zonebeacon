@@ -35,6 +35,15 @@ public class ZoneTest extends DatabaseTableTest {
                 "name varchar(255) not null);", zone.getCreateStatement());
     }
 
+    @Test
+    public void test_fillFromCursor() {
+        setupMockCursor(Zone.ALL_COLUMNS);
+        zone.fillFromCursor(cursor);
+
+        assertColumnFilled(zone.getId());
+        assertColumnFilled(zone.getName());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return zone;
