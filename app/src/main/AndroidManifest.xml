@@ -37,7 +37,7 @@
 
         <activity android:name=".activity.SendTCPActivity" android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name=".activity.IntroActivity" android:windowSoftInputMode="adjustResize" android:theme="@style/AppIntroTheme" />
+        <activity android:name=".activity.IntroActivity" android:windowSoftInputMode="adjustPan" android:theme="@style/AppIntroTheme" />
 
     </application>
 

@@ -22,9 +22,9 @@
     <string name="app_intro_title">Welcome to\nZone Beacon!</string>
     <string name="powered_by_sai">Powered by Source Allies, Inc.</string>
     <string name="initial_gateway_setup">Let\'s get you set up!</string>
-    <string name="initial_gateway_help">Not sure what this is? Check this video for more info.</string>
-    <string name="name">Name</string>
-    <string name="ip_address">IP Address</string>
+    <string name="initial_gateway_help">Enter an initial gateway configuration.\n\nNot sure what this is? Check this YouTube channel for more info on setting up your system.</string>
+    <string name="name">Name this gateway</string>
+    <string name="ip_address">IP address</string>
     <string name="port">Port</string>
     <string name="fill_field">Cannot be empty!</string>
 
