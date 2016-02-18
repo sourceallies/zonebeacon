@@ -18,6 +18,7 @@ package com.sourceallies.android.zonebeacon.activity;
 
 import android.content.res.Configuration;
 import android.support.v4.app.TaskStackBuilder;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -54,6 +55,8 @@ public class RoboAppCompatActivityTest extends ZoneBeaconRobolectricSuite {
     @Mock
     private Toolbar toolbar;
     @Mock
+    private ActionBar actionBar;
+    @Mock
     private MenuItem menuItem;
     @Mock
     private TaskStackBuilder taskStackBuilder;
@@ -74,6 +77,8 @@ public class RoboAppCompatActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Test
     public void test_getSupportActionBar() {
+        activity.setDelegate(delegate);
+        when(delegate.getSupportActionBar()).thenReturn(actionBar);
         assertNotNull(activity.getSupportActionBar());
     }
 
