@@ -31,7 +31,9 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(source.getDatabase());
 
         int numTables = 0;
-        Cursor cursor = source.getDatabase().rawQuery("SELECT count(*) FROM sqlite_master WHERE type = 'table' AND name != 'android_metadata' AND name != 'sqlite_sequence';", null);
+        Cursor cursor = source.getDatabase().rawQuery("SELECT count(*) FROM sqlite_master " +
+                "WHERE type = 'table' AND name != 'android_metadata' AND name != " +
+                "'sqlite_sequence';", null);
         if (cursor != null && cursor.moveToFirst()) {
             numTables = cursor.getInt(0);
             cursor.close();
