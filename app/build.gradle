@@ -69,6 +69,8 @@ dependencies {
     provided 'org.projectlombok:lombok:1.14.8'
     provided 'org.roboguice:roboblender:3.0.1'
 
+    compile 'com.github.paolorotolo:appintro:3.4.0'
+
     compile "com.android.support:appcompat-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:support-v4:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:design:${ANDROID_SUPPORT_VERSION}"

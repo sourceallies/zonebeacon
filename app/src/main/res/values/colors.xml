@@ -21,4 +21,6 @@
     <color name="colorPrimaryDark">#1565C0</color>
     <color name="colorAccent">#FFAB40</color>
 
+    <color name="appIntro1">#222222</color>
+
 </resources>
