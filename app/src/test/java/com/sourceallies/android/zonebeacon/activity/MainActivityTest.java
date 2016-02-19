@@ -180,13 +180,33 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Test
     public void test_spinnerSelection() {
-        activity.getSpinner().getOnItemSelectedListener().onNothingSelected(null);
-        activity.getSpinner().getOnItemSelectedListener().onItemSelected(null, null, 2, 1);
+        activity = Robolectric.setupActivity(MainActivity.class);
+        
+        Gateway one = new Gateway();
+        one.setId(1);
+        one.setName("test 1");
+
+        Gateway two = new Gateway();
+        two.setId(2);
+        two.setName("test 2");
+
+        gateways.clear();
+        gateways.add(one);
+        gateways.add(two);
+
+        adapter = new GatewaySpinnerAdapter(activity, gateways);
+        activity.setAdapter(adapter);
+        activity.getSpinner().setAdapter(adapter);
+        activity.getSpinner().setSelection(0);
+
+        activity.getSpinner().setSelection(2);
+        assertEquals(0, activity.getCurrentSpinnerSelection());
 
         activity.getSpinner().setSelection(1);
-        activity.getSpinner().setSelection(2);
+        assertEquals(1, activity.getCurrentSpinnerSelection());
 
-        assertEquals(3, activity.getAdapter().getCount());
+        activity.getSpinner().setSelection(2);
+        assertEquals(1, activity.getCurrentSpinnerSelection());
     }
 
     private GatewaySpinnerAdapter createAdapter() {
