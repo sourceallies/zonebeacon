@@ -56,6 +56,7 @@ public class CommandTypeTest extends DatabaseTableTest {
         assertColumnFilled(type.getName());
         assertColumnFilled(type.getBaseSerialCode());
         assertColumnFilled(type.getSystemTypeId());
+        assertColumnFilled(type.isActivateControllerSelection());
     }
 
     @Override

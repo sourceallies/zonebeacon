@@ -33,8 +33,17 @@ public class CommandTest extends ZoneBeaconSuite {
     }
 
     @Test
+    public void test_notNull() {
+        assertNull(command.getCallback());
+        assertNotNull(command.getHost());
+        assertNotNull(command.getPort());
+        assertNotNull(command.getHandler());
+    }
+
+    @Test
     public void test_setCommand() {
         assertEquals(command, command.setCommand("test"));
+        assertNotNull(command.getCommand());
     }
 
     @Test
@@ -45,6 +54,8 @@ public class CommandTest extends ZoneBeaconSuite {
 
             }
         }));
+
+        assertNotNull(command.getCallback());
     }
 
 }

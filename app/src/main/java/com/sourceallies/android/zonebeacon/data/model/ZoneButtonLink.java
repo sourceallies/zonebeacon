@@ -73,11 +73,11 @@ public class ZoneButtonLink implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                id = cursor.getInt(i);
+                setId(cursor.getInt(i));
             } else if (column.equals(COLUMN_ZONE_ID)) {
-                zoneId = cursor.getInt(i);
+                setZoneId(cursor.getInt(i));
             } else if (column.equals(COLUMN_BUTTON_ID)) {
-                buttonId = cursor.getInt(i);
+                setButtonId(cursor.getInt(i));
             }
         }
     }
