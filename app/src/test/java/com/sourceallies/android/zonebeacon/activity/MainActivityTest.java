@@ -80,6 +80,9 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertFalse(activity.startIntro());
     }
 
-
+    @Test
+    public void test_adapterSet() {
+        assertEquals(activity.getAdapter(), activity.getSpinner().getAdapter());
+    }
 
 }

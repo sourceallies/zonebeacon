@@ -65,6 +65,8 @@ public class MainActivity extends RoboAppCompatActivity {
     @Getter private FloatingActionButton addButton;
     @Getter private FloatingActionButton addCommand;
 
+    @Getter private GatewaySpinnerAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,14 +82,13 @@ public class MainActivity extends RoboAppCompatActivity {
         addButton = (FloatingActionButton) findViewById(R.id.add_button);
         addCommand = (FloatingActionButton) findViewById(R.id.add_command);
 
+        setSpinnerAdapter();
         setSupportActionBar(toolbar);
         setTitle("");
 
         setFabTitle(addZone);
         setFabTitle(addButton);
         setFabTitle(addCommand);
-
-        setSpinnerAdapter();
     }
 
     private void setFabTitle(final FloatingActionButton fab) {
@@ -105,14 +106,14 @@ public class MainActivity extends RoboAppCompatActivity {
         DataSource dataSource = DataSource.getInstance(this);
         dataSource.open();
 
-        spinner.setAdapter(new GatewaySpinnerAdapter(this, dataSource.findGateways()));
+        adapter = new GatewaySpinnerAdapter(this, dataSource.findGateways());
+        spinner.setAdapter(adapter);
 
         dataSource.close();
     }
 
     private String getGatewayName() {
-        // TODO: this will come from the spinner in the toolbar. Whatever gateway they have selected.
-        return "Gateway 1";
+        return adapter.getTitle(spinner.getSelectedItemPosition());
     }
 
     /**
