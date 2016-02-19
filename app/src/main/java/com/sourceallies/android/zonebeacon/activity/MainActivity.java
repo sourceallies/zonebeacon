@@ -19,6 +19,7 @@ package com.sourceallies.android.zonebeacon.activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +29,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -65,13 +67,15 @@ public class MainActivity extends RoboAppCompatActivity {
     @Getter private FloatingActionButton addButton;
     @Getter private FloatingActionButton addCommand;
 
-    @Getter private GatewaySpinnerAdapter adapter;
+    @Getter @Setter
+    private GatewaySpinnerAdapter adapter;
+    @Getter private int currentSpinnerSelection = 0;
+
+    @Getter private boolean startedIntro = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        startIntro();
 
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -102,14 +106,40 @@ public class MainActivity extends RoboAppCompatActivity {
         });
     }
 
+    @VisibleForTesting
+    protected GatewaySpinnerAdapter createAdapter(DataSource dataSource) {
+        return new GatewaySpinnerAdapter(this, dataSource.findGateways());
+    }
+
     private void setSpinnerAdapter() {
         DataSource dataSource = DataSource.getInstance(this);
         dataSource.open();
 
-        adapter = new GatewaySpinnerAdapter(this, dataSource.findGateways());
+        adapter = createAdapter(dataSource);
         spinner.setAdapter(adapter);
 
         dataSource.close();
+
+        startIntro();
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onNothingSelected(AdapterView<?> parent) { }
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == spinner.getCount() - 1 && spinner.getCount() > 1) {
+                    createNewGateway();
+                    spinner.setSelection(currentSpinnerSelection);
+                } else {
+                    currentSpinnerSelection = position;
+                }
+            }
+        });
+    }
+
+    public void createNewGateway() {
+        // TODO: create a new gateway here
+        makeSnackbar("Create New Gateway");
     }
 
     private String getGatewayName() {
@@ -118,10 +148,9 @@ public class MainActivity extends RoboAppCompatActivity {
 
     /**
      * Start the intro activity if necessary
-     * @return whether or not the activity was started
      */
     public boolean startIntro() {
-        if (!sharedPrefs.getBoolean(getString(R.string.pref_intro), false)) {
+        if (adapter.getCount() == 1) {
             startActivityForResult(new Intent(this, IntroActivity.class), RESULT_INTRO);
             return true;
         }
@@ -135,10 +164,8 @@ public class MainActivity extends RoboAppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // we want to restart the main activity after setup to account for new information that gets entered.
-        if (requestCode == RESULT_INTRO && resultCode == RESULT_OK) {
-            //noinspection AndroidLintCommitPrefEdits
-            sharedPrefs.edit().putBoolean(getString(R.string.pref_intro), true).commit();
+        if (requestCode == RESULT_INTRO &&
+                (resultCode == RESULT_OK || resultCode == RESULT_CANCELED)) {
             recreate();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
