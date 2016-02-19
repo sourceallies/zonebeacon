@@ -11,11 +11,12 @@
         android:layout_height="wrap_content"
         android:drawablePadding="8dp"
         android:drawableRight="@drawable/spinner_triangle"
+        android:drawableEnd="@drawable/spinner_triangle"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:maxLines="1"
         android:ellipsize="marquee"
         android:textColor="#ffffffff"
-        android:textSize="18dp" />
+        android:textSize="18sp" />
 
 </LinearLayout>
