@@ -33,10 +33,10 @@ public class CreationActivity extends IntroActivity {
     public void addSlides() {
         switch (getFragmentType()) {
             // TODO: break these apart when more fragments are created.
-            case TYPE_GATEWAY:
             case TYPE_ZONE:
             case TYPE_BUTTON:
             case TYPE_COMMAND:
+            case TYPE_GATEWAY:
                 setupFragment = new GatewaySetupFragment();
                 break;
         }
