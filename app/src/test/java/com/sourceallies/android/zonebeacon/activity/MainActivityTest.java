@@ -21,15 +21,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.robolectric.Robolectric;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -50,11 +56,15 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Mock
     private SharedPreferences sharedPrefs;
+
     private MainActivity activity;
+    private List<Gateway> gateways = new ArrayList<>();
+    private GatewaySpinnerAdapter adapter;
 
     @Before
     public void setUp() {
         activity = Robolectric.setupActivity(MainActivity.class);
+        setupSpinner();
     }
 
     @Test
@@ -120,13 +130,28 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_canceledResult() {
-        activity = Mockito.spy(activity);
+    public void test_introResultCancelled() {
+        SharedPreferences.Editor e = Mockito.mock(SharedPreferences.Editor.class);
+
+        when(sharedPrefs.edit()).thenReturn(e);
+        when(e.putBoolean(anyString(), anyBoolean())).thenReturn(e);
+        when(e.commit()).thenReturn(true);
 
         activity.setSharedPrefs(sharedPrefs);
         activity.onActivityResult(1, Activity.RESULT_CANCELED, new Intent());
 
-        verify(activity, times(1)).onActivityResult(eq(1), eq(Activity.RESULT_CANCELED), any(Intent.class));
+        verify(sharedPrefs).edit();
+        verify(e).commit();
+    }
+
+    @Test
+    public void test_canceledResult() {
+        activity = Mockito.spy(activity);
+
+        activity.setSharedPrefs(sharedPrefs);
+        activity.onActivityResult(2, Activity.RESULT_CANCELED, new Intent());
+
+        verify(activity, times(1)).onActivityResult(eq(2), eq(Activity.RESULT_CANCELED), any(Intent.class));
     }
 
     @Test
@@ -177,6 +202,52 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         when(item.getItemId()).thenReturn(1);
         activity.onOptionsItemSelected(item);
         verify(activity).onOptionsItemSelected(item);
+    }
+
+    @Test
+    public void test_spinnerSelection() {
+        activity.getSpinner().setSelection(2);
+        assertEquals(0, activity.getCurrentSpinnerSelection());
+
+        activity.getSpinner().setSelection(1);
+        assertEquals(1, activity.getCurrentSpinnerSelection());
+
+        activity.getSpinner().setSelection(2);
+        assertEquals(1, activity.getCurrentSpinnerSelection());
+    }
+
+    @Test
+    public void test_noGateways() {
+        adapter = new GatewaySpinnerAdapter(activity, new ArrayList<Gateway>());
+        activity.setAdapter(adapter);
+        activity.getSpinner().setAdapter(adapter);
+        activity.getSpinner().setSelection(0);
+        activity.recreate();
+
+        when(sharedPrefs.getBoolean(eq("pref_intro"), eq(false))).thenReturn(false);
+        activity.getSpinner().getOnItemSelectedListener().onNothingSelected(null);
+
+        activity.setSharedPrefs(sharedPrefs);
+        assertTrue(activity.startIntro());
+
+    }
+
+    private void setupSpinner() {
+        Gateway one = new Gateway();
+        one.setId(1);
+        one.setName("test 1");
+
+        Gateway two = new Gateway();
+        two.setId(2);
+        two.setName("test 2");
+
+        gateways.add(one);
+        gateways.add(two);
+
+        adapter = new GatewaySpinnerAdapter(activity, gateways);
+        activity.setAdapter(adapter);
+        activity.getSpinner().setAdapter(adapter);
+        activity.getSpinner().setSelection(0);
     }
 
 }
