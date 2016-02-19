@@ -73,11 +73,11 @@ public class ButtonCommandLink implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                id = cursor.getInt(i);
+                setId(cursor.getInt(i));
             } else if (column.equals(COLUMN_BUTTON_ID)) {
-                buttonId = cursor.getInt(i);
+                setButtonId(cursor.getInt(i));
             } else if (column.equals(COLUMN_COMMAND_ID)) {
-                commandId = cursor.getInt(i);
+                setCommandId(cursor.getInt(i));
             }
         }
     }

@@ -98,15 +98,15 @@ public class CommandType implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                id = cursor.getInt(i);
+                setId(cursor.getInt(i));
             } else if (column.equals(COLUMN_NAME)) {
-                name = cursor.getString(i);
+                setName(cursor.getString(i));
             } else if (column.equals(COLUMN_BASE_SERIAL_CODE)) {
-                baseSerialCode = cursor.getString(i);
+                setBaseSerialCode(cursor.getString(i));
             } else if (column.equals(COLUMN_SYSTEM_TYPE_ID)) {
-                systemTypeId = cursor.getInt(i);
+                setSystemTypeId(cursor.getInt(i));
             } else if (column.equals(COLUMN_ACTIVATE_CONTROLLER_SELECTION)) {
-                activateControllerSelection = cursor.getInt(i) == 1;
+                setActivateControllerSelection(cursor.getInt(i) == 1);
             }
         }
     }

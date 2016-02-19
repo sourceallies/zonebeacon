@@ -85,15 +85,15 @@ public class Gateway implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                id = cursor.getInt(i);
+                setId(cursor.getInt(i));
             } else if (column.equals(COLUMN_NAME)) {
-                name = cursor.getString(i);
+                setName(cursor.getString(i));
             } else if (column.equals(COLUMN_IP_ADDRESS)) {
-                ipAddress = cursor.getString(i);
+                setIpAddress(cursor.getString(i));
             } else if (column.equals(COLUMN_PORT_NUMBER)) {
-                portNumber = cursor.getInt(i);
+                setPortNumber(cursor.getInt(i));
             } else if (column.equals(COLUMN_SYSTEM_TYPE_ID)) {
-                systemTypeId = cursor.getInt(i);
+                setSystemTypeId(cursor.getInt(i));
             }
         }
     }

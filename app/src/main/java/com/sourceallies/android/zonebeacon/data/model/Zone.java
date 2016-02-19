@@ -59,9 +59,9 @@ public class Zone implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                id = cursor.getInt(i);
+                setId(cursor.getInt(i));
             } else if (column.equals(COLUMN_NAME)) {
-                name = cursor.getString(i);
+                setName(cursor.getString(i));
             }
         }
     }

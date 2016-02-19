@@ -94,17 +94,17 @@ public class Command implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                id = cursor.getInt(i);
+                setId(cursor.getInt(i));
             } else if (column.equals(COLUMN_NAME)) {
-                name = cursor.getString(i);
+                setName(cursor.getString(i));
             } else if (column.equals(COLUMN_GATEWAY_ID)) {
-                gatewayId = cursor.getInt(i);
+                setGatewayId(cursor.getInt(i));
             } else if (column.equals(COLUMN_NUMBER)) {
-                number = cursor.getInt(i);
+                setNumber(cursor.getInt(i));
             } else if (column.equals(COLUMN_COMMAND_TYPE_ID)) {
-                commandTypeId = cursor.getInt(i);
+                setCommandTypeId(cursor.getInt(i));
             } else if (column.equals(COLUMN_CONTROLLER_NUMBER)) {
-                controllerNumber = cursor.getInt(i);
+                setControllerNumber(cursor.getInt(i));
             }
         }
     }
