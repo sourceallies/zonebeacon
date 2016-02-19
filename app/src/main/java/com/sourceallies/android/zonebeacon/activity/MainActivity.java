@@ -155,16 +155,25 @@ public class MainActivity extends RoboAppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.settings: makeSnackbar("Settings");
+            case R.id.settings: openOption(IntroActivity.class);
                 return true;
-            case R.id.diagnosis: makeSnackbar("Diagnosis");
+            case R.id.diagnosis: openOption(null);
                 return true;
-            case R.id.get_help: makeSnackbar("Get Help");
+            case R.id.get_help: openOption(null);
                 return true;
-            case R.id.transfer_settings: makeSnackbar("Transfer Settings");
+            case R.id.transfer_settings: openOption(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void openOption(Class toOpen) {
+        if (toOpen != null) {
+            Intent option = new Intent(this, toOpen);
+            startActivity(option);
+        } else {
+            makeSnackbar("No class to open.");
         }
     }
 
