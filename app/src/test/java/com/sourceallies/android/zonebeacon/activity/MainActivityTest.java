@@ -50,6 +50,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_notNull() {
         assertNotNull(activity);
+        assertEquals("", activity.getTitle());
     }
 
     @Test
@@ -60,6 +61,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(activity.getAddZone());
         assertNotNull(activity.getAddButton());
         assertNotNull(activity.getAddCommand());
+        assertNotNull(activity.getSpinner());
     }
 
     @Test
@@ -77,5 +79,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         activity.setSharedPrefs(sharedPrefs);
         assertFalse(activity.startIntro());
     }
+
+
 
 }

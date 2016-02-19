@@ -39,9 +39,17 @@
         <item name="defaultLinkColor">@color/colorAccent</item>
     </style>
 
-    <style name="menu_labels_style">
+    <style name="MenuLabelsStyle">
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="ToolbarSpinner" parent="Widget.AppCompat.Light.Spinner.DropDown.ActionBar">
+        <item name="android:background">?android:selectableItemBackground</item>
+        <item name="android:dropDownSelector">?android:selectableItemBackground</item>
+        <item name="android:popupBackground">@drawable/spinner_background</item>
+        <item name="android:divider">@null</item>
+        <item name="android:overlapAnchor">true</item>
     </style>
 
 </resources>
