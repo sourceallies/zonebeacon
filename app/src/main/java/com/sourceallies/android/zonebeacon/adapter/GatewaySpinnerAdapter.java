@@ -62,7 +62,7 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
         return view;
     }
 
-    private String getTitle(int position) {
+    public String getTitle(int position) {
         if (gateways.size() != position) {
             return gateways.get(position).getName();
         } else {
