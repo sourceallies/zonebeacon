@@ -4,6 +4,7 @@ import android.support.design.widget.Snackbar;
 import android.widget.LinearLayout;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
 import com.sourceallies.android.zonebeacon.activity.MainActivity;
 
 import org.junit.Before;
@@ -14,7 +15,7 @@ import org.robolectric.Robolectric;
 
 import static org.junit.Assert.*;
 
-public class FloatingActionButtonBehaviorTest extends ZoneBeaconRobolectricSuite {
+public class FloatingActionButtonBehaviorTest extends ZoneBeaconSuite {
 
     FloatingActionButtonBehavior behavior;
 

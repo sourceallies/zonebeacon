@@ -1,6 +1,7 @@
 package com.sourceallies.android.zonebeacon.activity;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+import com.sourceallies.android.zonebeacon.fragment.GatewaySetupFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,26 +34,26 @@ public class IntroActivityTest extends ZoneBeaconRobolectricSuite {
     public void test_formFilled() {
         IntroActivity spy = Mockito.spy(activity);
 
-        spy.getSetupFragment().getName().getEditText().setText("Test Gateway");
-        spy.getSetupFragment().getIpAddress().getEditText().setText("192.168.1.100");
-        spy.getSetupFragment().getPort().getEditText().setText("11000");
+        ((GatewaySetupFragment)spy.getSetupFragment()).getName().getEditText().setText("Test Gateway");
+        ((GatewaySetupFragment)spy.getSetupFragment()).getIpAddress().getEditText().setText("192.168.1.100");
+        ((GatewaySetupFragment)spy.getSetupFragment()).getPort().getEditText().setText("11000");
 
         spy.onDonePressed();
 
-        Mockito.verify(spy, Mockito.times(1)).saveGateway();
+        Mockito.verify(spy, Mockito.times(1)).save();
     }
 
     @Test
     public void test_formError() {
         IntroActivity spy = Mockito.spy(activity);
 
-        spy.getSetupFragment().getName().getEditText().setText("");
-        spy.getSetupFragment().getIpAddress().getEditText().setText("192.168.1.100");
-        spy.getSetupFragment().getPort().getEditText().setText("11000");
+        ((GatewaySetupFragment)spy.getSetupFragment()).getName().getEditText().setText("");
+        ((GatewaySetupFragment)spy.getSetupFragment()).getIpAddress().getEditText().setText("192.168.1.100");
+        ((GatewaySetupFragment)spy.getSetupFragment()).getPort().getEditText().setText("11000");
 
         spy.onDonePressed();
 
-        Mockito.verify(spy, Mockito.times(0)).saveGateway();
+        Mockito.verify(spy, Mockito.times(0)).save();
     }
 
 }

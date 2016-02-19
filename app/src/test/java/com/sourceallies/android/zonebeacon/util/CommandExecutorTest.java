@@ -3,6 +3,7 @@ package com.sourceallies.android.zonebeacon.util;
 import android.app.Activity;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
 import com.sourceallies.android.zonebeacon.data.Command;
 
 import org.junit.Before;

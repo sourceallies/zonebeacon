@@ -53,10 +53,7 @@ import roboguice.inject.InjectView;
 @ContentView(R.layout.activity_main)
 public class MainActivity extends RoboAppCompatActivity {
 
-    private static final int RESULT_INTRO = 1;
-
-    @Inject @Setter
-    private SharedPreferences sharedPrefs;
+    public static final int RESULT_INTRO = 1;
 
     @Getter private CoordinatorLayout rootLayout;
     @Getter private Toolbar toolbar;
@@ -111,7 +108,13 @@ public class MainActivity extends RoboAppCompatActivity {
         return new GatewaySpinnerAdapter(this, dataSource.findGateways());
     }
 
-    private void setSpinnerAdapter() {
+    @VisibleForTesting
+    protected void setRecycler() {
+        // TODO: things for recycler view here
+    }
+
+    @VisibleForTesting
+    protected void setSpinnerAdapter() {
         DataSource dataSource = DataSource.getInstance(this);
         dataSource.open();
 
@@ -138,8 +141,7 @@ public class MainActivity extends RoboAppCompatActivity {
     }
 
     public void createNewGateway() {
-        // TODO: create a new gateway here
-        makeSnackbar("Create New Gateway");
+        CreationActivity.startCreation(this, CreationActivity.TYPE_GATEWAY);
     }
 
     private String getGatewayName() {
@@ -167,6 +169,11 @@ public class MainActivity extends RoboAppCompatActivity {
         if (requestCode == RESULT_INTRO &&
                 (resultCode == RESULT_OK || resultCode == RESULT_CANCELED)) {
             recreate();
+        } else if (requestCode == CreationActivity.TYPE_GATEWAY && resultCode == RESULT_OK) {
+            setSpinnerAdapter();
+        } else if ((requestCode == CreationActivity.TYPE_BUTTON || requestCode == CreationActivity.TYPE_ZONE) &&
+                resultCode == RESULT_OK) {
+            setRecycler();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
