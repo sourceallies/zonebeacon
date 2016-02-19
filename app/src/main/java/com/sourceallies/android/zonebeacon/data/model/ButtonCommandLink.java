@@ -37,7 +37,7 @@ public class ButtonCommandLink implements DatabaseTable {
 
     @Setter
     @Getter
-    private int id;
+    private long id;
 
     @Setter
     @Getter
@@ -73,7 +73,7 @@ public class ButtonCommandLink implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                setId(cursor.getInt(i));
+                setId(cursor.getLong(i));
             } else if (column.equals(COLUMN_BUTTON_ID)) {
                 setButtonId(cursor.getInt(i));
             } else if (column.equals(COLUMN_COMMAND_ID)) {

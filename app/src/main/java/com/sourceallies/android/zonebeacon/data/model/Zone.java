@@ -27,7 +27,7 @@ public class Zone implements DatabaseTable {
 
     @Getter
     @Setter
-    private int id;
+    private long id;
 
     @Getter
     @Setter
@@ -59,7 +59,7 @@ public class Zone implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                setId(cursor.getInt(i));
+                setId(cursor.getLong(i));
             } else if (column.equals(COLUMN_NAME)) {
                 setName(cursor.getString(i));
             }

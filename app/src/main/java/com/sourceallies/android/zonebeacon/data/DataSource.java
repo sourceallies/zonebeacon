@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.data.model.*;
+import com.sourceallies.android.zonebeacon.data.model.Command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,8 +158,9 @@ public class DataSource {
      * @param gatewayId id of the gateway to delete
      * @return the number of items deleted with the statement.
      */
-    public int deleteGateway(int gatewayId) {
-        return database.delete(Gateway.TABLE_GATEWAY, "_id = " + gatewayId, null);
+    public int deleteGateway(long gatewayId) {
+        // TODO delete all of the zones, buttons and commands associated with the gateway
+        return database.delete(Gateway.TABLE_GATEWAY, Gateway.COLUMN_ID + " = " + gatewayId, null);
     }
 
     /**
@@ -169,6 +171,10 @@ public class DataSource {
     public List<Gateway> findGateways() {
         Cursor cursor = rawQuery("SELECT * from gateway");
         List<Gateway> gateways = new ArrayList<>();
+
+        if (cursor == null) {
+            return gateways;
+        }
 
         if (cursor.moveToFirst()) {
             do {
@@ -183,5 +189,190 @@ public class DataSource {
 
         return gateways;
     }
+
+    /**
+     * Inserts a new command into the database.
+     *
+     * @param name the name of the command.
+     * @param gatewayId the gateway id.
+     * @param number the number.
+     * @param commandType the command type.
+     * @param controllerNumber the controller number.
+     * @return the id of the inserted row.
+     */
+    public long insertNewCommand(String name, int gatewayId, int number, CommandType commandType,
+                                 Integer controllerNumber) {
+        return insertNewCommand(name, gatewayId, number, commandType.getId(), controllerNumber);
+    }
+
+    /**
+     * Inserts a new command into the database.
+     *
+     * @param name the name of the command.
+     * @param gatewayId the gateway id.
+     * @param number the number.
+     * @param commandTypeId the command type id.
+     * @param controllerNumber the controller number.
+     * @return the id of the inserted row.
+     */
+    public long insertNewCommand(String name, long gatewayId, int number, long commandTypeId,
+                                 Integer controllerNumber) {
+        ContentValues values = new ContentValues(5);
+        values.put(Command.COLUMN_NAME, name);
+        values.put(Command.COLUMN_GATEWAY_ID, gatewayId);
+        values.put(Command.COLUMN_NUMBER, number);
+        values.put(Command.COLUMN_COMMAND_TYPE_ID, commandTypeId);
+        values.put(Command.COLUMN_CONTROLLER_NUMBER, controllerNumber);
+
+        return database.insert(Command.TABLE_COMMAND, null, values);
+    }
+
+    /**
+     * Deletes the command from the database. This should be called after deleting buttons
+     * associated with this command.
+     *
+     * @param id the id to delete.
+     * @return the number of items deleted.
+     */
+    public int deleteCommand(long id) {
+        return database.delete(Command.TABLE_COMMAND, Command.COLUMN_ID + " = " + id, null);
+    }
+
+    /**
+     * Finds a list of all commands for a given gateway.
+     *
+     * @param gateway the gateway to find commands for.
+     * @return a list of all commands associated with the gateway.
+     */
+    public List<Command> findCommands(Gateway gateway) {
+        return findCommands(gateway.getId());
+    }
+
+    /**
+     * Finds a list of all commands for a given gateway.
+     *
+     * @param gatewayId the id of the gateway to find commands for.
+     * @return a list of all commands associated with the gateway.
+     */
+    public List<Command> findCommands(long gatewayId) {
+        Cursor cursor = rawQuery("SELECT * from command where gateway_id = " + gatewayId);
+        List<Command> commands = new ArrayList<>();
+
+        if (cursor == null) {
+            return commands;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                Command command = new Command();
+                command.fillFromCursor(cursor);
+
+                commands.add(command);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return commands;
+    }
+
+    /**
+     * Inserts a new button into the database. This will also insert links between the button and
+     * the commands that are provided.
+     *
+     * @param name the name for the button.
+     * @param commands the commands to execute when the button is pressed.
+     * @return the id of the inserted button.
+     */
+    public long insertNewButton(String name, List<Command> commands) {
+        if (commands == null || commands.size() == 0) {
+            throw new RuntimeException("Commands cannot be blank!");
+        }
+
+        ContentValues values = new ContentValues(1);
+        values.put(Button.COLUMN_NAME, name);
+
+        long buttonId = database.insert(Button.TABLE_BUTTON, null, values);
+
+        if (buttonId != -1) {
+            for (Command command : commands) {
+                ContentValues v = new ContentValues(2);
+                v.put(ButtonCommandLink.COLUMN_COMMAND_ID, command.getId());
+                v.put(ButtonCommandLink.COLUMN_BUTTON_ID, buttonId);
+                database.insert(ButtonCommandLink.TABLE_BUTTON_COMMAND_LINK, null, v);
+            }
+        }
+
+        return buttonId;
+    }
+
+    /**
+     * Deletes a button from the database. This will also remove any button-command links that are
+     * stored in the database to maintain database integrity.
+     *
+     * @param id the id of the button to delete.
+     * @return the number of rows deleted.
+     */
+    public int deleteButton(long id) {
+        int deleted = database.delete(Button.TABLE_BUTTON, Button.COLUMN_ID + " = " + id, null);
+        deleted += database.delete(ButtonCommandLink.TABLE_BUTTON_COMMAND_LINK,
+                ButtonCommandLink.COLUMN_BUTTON_ID + " = " + id, null);
+
+        return deleted;
+    }
+
+//    public List<Button> findButtons() {
+//
+//    }
+
+    /**
+     * Inserts a new zone into the database. This will also insert links between the zone and
+     * the buttons that are provided.
+     *
+     * @param name the name for the zone.
+     * @param buttons the buttons to execute when the button is pressed. Each button holds a list
+     *                of commands.
+     * @return the id of the inserted zone.
+     */
+    public long insertNewZone(String name, List<Button> buttons) {
+        if (buttons == null || buttons.size() == 0) {
+            throw new RuntimeException("Buttons cannot be blank!");
+        }
+
+        ContentValues values = new ContentValues(1);
+        values.put(Zone.COLUMN_NAME, name);
+
+        long zoneId = database.insert(Zone.TABLE_ZONE, null, values);
+
+        if (zoneId != -1) {
+            for (Button button : buttons) {
+                ContentValues v = new ContentValues(2);
+                v.put(ZoneButtonLink.COLUMN_BUTTON_ID, button.getId());
+                v.put(ZoneButtonLink.COLUMN_ZONE_ID, zoneId);
+                database.insert(ZoneButtonLink.TABLE_ZONE_BUTTON_LINK, null, v);
+            }
+        }
+
+        return zoneId;
+    }
+
+    /**
+     * Deletes a zone from the database. This will also remove any zone-button links that are
+     * stored in the database to maintain database integrity.
+     *
+     * @param id the id of the zone to delete.
+     * @return the number of rows deleted.
+     */
+    public int deleteZone(long id) {
+        int deleted = database.delete(Zone.TABLE_ZONE, Zone.COLUMN_ID + " = " + id, null);
+        deleted += database.delete(ZoneButtonLink.TABLE_ZONE_BUTTON_LINK,
+                ZoneButtonLink.COLUMN_ZONE_ID + " = " + id, null);
+
+        return deleted;
+    }
+
+//    public List<Zone> findZones() {
+//
+//    }
 
 }
