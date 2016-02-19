@@ -151,11 +151,36 @@ public class DataSource {
         return database.insert(Gateway.TABLE_GATEWAY, null, values);
     }
 
+    /**
+     * Deletes a gateway from the database.
+     *
+     * @param gatewayId id of the gateway to delete
+     * @return the number of items deleted with the statement.
+     */
+    public int deleteGateway(int gatewayId) {
+        return database.delete(Gateway.TABLE_GATEWAY, "id = " + gatewayId, null);
+    }
+
+    /**
+     * Get a list of all the gateways in the database.
+     *
+     * @return all the gateways in the database
+     */
     public List<Gateway> findGateways() {
-        Cursor cursor = rawQuery("select * from gateway");
+        Cursor cursor = rawQuery("SELECT * from gateway");
         List<Gateway> gateways = new ArrayList<>();
 
-        // todo: parse the data and return the gateway
+        if (cursor.moveToFirst()) {
+            do {
+                Gateway gateway = new Gateway();
+                gateway.fillFromCursor(cursor);
+
+                gateways.add(gateway);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
         return gateways;
     }
 

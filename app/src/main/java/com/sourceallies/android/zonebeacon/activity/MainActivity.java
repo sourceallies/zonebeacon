@@ -21,17 +21,24 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Spinner;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.inject.Inject;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
+import com.sourceallies.android.zonebeacon.data.DataSource;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
+
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -51,6 +58,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
     @Getter private CoordinatorLayout rootLayout;
     @Getter private Toolbar toolbar;
+    @Getter private Spinner spinner;
     @Getter private FloatingActionsMenu fabMenu;
 
     @Getter private FloatingActionButton addZone;
@@ -65,6 +73,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
+        spinner = (Spinner) findViewById(R.id.toolbar_spinner);
         fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
 
         addZone = (FloatingActionButton) findViewById(R.id.add_zone);
@@ -72,10 +81,13 @@ public class MainActivity extends RoboAppCompatActivity {
         addCommand = (FloatingActionButton) findViewById(R.id.add_command);
 
         setSupportActionBar(toolbar);
+        setTitle("");
 
         setFabTitle(addZone);
         setFabTitle(addButton);
         setFabTitle(addCommand);
+
+        setSpinnerAdapter();
     }
 
     private void setFabTitle(final FloatingActionButton fab) {
@@ -87,6 +99,15 @@ public class MainActivity extends RoboAppCompatActivity {
                 makeSnackbar(fab.getTitle());
             }
         });
+    }
+
+    private void setSpinnerAdapter() {
+        DataSource dataSource = DataSource.getInstance(this);
+        dataSource.open();
+
+        spinner.setAdapter(new GatewaySpinnerAdapter(this, dataSource.findGateways()));
+
+        dataSource.close();
     }
 
     private String getGatewayName() {
