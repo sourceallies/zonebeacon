@@ -28,6 +28,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -65,13 +66,17 @@ public class MainActivity extends RoboAppCompatActivity {
     @Getter private FloatingActionButton addButton;
     @Getter private FloatingActionButton addCommand;
 
-    @Getter private GatewaySpinnerAdapter adapter;
+    @Getter @Setter
+    private GatewaySpinnerAdapter adapter;
+    @Getter private int currentSpinnerSelection = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startIntro();
+        if (startIntro()) {
+            return;
+        }
 
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -110,6 +115,30 @@ public class MainActivity extends RoboAppCompatActivity {
         spinner.setAdapter(adapter);
 
         dataSource.close();
+
+        if (adapter.getCount() == 1) {
+            sharedPrefs.edit().putBoolean(getString(R.string.pref_intro), false).commit();
+            startIntro();
+        }
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override public void onNothingSelected(AdapterView<?> parent) { }
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == adapter.getCount() - 1 && adapter.getCount() > 1) {
+                    createNewGateway();
+                    spinner.setSelection(currentSpinnerSelection);
+                } else {
+                    currentSpinnerSelection = position;
+                }
+            }
+        });
+    }
+
+    private void createNewGateway() {
+        // TODO: create a new gateway here
+        makeSnackbar("Create New Gateway");
     }
 
     private String getGatewayName() {
@@ -135,10 +164,11 @@ public class MainActivity extends RoboAppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // we want to restart the main activity after setup to account for new information that gets entered.
         if (requestCode == RESULT_INTRO && resultCode == RESULT_OK) {
-            //noinspection AndroidLintCommitPrefEdits
             sharedPrefs.edit().putBoolean(getString(R.string.pref_intro), true).commit();
+            recreate();
+        } else if (requestCode == RESULT_INTRO && resultCode == RESULT_CANCELED) {
+            sharedPrefs.edit().putBoolean(getString(R.string.pref_intro), false).commit();
             recreate();
         } else {
             super.onActivityResult(requestCode, resultCode, data);

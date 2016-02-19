@@ -26,6 +26,8 @@ public class IntroActivity extends AppIntro2 {
 
     @Override
     public void init(@Nullable Bundle savedInstanceState) {
+        setResult(RESULT_CANCELED);
+
         // we will use the view pager for testing.
         viewPager = (AppIntroViewPager) findViewById(R.id.view_pager);
 
