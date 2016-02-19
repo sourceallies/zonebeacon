@@ -158,7 +158,7 @@ public class DataSource {
      * @return the number of items deleted with the statement.
      */
     public int deleteGateway(int gatewayId) {
-        return database.delete(Gateway.TABLE_GATEWAY, "id = " + gatewayId, null);
+        return database.delete(Gateway.TABLE_GATEWAY, "_id = " + gatewayId, null);
     }
 
     /**
