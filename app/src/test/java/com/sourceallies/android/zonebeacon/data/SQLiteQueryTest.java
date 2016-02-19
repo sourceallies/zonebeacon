@@ -68,7 +68,7 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_findGateways() {
         List<Gateway> gateways = source.findGateways();
-        
+
         assertEquals(1, gateways.size());
         assertEquals("Gateway 1", gateways.get(0).getName());
     }
