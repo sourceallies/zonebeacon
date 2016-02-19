@@ -33,6 +33,9 @@ public class InitialGatewaySetup extends Fragment {
     @Getter
     private TextInputLayout port;
 
+    @Getter
+    private Link videoLink;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_gateway, container, false);
@@ -47,20 +50,20 @@ public class InitialGatewaySetup extends Fragment {
     }
 
     private void buildLinkToSetupVideo(View root) {
-        Link setupVideo = new Link("this YouTube channel")
+        videoLink = new Link("this YouTube channel")
                 .setUnderlined(false)
                 .setOnClickListener(new Link.OnClickListener() {
                     @Override
                     public void onClick(String clickedText) {
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setData(Uri.parse("https://www.youtube.com/playlist?list=PL4A84439A46A149C0"));
-                        startActivity(i);
+                        getActivity().startActivity(i);
                     }
                 });
 
         LinkBuilder
                 .on((TextView) root.findViewById(R.id.description))
-                .addLink(setupVideo)
+                .addLink(videoLink)
                 .build();
     }
 
@@ -90,6 +93,8 @@ public class InitialGatewaySetup extends Fragment {
                 }
             });
             return true;
+        } else {
+            input.setError("");
         }
 
         return false;

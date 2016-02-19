@@ -21,6 +21,7 @@ public class IntroActivityTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_notNull() {
         assertNotNull(activity);
+        activity.onNextPressed();
     }
 
     @Test
