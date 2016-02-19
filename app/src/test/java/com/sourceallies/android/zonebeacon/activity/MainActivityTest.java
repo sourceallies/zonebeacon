@@ -199,6 +199,8 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         activity.getSpinner().setAdapter(adapter);
         activity.getSpinner().setSelection(0);
 
+        activity.getSpinner().getOnItemSelectedListener().onNothingSelected(null);
+
         activity.getSpinner().setSelection(2);
         assertEquals(0, activity.getCurrentSpinnerSelection());
 
