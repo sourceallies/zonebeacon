@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import org.junit.Before;
@@ -21,7 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class GatewaySpinnerAdapterTest extends ZoneBeaconRobolectricSuite {
+public class GatewaySpinnerAdapterTest extends ZoneBeaconSuite {
 
     @Mock
     Activity activity;

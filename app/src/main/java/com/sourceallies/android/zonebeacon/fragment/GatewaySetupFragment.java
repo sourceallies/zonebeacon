@@ -17,14 +17,13 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.data.DataSource;
 
 import lombok.Getter;
-import roboguice.fragment.RoboFragment;
-import roboguice.inject.InjectView;
 
-public class InitialGatewaySetup extends Fragment {
+public class GatewaySetupFragment extends AbstractSetupFragment {
 
-    public InitialGatewaySetup() { }
+    public GatewaySetupFragment() { }
 
     @Getter
     private TextInputLayout name;
@@ -67,16 +66,6 @@ public class InitialGatewaySetup extends Fragment {
                 .build();
     }
 
-    public boolean isComplete() {
-        boolean complete = true;
-
-        if (isEmpty(name))      complete = false;
-        if (isEmpty(ipAddress)) complete = false;
-        if (isEmpty(port))      complete = false;
-
-        return complete;
-    }
-
     public boolean isEmpty(final TextInputLayout input) {
         if (TextUtils.isEmpty(input.getEditText().getText())) {
             // display an error message on the edit text
@@ -98,5 +87,32 @@ public class InitialGatewaySetup extends Fragment {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean isComplete() {
+        boolean complete = true;
+
+        if (isEmpty(name))      complete = false;
+        if (isEmpty(ipAddress)) complete = false;
+        if (isEmpty(port))      complete = false;
+
+        return complete;
+    }
+
+    @Override
+    public void save() {
+        String name = getText(this.name);
+        String ipAddress = getText(this.ipAddress);
+        int port =  Integer.parseInt(getText(this.port));
+
+        DataSource source = DataSource.getInstance(getActivity());
+        source.open();
+        source.insertNewGateway(name, ipAddress, port);
+        source.close();
+    }
+
+    private String getText(TextInputLayout input) {
+        return input.getEditText().getText().toString();
     }
 }

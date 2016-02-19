@@ -113,24 +113,56 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Test
     public void test_introResult() {
-        activity.onActivityResult(1, Activity.RESULT_OK, new Intent());
-
+        activity.onActivityResult(MainActivity.RESULT_INTRO, Activity.RESULT_OK, new Intent());
         verify(activity).recreate();
     }
 
     @Test
     public void test_introResultCancelled() {
-        activity.onActivityResult(1, Activity.RESULT_CANCELED, new Intent());
-
+        activity.onActivityResult(MainActivity.RESULT_INTRO, Activity.RESULT_CANCELED, new Intent());
         verify(activity).recreate();
     }
 
     @Test
     public void test_canceledResult() {
-        activity.setSharedPrefs(sharedPrefs);
         activity.onActivityResult(2, Activity.RESULT_CANCELED, new Intent());
-
         verify(activity, times(1)).onActivityResult(eq(2), eq(Activity.RESULT_CANCELED), any(Intent.class));
+    }
+
+    @Test
+    public void test_gatewayResultOk() {
+        activity.onActivityResult(CreationActivity.TYPE_GATEWAY, Activity.RESULT_OK, new Intent());
+        verify(activity).setSpinnerAdapter();
+    }
+
+    @Test
+    public void test_gatewayResultCancelled() {
+        activity.onActivityResult(CreationActivity.TYPE_GATEWAY, Activity.RESULT_CANCELED, new Intent());
+        verify(activity, times(1)).onActivityResult(eq(CreationActivity.TYPE_GATEWAY), eq(Activity.RESULT_CANCELED), any(Intent.class));
+    }
+
+    @Test
+    public void test_buttonResultOk() {
+        activity.onActivityResult(CreationActivity.TYPE_BUTTON, Activity.RESULT_OK, new Intent());
+        verify(activity).setRecycler();
+    }
+
+    @Test
+    public void test_buttonResultCancelled() {
+        activity.onActivityResult(CreationActivity.TYPE_BUTTON, Activity.RESULT_CANCELED, new Intent());
+        verify(activity, times(1)).onActivityResult(eq(CreationActivity.TYPE_BUTTON), eq(Activity.RESULT_CANCELED), any(Intent.class));
+    }
+
+    @Test
+    public void test_zoneResultOk() {
+        activity.onActivityResult(CreationActivity.TYPE_ZONE, Activity.RESULT_OK, new Intent());
+        verify(activity).setRecycler();
+    }
+
+    @Test
+    public void test_zoneResultCancelled() {
+        activity.onActivityResult(CreationActivity.TYPE_ZONE, Activity.RESULT_CANCELED, new Intent());
+        verify(activity, times(1)).onActivityResult(eq(CreationActivity.TYPE_ZONE), eq(Activity.RESULT_CANCELED), any(Intent.class));
     }
 
     @Test

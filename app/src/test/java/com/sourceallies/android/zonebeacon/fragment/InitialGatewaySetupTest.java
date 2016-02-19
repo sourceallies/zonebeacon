@@ -1,13 +1,11 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
-import com.sourceallies.android.zonebeacon.util.CommandExecutor;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,11 +19,11 @@ public class InitialGatewaySetupTest extends ZoneBeaconRobolectricSuite {
     @Mock
     FragmentActivity activity;
 
-    InitialGatewaySetup fragment;
+    GatewaySetupFragment fragment;
 
     @Before
     public void setUp() {
-        fragment = Mockito.spy(new InitialGatewaySetup());
+        fragment = Mockito.spy(new GatewaySetupFragment());
         Mockito.when(fragment.getActivity()).thenReturn(activity);
 
         startFragment(fragment);
