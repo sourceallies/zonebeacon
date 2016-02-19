@@ -1,5 +1,6 @@
 package com.sourceallies.android.zonebeacon.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +15,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GatewaySpinnerAdapter extends BaseAdapter {
-    private Context context;
+    private Activity activity;
     private List<Gateway> gateways = new ArrayList<>();
 
-    public GatewaySpinnerAdapter(Context context, List<Gateway> gateways) {
-        this.context = context;
+    public GatewaySpinnerAdapter(Activity activity, List<Gateway> gateways) {
+        this.activity = activity;
         this.gateways = gateways;
     }
 
@@ -29,7 +30,7 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
 
     @Override
     public Gateway getItem(int position) {
-        return position == gateways.size() ? gateways.get(position) : null;
+        return position == gateways.size() ? null : gateways.get(position);
     }
 
     @Override
@@ -39,8 +40,9 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
 
     @Override
     public View getDropDownView(int position, View view, ViewGroup parent) {
-        if (view == null || !view.getTag().toString().equals("DROPDOWN")) {
-            view = LayoutInflater.from(context).inflate(R.layout.toolbar_spinner_item_dropdown, parent, false);
+        if (view == null || view.getTag() == null || !view.getTag().toString().equals("DROPDOWN")) {
+            view = activity.getLayoutInflater()
+                    .inflate(R.layout.toolbar_spinner_item_dropdown, parent, false);
             view.setTag("DROPDOWN");
         }
 
@@ -52,21 +54,23 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        if (view == null || !view.getTag().toString().equals("NON_DROPDOWN")) {
-            view = LayoutInflater.from(context).inflate(R.layout.
-                    toolbar_spinner_item_actionbar, parent, false);
+        if (view == null || view.getTag() == null || !view.getTag().toString().equals("NON_DROPDOWN")) {
+            view = activity.getLayoutInflater()
+                    .inflate(R.layout.toolbar_spinner_item_actionbar, parent, false);
             view.setTag("NON_DROPDOWN");
         }
+
         TextView textView = (TextView) view.findViewById(android.R.id.text1);
         textView.setText(getTitle(position));
+
         return view;
     }
 
     public String getTitle(int position) {
         if (gateways.size() != position) {
-            return gateways.get(position).getName();
+            return getItem(position).getName();
         } else {
-            return context.getString(R.string.create_gateway);
+            return activity.getString(R.string.create_gateway);
         }
     }
 }
