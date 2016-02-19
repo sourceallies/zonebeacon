@@ -24,12 +24,12 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return gateways.size();
+        return gateways.size() + 1;
     }
 
     @Override
     public Gateway getItem(int position) {
-        return gateways.get(position);
+        return position == gateways.size() ? gateways.get(position) : null;
     }
 
     @Override
@@ -63,6 +63,10 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
     }
 
     private String getTitle(int position) {
-        return gateways.get(position).getName();
+        if (gateways.size() != position) {
+            return gateways.get(position).getName();
+        } else {
+            return context.getString(R.string.create_gateway);
+        }
     }
 }
