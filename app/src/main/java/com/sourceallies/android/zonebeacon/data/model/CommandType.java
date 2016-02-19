@@ -47,7 +47,7 @@ public class CommandType implements DatabaseTable {
 
     @Setter
     @Getter
-    private int id;
+    private long id;
 
     @Setter
     @Getter
@@ -98,7 +98,7 @@ public class CommandType implements DatabaseTable {
             String column = cursor.getColumnName(i);
 
             if (column.equals(COLUMN_ID)) {
-                setId(cursor.getInt(i));
+                setId(cursor.getLong(i));
             } else if (column.equals(COLUMN_NAME)) {
                 setName(cursor.getString(i));
             } else if (column.equals(COLUMN_BASE_SERIAL_CODE)) {

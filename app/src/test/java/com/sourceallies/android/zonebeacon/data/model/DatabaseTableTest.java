@@ -46,6 +46,7 @@ public abstract class DatabaseTableTest extends ZoneBeaconRobolectricSuite {
 
         Mockito.when(cursor.getString(Mockito.anyInt())).thenReturn("Test String");
         Mockito.when(cursor.getInt(Mockito.anyInt())).thenReturn(1);
+        Mockito.when(cursor.getLong(Mockito.anyInt())).thenReturn(1L);
     }
 
     protected void assertColumnFilled(String string) {
@@ -54,6 +55,10 @@ public abstract class DatabaseTableTest extends ZoneBeaconRobolectricSuite {
 
     protected void assertColumnFilled(int integer) {
         assertEquals(1, integer);
+    }
+
+    protected void assertColumnFilled(long l) {
+        assertEquals(1, l);
     }
 
     protected void assertColumnFilled(boolean bool) {
