@@ -2,6 +2,7 @@ package com.sourceallies.android.zonebeacon.util;
 
 import android.app.Activity;
 import android.support.annotation.VisibleForTesting;
+import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -191,7 +192,8 @@ public class CommandExecutor {
      *
      * @param socket you want to close.
      */
-    private void closeSocket(Socket socket) {
+    @VisibleForTesting
+    protected void closeSocket(Socket socket) {
         try {
             socket.close();
         } catch (IOException e) {
@@ -253,7 +255,8 @@ public class CommandExecutor {
      *
      * @param connection the connection we want to shut down.
      */
-    private void shutdownConnection(SocketConnection connection) {
+    @VisibleForTesting
+    protected void shutdownConnection(SocketConnection connection) {
         try {
             connection.getSocket().close();
         } catch (IOException e) {
@@ -291,12 +294,24 @@ public class CommandExecutor {
         private OutputStream outputStream;
 
         public SocketConnection(Command command) {
-            try {
-                socket = new Socket(command.getHost(), command.getPort());
-                inputStream = socket.getInputStream();
-                outputStream = socket.getOutputStream();
-            } catch (IOException e) {
+            this(createSocket(command));
+        }
 
+        protected SocketConnection(Socket socket) {
+            try {
+                this.socket = socket;
+                this.inputStream = socket.getInputStream();
+                this.outputStream = socket.getOutputStream();
+            } catch (Exception e) {
+
+            }
+        }
+
+        private static Socket createSocket(Command command) {
+            try {
+                return new Socket(command.getHost(), command.getPort());
+            } catch (IOException e) {
+                return null;
             }
         }
     }
