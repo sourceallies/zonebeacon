@@ -12,17 +12,25 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class CommandExecutorTest extends ZoneBeaconRobolectricSuite {
 
@@ -36,6 +44,10 @@ public class CommandExecutorTest extends ZoneBeaconRobolectricSuite {
     PrintWriter printWriter;
     @Mock
     InputStream inputStream;
+    @Mock
+    OutputStream outputStream;
+    @Mock
+    Socket socket;
 
     private CommandExecutor commandExecutor;
 
@@ -110,5 +122,73 @@ public class CommandExecutorTest extends ZoneBeaconRobolectricSuite {
         inOrder.verify(printWriter).print("test 1\r\n");
         inOrder.verify(printWriter).print("test 2\r\n");
         inOrder.verify(printWriter).print("test 3\r\n");
+    }
+
+    @Test
+    public void test_closeSocket() throws Exception {
+        commandExecutor.closeSocket(socket);
+        verify(socket).close();
+    }
+
+    @Test
+    public void test_closeSocket_exception() throws Exception {
+        doThrow(IOException.class).when(socket).close();
+        commandExecutor.closeSocket(socket);
+        verify(socket).close();
+        verifyNoMoreInteractions(socket);
+    }
+
+    @Test
+    public void test_getOrCreateSocketConnection() {
+        Command command = new Command("192.168.1.150", 11000);
+
+        CommandExecutor.SocketConnection connection =
+                commandExecutor.getOrCreateSocketConnection(command);
+        assertNotNull(connection);
+
+        CommandExecutor.SocketConnection connection2 =
+                commandExecutor.getOrCreateSocketConnection(command);
+        assertEquals(connection, connection2);
+    }
+
+    @Test
+    public void test_shutdownConnection() throws Exception {
+        when(socket.getInputStream()).thenReturn(inputStream);
+        when(socket.getOutputStream()).thenReturn(outputStream);
+        CommandExecutor.SocketConnection connection = new CommandExecutor.SocketConnection(socket);
+
+        commandExecutor.shutdownConnection(connection);
+
+        verify(socket).close();
+        verify(inputStream).close();
+        verify(outputStream).close();
+    }
+
+    @Test
+    public void test_shutdownConnection_withExceptions() throws Exception {
+        when(socket.getInputStream()).thenReturn(inputStream);
+        when(socket.getOutputStream()).thenReturn(outputStream);
+        CommandExecutor.SocketConnection connection = new CommandExecutor.SocketConnection(socket);
+
+        doThrow(IOException.class).when(socket).close();
+        doThrow(IOException.class).when(inputStream).close();
+        doThrow(IOException.class).when(outputStream).close();
+
+        commandExecutor.shutdownConnection(connection);
+
+        verify(socket).close();
+        verify(inputStream).close();
+        verify(outputStream).close();
+    }
+
+    @Test
+    public void test_socketConnection() throws Exception {
+        when(socket.getInputStream()).thenReturn(inputStream);
+        when(socket.getOutputStream()).thenReturn(outputStream);
+        CommandExecutor.SocketConnection connection = new CommandExecutor.SocketConnection(socket);
+
+        assertNotNull(connection.getSocket());
+        assertNotNull(connection.getInputStream());
+        assertNotNull(connection.getOutputStream());
     }
 }
