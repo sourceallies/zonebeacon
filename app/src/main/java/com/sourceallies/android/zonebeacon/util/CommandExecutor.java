@@ -230,11 +230,15 @@ public class CommandExecutor {
         if (connections.containsKey(key)) {
             return connections.get(key);
         } else {
-            SocketConnection connection = new SocketConnection(command);
+            SocketConnection connection = createSocketConnection(command);
             connections.put(key, connection);
 
             return connection;
         }
+    }
+
+    protected SocketConnection createSocketConnection(Command command) {
+        return new SocketConnection(command);
     }
 
     /**
@@ -307,10 +311,10 @@ public class CommandExecutor {
             }
         }
 
-        private static Socket createSocket(Command command) {
+        public static Socket createSocket(Command command) {
             try {
                 return new Socket(command.getHost(), command.getPort());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 return null;
             }
         }

@@ -22,6 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
@@ -139,12 +140,17 @@ public class CommandExecutorTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_getOrCreateSocketConnection() {
+    public void test_getOrCreateSocketConnection() throws Exception {
         Command command = new Command("192.168.1.150", 11000);
+        when(socket.getInputStream()).thenReturn(inputStream);
+        when(socket.getOutputStream()).thenReturn(outputStream);
+        CommandExecutor.SocketConnection c = new CommandExecutor.SocketConnection(socket);
+        doReturn(c).when(commandExecutor).createSocketConnection(command);
 
         CommandExecutor.SocketConnection connection =
                 commandExecutor.getOrCreateSocketConnection(command);
         assertNotNull(connection);
+        doReturn(null).when(commandExecutor).createSocketConnection(command);
 
         CommandExecutor.SocketConnection connection2 =
                 commandExecutor.getOrCreateSocketConnection(command);
@@ -190,5 +196,10 @@ public class CommandExecutorTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(connection.getSocket());
         assertNotNull(connection.getInputStream());
         assertNotNull(connection.getOutputStream());
+    }
+
+    @Test
+    public void test_socketConnection_createSocket_null() {
+        assertNull(CommandExecutor.SocketConnection.createSocket(null));
     }
 }
