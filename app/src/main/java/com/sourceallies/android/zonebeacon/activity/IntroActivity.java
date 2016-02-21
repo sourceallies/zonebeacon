@@ -38,6 +38,11 @@ public class IntroActivity extends AppIntro2 {
         setFadeAnimation();
     }
 
+    /**
+     * Add the slides for the intro activity.
+     * 1.) A welcome slide
+     * 2.) A slide to add an initial gateway
+     */
     protected void addSlides() {
         addSlide(AppIntroFragment.newInstance(
                 getString(R.string.app_intro_title),
@@ -50,16 +55,23 @@ public class IntroActivity extends AppIntro2 {
         addSlide(setupFragment);
     }
 
+    /**
+     * Save the information on the setup fragment if it is complete
+     */
     @Override
     public void onDonePressed() {
         if (setupFragment.isComplete()) {
             save();
 
+            // finish back to the main activity and tell it to reload the necessary data
             setResult(RESULT_OK);
             finish();
         }
     }
 
+    /**
+     * Save the information that the user entered in the setup fragment.
+     */
     @VisibleForTesting
     protected void save() {
         setupFragment.save();

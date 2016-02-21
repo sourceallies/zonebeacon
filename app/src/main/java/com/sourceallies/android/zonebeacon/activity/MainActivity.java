@@ -74,6 +74,7 @@ public class MainActivity extends RoboAppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Find the layout information
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         spinner = (Spinner) findViewById(R.id.toolbar_spinner);
@@ -83,15 +84,39 @@ public class MainActivity extends RoboAppCompatActivity {
         addButton = (FloatingActionButton) findViewById(R.id.add_button);
         addCommand = (FloatingActionButton) findViewById(R.id.add_command);
 
+        // set up the app bar with a spinner, toolbar, and no title
         setSpinnerAdapter();
         setSupportActionBar(toolbar);
         setTitle("");
+
+        // put the labels on the floating action buttons.
+        setFabButtons();
+    }
+
+    /**
+     * Set the FAB labels to their defaults (containing %s placeholder)
+     */
+    private void resetFabButtons() {
+        addZone.setTitle(getString(R.string.add_zone));
+        addButton.setTitle(getString(R.string.add_button));
+        addCommand.setTitle(getString(R.string.add_command));
+    }
+
+    /**
+     * Resets the FAB labels and replaces them with the current gateway information
+     */
+    private void setFabButtons() {
+        resetFabButtons();
 
         setFabTitle(addZone);
         setFabTitle(addButton);
         setFabTitle(addCommand);
     }
 
+    /**
+     * Replaces the %s placeholder in the Floating Action Buttons with the current gateway
+     * @param fab floating action button that we are setting the text for
+     */
     private void setFabTitle(final FloatingActionButton fab) {
         fab.setTitle(fab.getTitle().replace("%s", getGatewayName()));
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,16 +128,28 @@ public class MainActivity extends RoboAppCompatActivity {
         });
     }
 
+    /**
+     * Creates the adapter for the toolbar spinner that displays the gateways
+     * @param dataSource The database for the adapter
+     * @return Spinner adapter holding the gateway information
+     */
     @VisibleForTesting
     protected GatewaySpinnerAdapter createAdapter(DataSource dataSource) {
         return new GatewaySpinnerAdapter(this, dataSource.findGateways());
     }
 
+    /**
+     * creates the recycler view to display all the information about zones and buttons
+     * on the current gateway
+     */
     @VisibleForTesting
     protected void setRecycler() {
         // TODO: things for recycler view here
     }
 
+    /**
+     * Adds the current gateways in the database to the toolbar spinner.
+     */
     @VisibleForTesting
     protected void setSpinnerAdapter() {
         DataSource dataSource = DataSource.getInstance(this);
@@ -134,16 +171,24 @@ public class MainActivity extends RoboAppCompatActivity {
                     createNewGateway();
                     spinner.setSelection(currentSpinnerSelection);
                 } else {
+                    setFabButtons();
                     currentSpinnerSelection = position;
                 }
             }
         });
     }
 
+    /**
+     * Use the creation activity to create a new gateway
+     */
     public void createNewGateway() {
         CreationActivity.startCreation(this, CreationActivity.TYPE_GATEWAY);
     }
 
+    /**
+     * Get the name of whatever gateway the user has currently selected
+     * @return String of the gateway name
+     */
     private String getGatewayName() {
         return adapter.getTitle(spinner.getSelectedItemPosition());
     }
@@ -160,6 +205,10 @@ public class MainActivity extends RoboAppCompatActivity {
         return false;
     }
 
+    /**
+     * Display a snackbar for the user. Snackbars display temporary messages
+     * @param text Message that you want to tell the user
+     */
     private void makeSnackbar(String text) {
         Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG).show();
     }
@@ -168,11 +217,14 @@ public class MainActivity extends RoboAppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_INTRO &&
                 (resultCode == RESULT_OK || resultCode == RESULT_CANCELED)) {
+            // if the user is just returning from the intro, then we will recreate everything
             recreate();
         } else if (requestCode == CreationActivity.TYPE_GATEWAY && resultCode == RESULT_OK) {
+            // if the user just added a gateway, it should be put into the spinner
             setSpinnerAdapter();
         } else if ((requestCode == CreationActivity.TYPE_BUTTON || requestCode == CreationActivity.TYPE_ZONE) &&
                 resultCode == RESULT_OK) {
+            // if the user added a button or zone, we want to update the list
             setRecycler();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -202,11 +254,16 @@ public class MainActivity extends RoboAppCompatActivity {
         }
     }
 
+    /**
+     * Start the activity for the class you want to open
+     * @param toOpen
+     */
     public void openOption(Class toOpen) {
         if (toOpen != null) {
             Intent option = new Intent(this, toOpen);
             startActivity(option);
         } else {
+            // class is not defined yet, so display a message to the user.
             makeSnackbar("No class to open.");
         }
     }

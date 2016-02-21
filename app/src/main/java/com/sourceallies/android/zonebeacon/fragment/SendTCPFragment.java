@@ -45,13 +45,11 @@ public class SendTCPFragment extends RoboFragment implements Command.CommandCall
     @InjectView(R.id.send_command)
     private Button sendButton;
 
-    // creates the layout for the fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_send_tcp, container, false);
     }
 
-    // called after the layout is created and the views are injected.
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -70,6 +68,11 @@ public class SendTCPFragment extends RoboFragment implements Command.CommandCall
         });
     }
 
+    /**
+     * Callback for the finished commands
+     *
+     * @param text Response text to the command
+     */
     @Override
     public void onResponse(String text) {
         responseText.append("\nResponse: " + text);
