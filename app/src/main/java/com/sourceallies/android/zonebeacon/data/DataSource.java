@@ -41,17 +41,33 @@ public class DataSource {
         return instance;
     }
 
+    /**
+     * Private constructor to force a singleton.
+     * @param context Current calling context
+     */
     private DataSource(Context context) {
         this.dbHelper = new DatabaseSQLiteHelper(context);
         this.context = context;
     }
 
+    /**
+     * Contructor to help with testing.
+     *
+     * @param helper Mock of the database helper
+     * @param context Roboguice context
+     */
     @VisibleForTesting
     protected DataSource(DatabaseSQLiteHelper helper, Context context) {
         this.dbHelper = helper;
         this.context = context;
     }
 
+    /**
+     * Constructor to help with testing.
+     *
+     * @param database Mock of the sqlite database
+     * @param context Roboguice context
+     */
     @VisibleForTesting
     protected DataSource(SQLiteDatabase database, Context context) {
         this.database = database;
@@ -80,6 +96,11 @@ public class DataSource {
         }
     }
 
+    /**
+     * Get the currently open database
+     *
+     * @return sqlite database
+     */
     @VisibleForTesting
     protected SQLiteDatabase getDatabase() {
         return database;

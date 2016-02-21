@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/settings"
-        app:showAsAction="never"
-        android:title="@string/settings" />
-
-    <item android:id="@+id/diagnosis"
-        app:showAsAction="never"
-        android:title="@string/diagnosis" />
 
     <item android:id="@+id/get_help"
         app:showAsAction="never"
         android:title="@string/get_help" />
 
+    <item android:id="@+id/diagnosis"
+        app:showAsAction="never"
+        android:title="@string/diagnosis" />
+
     <item android:id="@+id/transfer_settings"
         app:showAsAction="never"
         android:title="@string/transfer_settings" />
+
+    <item android:id="@+id/settings"
+        app:showAsAction="never"
+        android:title="@string/settings" />
+
 </menu>

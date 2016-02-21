@@ -21,8 +21,14 @@ import com.sourceallies.android.zonebeacon.data.DataSource;
 
 import lombok.Getter;
 
+/**
+ * Fragment to insert a name, ip address, and port for a gateway that you want to create.
+ */
 public class GatewaySetupFragment extends AbstractSetupFragment {
 
+    /**
+     * Default constructor for the fragment
+     */
     public GatewaySetupFragment() { }
 
     @Getter
@@ -39,15 +45,22 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_gateway, container, false);
 
+        // setup the UI elements
         name = (TextInputLayout) root.findViewById(R.id.name);
         ipAddress = (TextInputLayout) root.findViewById(R.id.ip_address);
         port = (TextInputLayout) root.findViewById(R.id.port);
 
+        // create a clickable link to the YouTube channel for help setting up ZoneBeacon
         buildLinkToSetupVideo(root);
 
         return root;
     }
 
+    /**
+     * Create a clickable link to the YouTube app for help setting up your hardware.
+     *
+     * @param root main view on the fragment
+     */
     private void buildLinkToSetupVideo(View root) {
         videoLink = new Link("this YouTube channel")
                 .setUnderlined(false)
@@ -60,12 +73,20 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
                     }
                 });
 
+        // make the text view clickable with the LinkBuilder library
         LinkBuilder
                 .on((TextView) root.findViewById(R.id.description))
                 .addLink(videoLink)
                 .build();
     }
 
+    /**
+     * Check whether or not the text input layout is empty or not. If it is, set an error and
+     * set up a TextWatcher to clear that error.
+     *
+     * @param input TextInputLayout that is either empty or filled
+     * @return true if the layout is empty, false otherwise
+     */
     public boolean isEmpty(final TextInputLayout input) {
         if (TextUtils.isEmpty(input.getEditText().getText())) {
             // display an error message on the edit text
@@ -83,6 +104,7 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
             });
             return true;
         } else {
+            // clear the error
             input.setError("");
         }
 
