@@ -191,6 +191,11 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(3, buttons.get(2).getCommands().size());
         assertEquals(1, buttons.get(3).getCommands().size());
         assertEquals(2, buttons.get(4).getCommands().size());
+        assertEquals(1, buttons.get(0).getId());
+        assertEquals(2, buttons.get(1).getId());
+        assertEquals(3, buttons.get(2).getId());
+        assertEquals(4, buttons.get(3).getId());
+        assertEquals(5, buttons.get(4).getId());
 
         gateway.setId(2);
 
@@ -202,6 +207,12 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(2, buttons.get(2).getCommands().size());
         assertEquals(1, buttons.get(3).getCommands().size());
         assertEquals(2, buttons.get(4).getCommands().size());
+        assertEquals(6, buttons.get(0).getId());
+        assertEquals(7, buttons.get(1).getId());
+        assertEquals(8, buttons.get(2).getId());
+        assertEquals(9, buttons.get(3).getId());
+        assertEquals(10, buttons.get(4).getId());
+
     }
 
     @Test
@@ -214,11 +225,18 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(2, zones.size());
         assertEquals(3, zones.get(0).getButtons().size());
         assertEquals(2, zones.get(1).getButtons().size());
+        assertEquals(1, zones.get(0).getId());
+        assertEquals(2, zones.get(1).getId());
         assertEquals(2, zones.get(0).getButtons().get(0).getCommands().size());
         assertEquals(1, zones.get(0).getButtons().get(1).getCommands().size());
         assertEquals(3, zones.get(0).getButtons().get(2).getCommands().size());
+        assertEquals(1, zones.get(0).getButtons().get(0).getId());
+        assertEquals(2, zones.get(0).getButtons().get(1).getId());
+        assertEquals(3, zones.get(0).getButtons().get(2).getId());
         assertEquals(3, zones.get(1).getButtons().get(0).getCommands().size());
         assertEquals(1, zones.get(1).getButtons().get(1).getCommands().size());
+        assertEquals(3, zones.get(1).getButtons().get(0).getId());
+        assertEquals(4, zones.get(1).getButtons().get(1).getId());
 
         gateway.setId(2);
 
@@ -228,15 +246,27 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(4, zones.get(0).getButtons().size());
         assertEquals(2, zones.get(1).getButtons().size());
         assertEquals(3, zones.get(2).getButtons().size());
+        assertEquals(3, zones.get(0).getId());
+        assertEquals(4, zones.get(1).getId());
+        assertEquals(5, zones.get(2).getId());
         assertEquals(3, zones.get(0).getButtons().get(0).getCommands().size());
         assertEquals(1, zones.get(0).getButtons().get(1).getCommands().size());
         assertEquals(2, zones.get(0).getButtons().get(2).getCommands().size());
         assertEquals(1, zones.get(0).getButtons().get(3).getCommands().size());
-        assertEquals(2, zones.get(1).getButtons().get(0).getCommands().size());
-        assertEquals(1, zones.get(1).getButtons().get(1).getCommands().size());
+        assertEquals(6, zones.get(0).getButtons().get(0).getId());
+        assertEquals(7, zones.get(0).getButtons().get(1).getId());
+        assertEquals(8, zones.get(0).getButtons().get(2).getId());
+        assertEquals(9, zones.get(0).getButtons().get(3).getId());
+        assertEquals(1, zones.get(1).getButtons().get(0).getCommands().size());
+        assertEquals(2, zones.get(1).getButtons().get(1).getCommands().size());
+        assertEquals(9, zones.get(1).getButtons().get(0).getId());
+        assertEquals(10, zones.get(1).getButtons().get(1).getId());
         assertEquals(3, zones.get(2).getButtons().get(0).getCommands().size());
         assertEquals(1, zones.get(2).getButtons().get(1).getCommands().size());
         assertEquals(2, zones.get(2).getButtons().get(2).getCommands().size());
+        assertEquals(6, zones.get(2).getButtons().get(0).getId());
+        assertEquals(7, zones.get(2).getButtons().get(1).getId());
+        assertEquals(10, zones.get(2).getButtons().get(2).getId());
     }
 
     private int getTableCount(String table) {
