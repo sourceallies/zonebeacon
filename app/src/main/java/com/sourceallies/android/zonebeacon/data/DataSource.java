@@ -342,9 +342,27 @@ public class DataSource {
         return deleted;
     }
 
-//    public List<Button> findButtons() {
-//
-//    }
+    /**
+     * Finds the buttons and commands that are associated with a gateway.
+     *
+     * @param gateway the gateway.
+     * @return the list of buttons that are set up for this gateway.
+     */
+    public List<Button> findButtons(Gateway gateway) {
+        return findButtons(gateway.getId());
+    }
+
+    /**
+     * Finds the buttons and commands that are associated with a gateway.
+     *
+     * @param gatewayId the gateway id.
+     * @return the list of buttons that are set up for this gateway.
+     */
+    public List<Button> findButtons(long gatewayId) {
+        List<Button> buttons = new ArrayList<>();
+
+        return buttons;
+    }
 
     /**
      * Inserts a new zone into the database. This will also insert links between the zone and
@@ -392,8 +410,26 @@ public class DataSource {
         return deleted;
     }
 
-//    public List<Zone> findZones() {
-//
-//    }
+    /**
+     * Finds the zones, buttons, and commands that are associated with the gateway.
+     *
+     * @param gateway the gateway.
+     * @return a list of the zones, buttons, and ids associated with the gateway.
+     */
+    public List<Zone> findZones(Gateway gateway) {
+        return findZones(gateway.getId());
+    }
+
+    /**
+     * Finds the zones, buttons, and commands that are associated with the gateway.
+     *
+     * @param gatewayId the gateway id.
+     * @return a list of the zones, buttons, and ids associated with the gateway.
+     */
+    public List<Zone> findZones(long gatewayId) {
+        List<Zone> zones = new ArrayList<>();
+
+        return zones;
+    }
 
 }
