@@ -202,7 +202,6 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(2, buttons.get(2).getCommands().size());
         assertEquals(1, buttons.get(3).getCommands().size());
         assertEquals(2, buttons.get(4).getCommands().size());
-
     }
 
     @Test
