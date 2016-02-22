@@ -40,7 +40,7 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
 
     @Before
     public void setUp() {
-        source = new DataSource(helper, RuntimeEnvironment.application);
+        source = new DataSource(helper);
         when(helper.getWritableDatabase()).thenReturn(database);
         source.open();
     }
@@ -241,6 +241,68 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
+    public void test_findButtons() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "button_id", "button_name", "command_id", "command_name", "gateway_id", "number",
+                "command_type_id", "controller_number"
+        });
+
+        cursor.addRow(new String[] {"1", "button 1", "1", "command 1", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"2", "button 2", "1", "command 1", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"2", "button 2", "2", "command 2", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"2", "button 2", "3", "command 3", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"3", "button 3", "3", "command 3", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"3", "button 3", "4", "command 4", "1", "1", "1", "1"});
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+
+        Gateway gateway = new Gateway();
+        gateway.setId(1);
+        List<Button> buttons = source.findButtons(gateway);
+
+        assertEquals(3, buttons.size());
+        assertEquals("button 1", buttons.get(0).getName());
+        assertEquals("button 2", buttons.get(1).getName());
+        assertEquals("button 3", buttons.get(2).getName());
+
+        assertEquals(1, buttons.get(0).getCommands().size());
+        assertEquals("command 1", buttons.get(0).getCommands().get(0).getName());
+
+        assertEquals(3, buttons.get(1).getCommands().size());
+        assertEquals("command 1", buttons.get(1).getCommands().get(0).getName());
+        assertEquals("command 2", buttons.get(1).getCommands().get(1).getName());
+        assertEquals("command 3", buttons.get(1).getCommands().get(2).getName());
+
+        assertEquals(2, buttons.get(2).getCommands().size());
+        assertEquals("command 3", buttons.get(2).getCommands().get(0).getName());
+        assertEquals("command 4", buttons.get(2).getCommands().get(1).getName());
+
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findButtons_noRows() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "button_id", "button_name", "command_id", "command_name", "gateway_id", "number",
+                "command_type_id", "controller_number"
+        });
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        List<Button> buttons = source.findButtons(1);
+
+        assertEquals(0, buttons.size());
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findButtons_nullCursor() {
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(null);
+        List<Button> buttons = source.findButtons(1);
+
+        assertEquals(0, buttons.size());
+    }
+
+    @Test
     public void test_insertZone() {
         ContentValues values = new ContentValues(1);
         values.put("name", "test zone");
@@ -277,6 +339,74 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
         when(database.delete("zone_button_link", "zone_id = 1", null)).thenReturn(3);
 
         assertEquals(5, source.deleteZone(1));
+    }
+
+    @Test
+    public void test_findZones() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "zone_id", "zone_name", "button_id", "button_name", "command_id", "command_name",
+                "gateway_id", "number", "command_type_id", "controller_number"
+        });
+
+        cursor.addRow(new String[] {"1", "zone 1", "1", "button 1", "1", "command 1", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "1", "command 1", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "2", "command 2", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "3", "command 3", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"2", "zone 2", "3", "button 3", "3", "command 3", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"2", "zone 2", "3", "button 3", "4", "command 4", "1", "1", "1", "1"});
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+
+        Gateway gateway = new Gateway();
+        gateway.setId(1);
+        List<Zone> zones = source.findZones(gateway);
+
+        assertEquals(2, zones.size());
+
+        assertEquals("zone 1", zones.get(0).getName());
+        assertEquals(2, zones.get(0).getButtons().size());
+        assertEquals("button 1", zones.get(0).getButtons().get(0).getName());
+        assertEquals("button 2", zones.get(0).getButtons().get(1).getName());
+
+        assertEquals("zone 2", zones.get(1).getName());
+        assertEquals(1, zones.get(1).getButtons().size());
+        assertEquals("button 3", zones.get(1).getButtons().get(0).getName());
+
+        assertEquals(1, zones.get(0).getButtons().get(0).getCommands().size());
+        assertEquals("command 1", zones.get(0).getButtons().get(0).getCommands().get(0).getName());
+
+        assertEquals(3, zones.get(0).getButtons().get(1).getCommands().size());
+        assertEquals("command 1", zones.get(0).getButtons().get(1).getCommands().get(0).getName());
+        assertEquals("command 2", zones.get(0).getButtons().get(1).getCommands().get(1).getName());
+        assertEquals("command 3", zones.get(0).getButtons().get(1).getCommands().get(2).getName());
+
+        assertEquals(2, zones.get(1).getButtons().get(0).getCommands().size());
+        assertEquals("command 3", zones.get(1).getButtons().get(0).getCommands().get(0).getName());
+        assertEquals("command 4", zones.get(1).getButtons().get(0).getCommands().get(1).getName());
+
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findZones_noRows() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "zone_id", "zone_name", "button_id", "button_name", "command_id", "command_name",
+                "gateway_id", "number", "command_type_id", "controller_number"
+        });
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        List<Zone> zones = source.findZones(1);
+
+        assertEquals(0, zones.size());
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findZones_nullCursor() {
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(null);
+        List<Zone> zones = source.findZones(1);
+
+        assertEquals(0, zones.size());
     }
 
 }

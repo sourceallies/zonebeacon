@@ -6,14 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
-import android.util.SparseArray;
 
 import com.sourceallies.android.zonebeacon.data.model.*;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,7 +24,6 @@ public class DataSource {
     private static final String TAG = "DataSource";
     private static volatile DataSource instance;
 
-    private Context context;
     private SQLiteDatabase database;
     private DatabaseSQLiteHelper dbHelper;
     private AtomicInteger openCounter = new AtomicInteger();
@@ -51,31 +48,26 @@ public class DataSource {
      */
     private DataSource(Context context) {
         this.dbHelper = new DatabaseSQLiteHelper(context);
-        this.context = context;
     }
 
     /**
      * Contructor to help with testing.
      *
      * @param helper Mock of the database helper
-     * @param context Roboguice context
      */
     @VisibleForTesting
-    protected DataSource(DatabaseSQLiteHelper helper, Context context) {
+    protected DataSource(DatabaseSQLiteHelper helper) {
         this.dbHelper = helper;
-        this.context = context;
     }
 
     /**
      * Constructor to help with testing.
      *
      * @param database Mock of the sqlite database
-     * @param context Roboguice context
      */
     @VisibleForTesting
-    protected DataSource(SQLiteDatabase database, Context context) {
+    protected DataSource(SQLiteDatabase database) {
         this.database = database;
-        this.context = context;
     }
 
     /**
