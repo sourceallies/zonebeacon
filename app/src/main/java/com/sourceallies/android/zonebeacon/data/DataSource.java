@@ -461,7 +461,47 @@ public class DataSource {
      * @return a list of the zones, buttons, and ids associated with the gateway.
      */
     public List<Zone> findZones(long gatewayId) {
+        Cursor cursor = rawQuery(
+                "SELECT " +
+                        "z._id, " +
+                        "z.name, " +
+                        "b._id, " +
+                        "b.name, " +
+                        "c._id, " +
+                        "c.name, " +
+                        "c.gateway_id, " +
+                        "c.number, " +
+                        "c.command_type_id, " +
+                        "c.controller_number " +
+                        "FROM zone z " +
+                            "JOIN zone_button_link zbl " +
+                                "ON z._id=zbl.zone_id " +
+                            "JOIN button b " +
+                                "ON b._id=zbl.button_id " +
+                            "JOIN button_command_link bcl " +
+                                "ON b._id=bcl.button_id " +
+                            "JOIN command c " +
+                                "ON c._id=bcl.command_id " +
+                        "WHERE c.gateway_id=" + gatewayId + " " +
+                        "ORDER BY z._id, b._id asc, c._id asc"
+        );
+
         List<Zone> zones = new ArrayList<>();
+
+        if (cursor == null) {
+            return zones;
+        }
+
+        if (cursor.moveToFirst()) {
+            Zone zone = new Zone();
+            do {
+                zone.fillFromCursor(cursor);
+
+                zones.add(zone);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
 
         return zones;
     }
