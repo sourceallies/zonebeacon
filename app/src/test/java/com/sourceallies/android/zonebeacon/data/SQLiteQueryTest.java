@@ -243,10 +243,10 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
     private int getTableCount(String table) {
         Cursor cursor = source.getDatabase().rawQuery("SELECT count(*) FROM " + table, null);
         if (cursor != null && cursor.moveToFirst()) {
-            int numGateways = cursor.getInt(0);
+            int num = cursor.getInt(0);
             cursor.close();
 
-            return numGateways;
+            return num;
         }
 
         throw new RuntimeException("Error finding table count");
