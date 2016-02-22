@@ -359,7 +359,41 @@ public class DataSource {
      * @return the list of buttons that are set up for this gateway.
      */
     public List<Button> findButtons(long gatewayId) {
+        Cursor cursor = rawQuery(
+                "SELECT " +
+                        "b._id, " +
+                        "b.name, " +
+                        "c._id, " +
+                        "c.name, " +
+                        "c.gateway_id, " +
+                        "c.number, " +
+                        "c.command_type_id, " +
+                        "c.controller_number " +
+                        "FROM button b " +
+                            "JOIN button_command_link bcl " +
+                                "ON b._id=bcl.button_id " +
+                            "JOIN command c " +
+                                "ON c._id=bcl.command_id " +
+                        "WHERE c.gateway_id=" + gatewayId + " " +
+                        "ORDER BY b._id asc, c._id asc"
+        );
+
         List<Button> buttons = new ArrayList<>();
+
+        if (cursor == null) {
+            return buttons;
+        }
+
+        if (cursor.moveToFirst()) {
+            Button button = new Button();
+            do {
+                button.fillFromCursor(cursor);
+
+                buttons.add(button);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
 
         return buttons;
     }
