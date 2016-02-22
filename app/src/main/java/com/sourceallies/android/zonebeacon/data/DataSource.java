@@ -6,12 +6,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.sourceallies.android.zonebeacon.data.model.*;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -361,14 +364,14 @@ public class DataSource {
     public List<Button> findButtons(long gatewayId) {
         Cursor cursor = rawQuery(
                 "SELECT " +
-                        "b._id, " +
-                        "b.name, " +
-                        "c._id, " +
-                        "c.name, " +
-                        "c.gateway_id, " +
-                        "c.number, " +
-                        "c.command_type_id, " +
-                        "c.controller_number " +
+                        "b._id as button_id, " +
+                        "b.name as button_name, " +
+                        "c._id as command_id, " +
+                        "c.name as command_name, " +
+                        "c.gateway_id as gateway_id, " +
+                        "c.number as number, " +
+                        "c.command_type_id as command_type_id, " +
+                        "c.controller_number as controller_number " +
                         "FROM button b " +
                             "JOIN button_command_link bcl " +
                                 "ON b._id=bcl.button_id " +
@@ -378,24 +381,51 @@ public class DataSource {
                         "ORDER BY b._id asc, c._id asc"
         );
 
-        List<Button> buttons = new ArrayList<>();
-
         if (cursor == null) {
-            return buttons;
+            return new ArrayList<Button>();
         }
 
-        if (cursor.moveToFirst()) {
-            Button button = new Button();
-            do {
-                button.fillFromCursor(cursor);
+        Map<Long, Button> buttons = new HashMap<>();
 
-                buttons.add(button);
+        if (cursor.moveToFirst()) {
+            long lastButton = -1L;
+
+            do {
+                long buttonId = cursor.getLong(0);
+                System.out.println(buttonId + ": " + cursor.getString(1) + ", " + cursor.getString(3));
+                if (buttonId != lastButton) {
+                    Button button = new Button();
+                    button.setId(buttonId);
+                    button.setCommands(new ArrayList<Command>());
+                    button.setName(cursor.getString(1));
+
+                    buttons.put(buttonId, button);
+                    lastButton = buttonId;
+                }
+
+                Button button = buttons.get(buttonId);
+
+                Command command = new Command();
+                command.setId(cursor.getLong(2));
+                command.setName(cursor.getString(3));
+                command.setGatewayId(cursor.getLong(4));
+                command.setNumber(cursor.getInt(5));
+                command.setCommandTypeId(cursor.getLong(6));
+
+                try {
+                    Integer controllerNumber = Integer.parseInt(cursor.getString(7));
+                    command.setControllerNumber(controllerNumber);
+                } catch (Exception e) {
+                    command.setControllerNumber(null);
+                }
+
+                button.getCommands().add(command);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
 
-        return buttons;
+        return new ArrayList<>(buttons.values());
     }
 
     /**
