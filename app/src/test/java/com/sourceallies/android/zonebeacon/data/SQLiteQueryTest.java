@@ -29,7 +29,7 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         DatabaseSQLiteHelper helper = new DatabaseSQLiteHelper(RuntimeEnvironment.application);
         helper.onCreate(database);
 
-        source = new DataSource(database, RuntimeEnvironment.application);
+        source = new DataSource(database);
         insertData();
     }
 
