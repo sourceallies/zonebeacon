@@ -31,20 +31,20 @@ public class CommandTypeTest extends DatabaseTableTest {
     public void test_defaults() {
         assertEquals(6, type.getDefaultDataStatements().length);
 
-        assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_code', " +
-                "'activate_controller_selection') VALUES (1, 1, 'Single MCP - Load/Relay', '^A', 0);",
+        assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_on_code', 'base_serial_off_code', " +
+                "'activate_controller_selection') VALUES (1, 1, 'Single MCP - Load/Relay', '^A', '^B', 0);",
                 type.getDefaultDataStatements()[0]);
-        assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_code', " +
-                "'activate_controller_selection') VALUES (2, 1, 'Single MCP - Switch', '^S', 0);",
+        assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_on_code', 'base_serial_off_code', " +
+                "'activate_controller_selection') VALUES (2, 1, 'Single MCP - Switch', '^S', '^S', 0);",
                 type.getDefaultDataStatements()[1]);
     }
 
     @Test
     public void test_createTable() {
         assertEquals("create table if not exists command_type (_id integer primary key " +
-                "autoincrement, name varchar(255) not null, base_serial_code varchar(255) not " +
-                "null, system_type_id integer not null, activate_controller_selection integer " +
-                "not null);", type.getCreateStatement());
+                "autoincrement, name varchar(255) not null, base_serial_on_code varchar(255) not " +
+                "null, base_serial_off_code varchar(255) not null, system_type_id integer not null, " +
+                "activate_controller_selection integer not null);", type.getCreateStatement());
     }
 
     @Test
@@ -54,7 +54,8 @@ public class CommandTypeTest extends DatabaseTableTest {
 
         assertColumnFilled(type.getId());
         assertColumnFilled(type.getName());
-        assertColumnFilled(type.getBaseSerialCode());
+        assertColumnFilled(type.getBaseSerialOnCode());
+        assertColumnFilled(type.getBaseSerialOffCode());
         assertColumnFilled(type.getSystemTypeId());
         assertColumnFilled(type.isActivateControllerSelection());
     }

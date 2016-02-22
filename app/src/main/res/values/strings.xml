@@ -33,7 +33,7 @@
     <string name="settings">Settings</string>
     <string name="diagnosis">Diagnosis</string>
     <string name="get_help">Get Help</string>
-    <string name="transfer_settings">Transer Settings</string>
+    <string name="transfer_settings">Transfer Settings</string>
     <string name="create_gateway">Create New Gateway</string>
 
 </resources>
