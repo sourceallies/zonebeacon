@@ -13,6 +13,7 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -388,19 +389,15 @@ public class DataSource {
         Map<Long, Button> buttons = new HashMap<>();
 
         if (cursor.moveToFirst()) {
-            long lastButton = -1L;
-
             do {
                 long buttonId = cursor.getLong(0);
-                System.out.println(buttonId + ": " + cursor.getString(1) + ", " + cursor.getString(3));
-                if (buttonId != lastButton) {
+                if (buttons.get(buttonId) == null) {
                     Button button = new Button();
                     button.setId(buttonId);
                     button.setCommands(new ArrayList<Command>());
                     button.setName(cursor.getString(1));
 
                     buttons.put(buttonId, button);
-                    lastButton = buttonId;
                 }
 
                 Button button = buttons.get(buttonId);
@@ -493,16 +490,16 @@ public class DataSource {
     public List<Zone> findZones(long gatewayId) {
         Cursor cursor = rawQuery(
                 "SELECT " +
-                        "z._id, " +
-                        "z.name, " +
-                        "b._id, " +
-                        "b.name, " +
-                        "c._id, " +
-                        "c.name, " +
-                        "c.gateway_id, " +
-                        "c.number, " +
-                        "c.command_type_id, " +
-                        "c.controller_number " +
+                        "z._id as zone_id, " +
+                        "z.name as zone_name, " +
+                        "b._id as button_id, " +
+                        "b.name as button_name, " +
+                        "c._id as command_id, " +
+                        "c.name as command_name, " +
+                        "c.gateway_id as gateway_id, " +
+                        "c.number as number, " +
+                        "c.command_type_id as command_type_id, " +
+                        "c.controller_number as controller_number " +
                         "FROM zone z " +
                             "JOIN zone_button_link zbl " +
                                 "ON z._id=zbl.zone_id " +
@@ -516,24 +513,67 @@ public class DataSource {
                         "ORDER BY z._id, b._id asc, c._id asc"
         );
 
-        List<Zone> zones = new ArrayList<>();
-
         if (cursor == null) {
-            return zones;
+            return new ArrayList<>();
         }
 
-        if (cursor.moveToFirst()) {
-            Zone zone = new Zone();
-            do {
-                zone.fillFromCursor(cursor);
+        Map<Long, Button> buttons = new HashMap<>();
+        Map<Long, Zone> zones = new HashMap<>();
 
-                zones.add(zone);
+        if (cursor.moveToFirst()) {
+            do {
+                long zoneId = cursor.getLong(0);
+                long buttonId = cursor.getLong(2);
+
+                if (zones.get(zoneId) == null) {
+                    Zone zone = new Zone();
+                    zone.setId(zoneId);
+                    zone.setButtons(new ArrayList<Button>());
+                    zone.setName(cursor.getString(1));
+
+                    zones.put(zoneId, zone);
+                    buttons = new HashMap<>();
+                }
+
+                if (buttons.get(buttonId) == null) {
+                    Button button = new Button();
+                    button.setId(buttonId);
+                    button.setCommands(new ArrayList<Command>());
+                    button.setName(cursor.getString(3));
+
+                    buttons.put(buttonId, button);
+                }
+
+                Zone zone = zones.get(zoneId);
+                Button button = buttons.get(buttonId);
+
+                if (!zone.getButtons().contains(button)) {
+                    zone.getButtons().add(button);
+                }
+
+                Command command = new Command();
+                command.setId(cursor.getLong(4));
+                command.setName(cursor.getString(5));
+                command.setGatewayId(cursor.getLong(6));
+                command.setNumber(cursor.getInt(7));
+                command.setCommandTypeId(cursor.getLong(8));
+
+                try {
+                    Integer controllerNumber = Integer.parseInt(cursor.getString(9));
+                    command.setControllerNumber(controllerNumber);
+                } catch (Exception e) {
+                    command.setControllerNumber(null);
+                }
+
+                if (!button.getCommands().contains(command)) {
+                    button.getCommands().add(command);
+                }
             } while (cursor.moveToNext());
         }
 
         cursor.close();
 
-        return zones;
+        return new ArrayList<>(zones.values());
     }
 
 }
