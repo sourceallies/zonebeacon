@@ -54,7 +54,7 @@ public class Command implements DatabaseTable {
 
     @Setter
     @Getter
-    private int gatewayId;
+    private long gatewayId;
 
     @Setter
     @Getter
@@ -62,7 +62,7 @@ public class Command implements DatabaseTable {
 
     @Setter
     @Getter
-    private int commandTypeId;
+    private long commandTypeId;
 
     @Setter
     @Getter
@@ -98,13 +98,18 @@ public class Command implements DatabaseTable {
             } else if (column.equals(COLUMN_NAME)) {
                 setName(cursor.getString(i));
             } else if (column.equals(COLUMN_GATEWAY_ID)) {
-                setGatewayId(cursor.getInt(i));
+                setGatewayId(cursor.getLong(i));
             } else if (column.equals(COLUMN_NUMBER)) {
                 setNumber(cursor.getInt(i));
             } else if (column.equals(COLUMN_COMMAND_TYPE_ID)) {
-                setCommandTypeId(cursor.getInt(i));
+                setCommandTypeId(cursor.getLong(i));
             } else if (column.equals(COLUMN_CONTROLLER_NUMBER)) {
-                setControllerNumber(cursor.getInt(i));
+                try {
+                    Integer controllerNumber = Integer.parseInt(cursor.getString(i));
+                    setControllerNumber(controllerNumber);
+                } catch (Exception e) {
+                    setControllerNumber(null);
+                }
             }
         }
     }

@@ -57,7 +57,7 @@ public class Gateway implements DatabaseTable {
 
     @Setter
     @Getter
-    private int systemTypeId;
+    private long systemTypeId;
 
     @Override
     public String getCreateStatement() {
@@ -93,7 +93,7 @@ public class Gateway implements DatabaseTable {
             } else if (column.equals(COLUMN_PORT_NUMBER)) {
                 setPortNumber(cursor.getInt(i));
             } else if (column.equals(COLUMN_SYSTEM_TYPE_ID)) {
-                setSystemTypeId(cursor.getInt(i));
+                setSystemTypeId(cursor.getLong(i));
             }
         }
     }

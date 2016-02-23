@@ -66,7 +66,7 @@ public class CommandType implements DatabaseTable {
 
     @Setter
     @Getter
-    private int systemTypeId;
+    private long systemTypeId;
 
     @Setter
     @Getter
@@ -114,7 +114,7 @@ public class CommandType implements DatabaseTable {
             } else if (column.equals(COLUMN_BASE_SERIAL_OFF_CODE)) {
                 setBaseSerialOffCode(cursor.getString(i));
             } else if (column.equals(COLUMN_SYSTEM_TYPE_ID)) {
-                setSystemTypeId(cursor.getInt(i));
+                setSystemTypeId(cursor.getLong(i));
             } else if (column.equals(COLUMN_ACTIVATE_CONTROLLER_SELECTION)) {
                 setActivateControllerSelection(cursor.getInt(i) == 1);
             }
