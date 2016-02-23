@@ -7,6 +7,7 @@ import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Command;
+import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.util.FixtureLoader;
 
 import org.junit.Before;
@@ -28,7 +29,7 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         DatabaseSQLiteHelper helper = new DatabaseSQLiteHelper(RuntimeEnvironment.application);
         helper.onCreate(database);
 
-        source = new DataSource(database, RuntimeEnvironment.application);
+        source = new DataSource(database);
         insertData();
     }
 
@@ -177,13 +178,104 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(-3, newZoneButtonLinkNum);
     }
 
+    @Test
+    public void test_findButtons() {
+        Gateway gateway = new Gateway();
+        gateway.setId(1);
+
+        List<Button> buttons = source.findButtons(gateway);
+
+        assertEquals(5, buttons.size());
+        assertEquals(2, buttons.get(0).getCommands().size());
+        assertEquals(1, buttons.get(1).getCommands().size());
+        assertEquals(3, buttons.get(2).getCommands().size());
+        assertEquals(1, buttons.get(3).getCommands().size());
+        assertEquals(2, buttons.get(4).getCommands().size());
+        assertEquals(1, buttons.get(0).getId());
+        assertEquals(2, buttons.get(1).getId());
+        assertEquals(3, buttons.get(2).getId());
+        assertEquals(4, buttons.get(3).getId());
+        assertEquals(5, buttons.get(4).getId());
+
+        gateway.setId(2);
+
+        buttons = source.findButtons(gateway);
+
+        assertEquals(5, buttons.size());
+        assertEquals(3, buttons.get(0).getCommands().size());
+        assertEquals(1, buttons.get(1).getCommands().size());
+        assertEquals(2, buttons.get(2).getCommands().size());
+        assertEquals(1, buttons.get(3).getCommands().size());
+        assertEquals(2, buttons.get(4).getCommands().size());
+        assertEquals(6, buttons.get(0).getId());
+        assertEquals(7, buttons.get(1).getId());
+        assertEquals(8, buttons.get(2).getId());
+        assertEquals(9, buttons.get(3).getId());
+        assertEquals(10, buttons.get(4).getId());
+
+    }
+
+    @Test
+    public void test_findZones() {
+        Gateway gateway = new Gateway();
+        gateway.setId(1);
+
+        List<Zone> zones = source.findZones(gateway);
+
+        assertEquals(2, zones.size());
+        assertEquals(3, zones.get(0).getButtons().size());
+        assertEquals(2, zones.get(1).getButtons().size());
+        assertEquals(1, zones.get(0).getId());
+        assertEquals(2, zones.get(1).getId());
+        assertEquals(2, zones.get(0).getButtons().get(0).getCommands().size());
+        assertEquals(1, zones.get(0).getButtons().get(1).getCommands().size());
+        assertEquals(3, zones.get(0).getButtons().get(2).getCommands().size());
+        assertEquals(1, zones.get(0).getButtons().get(0).getId());
+        assertEquals(2, zones.get(0).getButtons().get(1).getId());
+        assertEquals(3, zones.get(0).getButtons().get(2).getId());
+        assertEquals(3, zones.get(1).getButtons().get(0).getCommands().size());
+        assertEquals(1, zones.get(1).getButtons().get(1).getCommands().size());
+        assertEquals(3, zones.get(1).getButtons().get(0).getId());
+        assertEquals(4, zones.get(1).getButtons().get(1).getId());
+
+        gateway.setId(2);
+
+        zones = source.findZones(gateway);
+
+        assertEquals(3, zones.size());
+        assertEquals(4, zones.get(0).getButtons().size());
+        assertEquals(2, zones.get(1).getButtons().size());
+        assertEquals(3, zones.get(2).getButtons().size());
+        assertEquals(3, zones.get(0).getId());
+        assertEquals(4, zones.get(1).getId());
+        assertEquals(5, zones.get(2).getId());
+        assertEquals(3, zones.get(0).getButtons().get(0).getCommands().size());
+        assertEquals(1, zones.get(0).getButtons().get(1).getCommands().size());
+        assertEquals(2, zones.get(0).getButtons().get(2).getCommands().size());
+        assertEquals(1, zones.get(0).getButtons().get(3).getCommands().size());
+        assertEquals(6, zones.get(0).getButtons().get(0).getId());
+        assertEquals(7, zones.get(0).getButtons().get(1).getId());
+        assertEquals(8, zones.get(0).getButtons().get(2).getId());
+        assertEquals(9, zones.get(0).getButtons().get(3).getId());
+        assertEquals(1, zones.get(1).getButtons().get(0).getCommands().size());
+        assertEquals(2, zones.get(1).getButtons().get(1).getCommands().size());
+        assertEquals(9, zones.get(1).getButtons().get(0).getId());
+        assertEquals(10, zones.get(1).getButtons().get(1).getId());
+        assertEquals(3, zones.get(2).getButtons().get(0).getCommands().size());
+        assertEquals(1, zones.get(2).getButtons().get(1).getCommands().size());
+        assertEquals(2, zones.get(2).getButtons().get(2).getCommands().size());
+        assertEquals(6, zones.get(2).getButtons().get(0).getId());
+        assertEquals(7, zones.get(2).getButtons().get(1).getId());
+        assertEquals(10, zones.get(2).getButtons().get(2).getId());
+    }
+
     private int getTableCount(String table) {
         Cursor cursor = source.getDatabase().rawQuery("SELECT count(*) FROM " + table, null);
         if (cursor != null && cursor.moveToFirst()) {
-            int numGateways = cursor.getInt(0);
+            int num = cursor.getInt(0);
             cursor.close();
 
-            return numGateways;
+            return num;
         }
 
         throw new RuntimeException("Error finding table count");
