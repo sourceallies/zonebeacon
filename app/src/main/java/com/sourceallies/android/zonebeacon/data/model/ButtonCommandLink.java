@@ -41,11 +41,11 @@ public class ButtonCommandLink implements DatabaseTable {
 
     @Setter
     @Getter
-    private int buttonId;
+    private long buttonId;
 
     @Setter
     @Getter
-    private int commandId;
+    private long commandId;
 
     @Override
     public String getCreateStatement() {
@@ -75,9 +75,9 @@ public class ButtonCommandLink implements DatabaseTable {
             if (column.equals(COLUMN_ID)) {
                 setId(cursor.getLong(i));
             } else if (column.equals(COLUMN_BUTTON_ID)) {
-                setButtonId(cursor.getInt(i));
+                setButtonId(cursor.getLong(i));
             } else if (column.equals(COLUMN_COMMAND_ID)) {
-                setCommandId(cursor.getInt(i));
+                setCommandId(cursor.getLong(i));
             }
         }
     }
