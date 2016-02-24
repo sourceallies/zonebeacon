@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,6 +40,7 @@ import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 
 import java.util.List;
 
@@ -91,6 +93,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // put the labels on the floating action buttons.
         setFabButtons();
+        showBrightnessDialog();
     }
 
     /**
@@ -127,6 +130,17 @@ public class MainActivity extends RoboAppCompatActivity {
             }
         });
     }
+
+    /**
+     * Displays the the brightness control fragment
+     */
+
+    private void showBrightnessDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        BrightnessControlFragment brightnessControl = new BrightnessControlFragment();
+        brightnessControl.show(fm, "fragment_brightness_control");
+    }
+
 
     /**
      * Creates the adapter for the toolbar spinner that displays the gateways
