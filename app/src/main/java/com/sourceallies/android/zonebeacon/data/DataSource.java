@@ -11,7 +11,9 @@ import com.sourceallies.android.zonebeacon.data.model.*;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -22,7 +24,6 @@ public class DataSource {
     private static final String TAG = "DataSource";
     private static volatile DataSource instance;
 
-    private Context context;
     private SQLiteDatabase database;
     private DatabaseSQLiteHelper dbHelper;
     private AtomicInteger openCounter = new AtomicInteger();
@@ -47,31 +48,26 @@ public class DataSource {
      */
     private DataSource(Context context) {
         this.dbHelper = new DatabaseSQLiteHelper(context);
-        this.context = context;
     }
 
     /**
      * Contructor to help with testing.
      *
      * @param helper Mock of the database helper
-     * @param context Roboguice context
      */
     @VisibleForTesting
-    protected DataSource(DatabaseSQLiteHelper helper, Context context) {
+    protected DataSource(DatabaseSQLiteHelper helper) {
         this.dbHelper = helper;
-        this.context = context;
     }
 
     /**
      * Constructor to help with testing.
      *
      * @param database Mock of the sqlite database
-     * @param context Roboguice context
      */
     @VisibleForTesting
-    protected DataSource(SQLiteDatabase database, Context context) {
+    protected DataSource(SQLiteDatabase database) {
         this.database = database;
-        this.context = context;
     }
 
     /**
@@ -342,9 +338,84 @@ public class DataSource {
         return deleted;
     }
 
-//    public List<Button> findButtons() {
-//
-//    }
+    /**
+     * Finds the buttons and commands that are associated with a gateway.
+     *
+     * @param gateway the gateway.
+     * @return the list of buttons that are set up for this gateway.
+     */
+    public List<Button> findButtons(Gateway gateway) {
+        return findButtons(gateway.getId());
+    }
+
+    /**
+     * Finds the buttons and commands that are associated with a gateway.
+     *
+     * @param gatewayId the gateway id.
+     * @return the list of buttons that are set up for this gateway.
+     */
+    public List<Button> findButtons(long gatewayId) {
+        Cursor cursor = rawQuery(
+                "SELECT " +
+                        "b._id as button_id, " +
+                        "b.name as button_name, " +
+                        "c._id as command_id, " +
+                        "c.name as command_name, " +
+                        "c.gateway_id as gateway_id, " +
+                        "c.number as number, " +
+                        "c.command_type_id as command_type_id, " +
+                        "c.controller_number as controller_number " +
+                        "FROM button b " +
+                            "JOIN button_command_link bcl " +
+                                "ON b._id=bcl.button_id " +
+                            "JOIN command c " +
+                                "ON c._id=bcl.command_id " +
+                        "WHERE c.gateway_id=" + gatewayId + " " +
+                        "ORDER BY b._id asc, c._id asc"
+        );
+
+        if (cursor == null) {
+            return new ArrayList<Button>();
+        }
+
+        Map<Long, Button> buttons = new HashMap<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                long buttonId = cursor.getLong(0);
+                if (buttons.get(buttonId) == null) {
+                    Button button = new Button();
+                    button.setId(buttonId);
+                    button.setCommands(new ArrayList<Command>());
+                    button.setName(cursor.getString(1));
+
+                    buttons.put(buttonId, button);
+                }
+
+                Button button = buttons.get(buttonId);
+
+                Command command = new Command();
+                command.setId(cursor.getLong(2));
+                command.setName(cursor.getString(3));
+                command.setGatewayId(cursor.getLong(4));
+                command.setNumber(cursor.getInt(5));
+                command.setCommandTypeId(cursor.getLong(6));
+
+                try {
+                    Integer controllerNumber = Integer.parseInt(cursor.getString(7));
+                    command.setControllerNumber(controllerNumber);
+                } catch (Exception e) {
+                    command.setControllerNumber(null);
+                }
+
+                button.getCommands().add(command);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return new ArrayList<>(buttons.values());
+    }
 
     /**
      * Inserts a new zone into the database. This will also insert links between the zone and
@@ -392,8 +463,109 @@ public class DataSource {
         return deleted;
     }
 
-//    public List<Zone> findZones() {
-//
-//    }
+    /**
+     * Finds the zones, buttons, and commands that are associated with the gateway.
+     *
+     * @param gateway the gateway.
+     * @return a list of the zones, buttons, and ids associated with the gateway.
+     */
+    public List<Zone> findZones(Gateway gateway) {
+        return findZones(gateway.getId());
+    }
+
+    /**
+     * Finds the zones, buttons, and commands that are associated with the gateway.
+     *
+     * @param gatewayId the gateway id.
+     * @return a list of the zones, buttons, and ids associated with the gateway.
+     */
+    public List<Zone> findZones(long gatewayId) {
+        Cursor cursor = rawQuery(
+                "SELECT " +
+                        "z._id as zone_id, " +
+                        "z.name as zone_name, " +
+                        "b._id as button_id, " +
+                        "b.name as button_name, " +
+                        "c._id as command_id, " +
+                        "c.name as command_name, " +
+                        "c.gateway_id as gateway_id, " +
+                        "c.number as number, " +
+                        "c.command_type_id as command_type_id, " +
+                        "c.controller_number as controller_number " +
+                        "FROM zone z " +
+                            "JOIN zone_button_link zbl " +
+                                "ON z._id=zbl.zone_id " +
+                            "JOIN button b " +
+                                "ON b._id=zbl.button_id " +
+                            "JOIN button_command_link bcl " +
+                                "ON b._id=bcl.button_id " +
+                            "JOIN command c " +
+                                "ON c._id=bcl.command_id " +
+                        "WHERE c.gateway_id=" + gatewayId + " " +
+                        "ORDER BY z._id, b._id asc, c._id asc"
+        );
+
+        if (cursor == null) {
+            return new ArrayList<>();
+        }
+
+        Map<Long, Button> buttons = new HashMap<>();
+        Map<Long, Zone> zones = new HashMap<>();
+
+        if (cursor.moveToFirst()) {
+            do {
+                long zoneId = cursor.getLong(0);
+                long buttonId = cursor.getLong(2);
+
+                if (zones.get(zoneId) == null) {
+                    Zone zone = new Zone();
+                    zone.setId(zoneId);
+                    zone.setButtons(new ArrayList<Button>());
+                    zone.setName(cursor.getString(1));
+
+                    zones.put(zoneId, zone);
+                    buttons = new HashMap<>();
+                }
+
+                if (buttons.get(buttonId) == null) {
+                    Button button = new Button();
+                    button.setId(buttonId);
+                    button.setCommands(new ArrayList<Command>());
+                    button.setName(cursor.getString(3));
+
+                    buttons.put(buttonId, button);
+                }
+
+                Zone zone = zones.get(zoneId);
+                Button button = buttons.get(buttonId);
+
+                if (!zone.getButtons().contains(button)) {
+                    zone.getButtons().add(button);
+                }
+
+                Command command = new Command();
+                command.setId(cursor.getLong(4));
+                command.setName(cursor.getString(5));
+                command.setGatewayId(cursor.getLong(6));
+                command.setNumber(cursor.getInt(7));
+                command.setCommandTypeId(cursor.getLong(8));
+
+                try {
+                    Integer controllerNumber = Integer.parseInt(cursor.getString(9));
+                    command.setControllerNumber(controllerNumber);
+                } catch (Exception e) {
+                    command.setControllerNumber(null);
+                }
+
+                if (!button.getCommands().contains(command)) {
+                    button.getCommands().add(command);
+                }
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return new ArrayList<>(zones.values());
+    }
 
 }

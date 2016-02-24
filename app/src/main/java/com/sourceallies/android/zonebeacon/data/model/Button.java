@@ -1,6 +1,10 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
 import android.database.Cursor;
+import android.util.SparseArray;
+
+import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +36,10 @@ public class Button implements DatabaseTable {
     @Setter
     @Getter
     private String name;
+
+    @Setter
+    @Getter
+    private List<Command> commands;
 
     @Override
     public String getCreateStatement() {

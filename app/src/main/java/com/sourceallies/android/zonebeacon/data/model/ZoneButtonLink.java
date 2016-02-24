@@ -41,11 +41,11 @@ public class ZoneButtonLink implements DatabaseTable {
 
     @Setter
     @Getter
-    private int zoneId;
+    private long zoneId;
 
     @Setter
     @Getter
-    private int buttonId;
+    private long buttonId;
 
     @Override
     public String getCreateStatement() {
@@ -75,9 +75,9 @@ public class ZoneButtonLink implements DatabaseTable {
             if (column.equals(COLUMN_ID)) {
                 setId(cursor.getLong(i));
             } else if (column.equals(COLUMN_ZONE_ID)) {
-                setZoneId(cursor.getInt(i));
+                setZoneId(cursor.getLong(i));
             } else if (column.equals(COLUMN_BUTTON_ID)) {
-                setButtonId(cursor.getInt(i));
+                setButtonId(cursor.getLong(i));
             }
         }
     }
