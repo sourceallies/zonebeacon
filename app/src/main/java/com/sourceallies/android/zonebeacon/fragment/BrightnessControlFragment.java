@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.sourceallies.android.zonebeacon.R;
 
 /**
- * Created by Jeff Osborn on 2/23/2016.
+ * DialogFragment that uses a SeekBar to allow the user to dim lights.
+ * A TextView displays the brightness level, while an ImageView
+ * provides a graphic of a light bulb dimming.
  */
 public class BrightnessControlFragment extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
 
@@ -26,7 +28,9 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
     /**
      * Default constructor for the fragment
      */
-    public BrightnessControlFragment() { }
+    public static BrightnessControlFragment newInstance() {
+        return new BrightnessControlFragment();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,7 +39,7 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
 
         // setup the UI elements
         dimmerBar = (SeekBar) root.findViewById(R.id.dimmer);
-        dimmerBar.setOnSeekBarChangeListener(this);
+        dimmerBar.setOnSeekBarChangeListener(this); //add listener to SeekBar
         percent = (TextView) root.findViewById(R.id.percent);
         bulbImg = (ImageView) root.findViewById(R.id.bulb_bottom);
 
@@ -45,9 +49,9 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        // change progress text label with current seekbar value
+        // change percent text to current SeekBar value
         percent.setText(progress + "%");
-        // change action text label to changing
+        // set the Alpha value of the image equal to the percent value
         float ratio = (float) progress / 100;
         bulbImg.setAlpha(ratio);
     }
