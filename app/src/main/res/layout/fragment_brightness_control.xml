@@ -73,12 +73,13 @@
             android:textColor="@android:color/white"
             android:paddingRight="32dp"
             android:textSize="28sp"
-            android:text="0%"
+            android:text="100%"
             android:id="@+id/percent" />
 
         <SeekBar
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:progress="100"
             android:max="100"
             android:id="@+id/dimmer" />
 
