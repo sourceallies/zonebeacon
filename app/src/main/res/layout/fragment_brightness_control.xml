@@ -32,8 +32,7 @@
             android:id="@+id/widget30"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            >
+            xmlns:android="http://schemas.android.com/apk/res/android">
 
             <ImageView
                 android:id="@+id/bulb_bottom"
@@ -41,8 +40,7 @@
                 android:layout_height="fill_parent"
                 android:src="@drawable/lightbulb_colored"
                 android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                >
+                android:layout_centerHorizontal="true">
             </ImageView>
             <ImageView
                 android:id="@+id/bulb_top"
@@ -50,8 +48,7 @@
                 android:layout_height="fill_parent"
                 android:src="@drawable/lightbulb"
                 android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true"
-                >
+                android:layout_centerHorizontal="true">
             </ImageView>
         </RelativeLayout>
 

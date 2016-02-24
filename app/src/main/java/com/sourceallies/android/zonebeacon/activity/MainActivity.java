@@ -93,6 +93,9 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // put the labels on the floating action buttons.
         setFabButtons();
+
+        // Call function to show Brightness Control Fragment
+        //Simply for Initial Testing purposes, needs to be moved to a more appropriate location
         showBrightnessDialog();
     }
 
@@ -134,10 +137,9 @@ public class MainActivity extends RoboAppCompatActivity {
     /**
      * Displays the the brightness control fragment
      */
-
     private void showBrightnessDialog() {
         FragmentManager fm = getSupportFragmentManager();
-        BrightnessControlFragment brightnessControl = new BrightnessControlFragment();
+        BrightnessControlFragment brightnessControl = BrightnessControlFragment.newInstance();
         brightnessControl.show(fm, "fragment_brightness_control");
     }
 
