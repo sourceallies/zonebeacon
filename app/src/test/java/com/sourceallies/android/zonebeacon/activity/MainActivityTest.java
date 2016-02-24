@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
@@ -89,6 +90,22 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     public void test_startIntro() {
         activity.setAdapter(new GatewaySpinnerAdapter(activity, new ArrayList<Gateway>()));
         assertTrue(activity.startIntro());
+    }
+
+    @Test
+    public void test_backPressed_fabExpanded() {
+        activity.getFabMenu().expand();
+        activity.onBackPressed();
+
+        verify(activity).collapseFab();
+    }
+
+    @Test
+    public void test_backPressed_fabCollapsed() {
+        activity.getFabMenu().collapse();
+        activity.onBackPressed();
+
+        verify(activity).onBackPressed();
     }
 
     @Test
