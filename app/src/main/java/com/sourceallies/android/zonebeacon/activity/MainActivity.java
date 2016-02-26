@@ -208,7 +208,7 @@ public class MainActivity extends RoboAppCompatActivity {
      * @return String of the gateway name
      */
     private String getGatewayName() {
-        return spinnerAdapter.getTitle(spinner.getSelectedItemPosition());
+        return spinnerAdapter.getTitle(getCurrentSpinnerSelection());
     }
 
     /**
