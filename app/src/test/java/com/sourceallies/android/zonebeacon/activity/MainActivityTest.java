@@ -39,6 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -109,6 +110,12 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(activity.getAddButton());
         assertNotNull(activity.getAddCommand());
         assertNotNull(activity.getSpinner());
+        assertNotNull(activity.getRecycler());
+    }
+
+    @Test
+    public void test_noAdapter() {
+        assertNull(activity.getMainAdapter());
     }
 
     @Test
