@@ -569,7 +569,7 @@ public class DataSource {
     }
 
     // You could call this sometime on the system to insert some dummy data for the UI.
-    public void insertFakeButtonsAndZones(int gatewayId) {
+    /*public void insertFakeButtonsAndZones(int gatewayId) {
         insertNewCommand("Light 1", gatewayId, 1, 1, null);
         insertNewCommand("Light 2", gatewayId, 2, 1, null);
         insertNewCommand("Light 3", gatewayId, 3, 1, null);
@@ -592,6 +592,5 @@ public class DataSource {
         insertNewZone("Basement", buttons.subList(0, 4));
         insertNewZone("Main Floor", buttons.subList(1, 2));
         insertNewZone("Upper Floor", buttons.subList(3, 4));
-
-    }
+    }*/
 }

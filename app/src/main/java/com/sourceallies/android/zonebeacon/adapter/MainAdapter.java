@@ -1,6 +1,9 @@
 package com.sourceallies.android.zonebeacon.adapter;
 
 
+import android.app.Activity;
+import android.content.Context;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,11 @@ import java.util.List;
  */
 public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHolder> {
 
+    private Activity context;
+
+    private String zonesTitle;
+    private String buttonsTitle;
+
     private List<Zone> zones;
     private List<Button> buttons;
 
@@ -30,9 +38,14 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * @param zones List of zones in the current gateway
      * @param buttons List of buttons in the current gateway
      */
-    public MainAdapter(List<Zone> zones, List<Button> buttons) {
+    public MainAdapter(Activity context, List<Zone> zones, List<Button> buttons) {
+        this.context = context;
+
         this.zones = zones;
         this.buttons = buttons;
+
+        zonesTitle = context.getString(R.string.zones);
+        buttonsTitle = context.getString(R.string.buttons);
     }
 
     /**
@@ -58,7 +71,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      */
     @Override
     public int getItemCount(int section) {
-        if (section == 0 && zones.size() > 0)
+        if (isZone(section))
             return zones.size();
         else
             return buttons.size();
@@ -72,10 +85,10 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      */
     @Override
     public void onBindHeaderViewHolder(ViewHolder holder, int section) {
-        if (section == 0 && zones.size() > 0)
-            holder.title.setText("Zones");
+        if (isZone(section))
+            holder.title.setText(zonesTitle);
         else
-            holder.title.setText("Buttons");
+            holder.title.setText(buttonsTitle);
     }
 
     /**
@@ -88,7 +101,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int section, int relativePosition, int absolutePosition) {
-        if (section == 0 && zones.size() > 0)
+        if (isZone(section))
             holder.title.setText(zones.get(relativePosition).getName());
         else
             holder.title.setText(buttons.get(relativePosition).getName());
@@ -104,11 +117,23 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // Change inflated layout based on 'header'
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(viewType == VIEW_TYPE_HEADER ?
+        View v = context.getLayoutInflater()
+                    .inflate(viewType == VIEW_TYPE_HEADER ?
                         R.layout.adapter_item_button_zone_header :
                         R.layout.adapter_item_button_zone, parent, false);
         return new ViewHolder(v);
+    }
+
+    /**
+     * If the zone size is zero, section zero is the buttons, so this function returns true
+     * if the section index we are on is supposed to be a zone.
+     *
+     * @param section section index
+     * @return true if the section is for zones, false otherwise
+     */
+    @VisibleForTesting
+    protected boolean isZone(int section) {
+        return section == 0 && zones.size() > 0;
     }
 
     /**
