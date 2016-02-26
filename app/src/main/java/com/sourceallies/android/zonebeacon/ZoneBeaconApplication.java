@@ -17,6 +17,7 @@
 package com.sourceallies.android.zonebeacon;
 
 import android.app.Application;
+import android.support.v7.app.AppCompatDelegate;
 
 /**
  * Base application for zone beacon responsible for initializing any analytics information and
@@ -27,6 +28,7 @@ public class ZoneBeaconApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
     }
 
 }
