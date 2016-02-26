@@ -66,7 +66,7 @@ public class MainActivity extends RoboAppCompatActivity {
     @Getter private FloatingActionButton addButton;
     @Getter private FloatingActionButton addCommand;
 
-    @Getter @Setter
+    @Getter
     private MainAdapter mainAdapter;
 
     @Getter @Setter
@@ -157,11 +157,25 @@ public class MainActivity extends RoboAppCompatActivity {
         source.open();
 
         Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
-        mainAdapter = new MainAdapter(this, source.findZones(currentGateway), source.findButtons(currentGateway));
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        recycler.setAdapter(mainAdapter);
+
+        if (currentGateway != null) {
+            mainAdapter = new MainAdapter(this, source.findZones(currentGateway), source.findButtons(currentGateway));
+
+            try {
+                recycler.setLayoutManager(getLayoutManager());
+            } catch (NullPointerException e) { }
+
+            recycler.setAdapter(mainAdapter);
+        } else {
+            mainAdapter = null;
+        }
 
         source.close();
+    }
+
+    @VisibleForTesting
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(this);
     }
 
     /**
