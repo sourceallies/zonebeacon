@@ -36,7 +36,7 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
      * Get the number of gateways in the database
      * + 1 for an item to "Create New Gateway"
      *
-     * @return number of items in the adapter
+     * @return number of items in the spinnerAdapter
      */
     @Override
     public int getCount() {
@@ -57,7 +57,7 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
     /**
      * Item's id is its position
      *
-     * @param position adapter position
+     * @param position spinnerAdapter position
      * @return the same number
      */
     @Override
@@ -118,7 +118,7 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
     /**
      * Get the text to display on the spinner items
      *
-     * @param position adapter position for the item
+     * @param position spinnerAdapter position for the item
      * @return Gateway name or "Create New Gateway"
      */
     public String getTitle(int position) {
