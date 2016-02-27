@@ -96,7 +96,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // Call function to show Brightness Control Fragment
         //Simply for Initial Testing purposes, needs to be moved to a more appropriate location
-        showBrightnessDialog();
+        //showBrightnessDialog();
     }
 
     /**

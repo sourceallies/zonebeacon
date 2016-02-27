@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
 
+import lombok.Getter;
+
 /**
  * DialogFragment that uses a SeekBar to allow the user to dim lights.
  * A TextView displays the brightness level, while an ImageView
@@ -21,8 +23,11 @@ import com.sourceallies.android.zonebeacon.R;
  */
 public class BrightnessControlFragment extends DialogFragment implements SeekBar.OnSeekBarChangeListener {
 
+    @Getter
     private SeekBar dimmerBar;
+    @Getter
     private TextView percent;
+    @Getter
     private ImageView bulbImg;
 
     /**
