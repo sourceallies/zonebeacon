@@ -3,6 +3,7 @@ package com.sourceallies.android.zonebeacon.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -38,7 +39,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * @param zones List of zones in the current gateway
      * @param buttons List of buttons in the current gateway
      */
-    public MainAdapter(Activity context, List<Zone> zones, List<Button> buttons) {
+    public MainAdapter(Activity context, @NonNull List<Zone> zones,
+                       @NonNull List<Button> buttons) {
         this.context = context;
 
         this.zones = zones;
