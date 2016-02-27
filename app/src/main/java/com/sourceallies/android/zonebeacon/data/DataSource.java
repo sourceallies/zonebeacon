@@ -568,4 +568,29 @@ public class DataSource {
         return new ArrayList<>(zones.values());
     }
 
+    // You could call this sometime on the system to insert some dummy data for the UI.
+    /*public void insertFakeButtonsAndZones(int gatewayId) {
+        insertNewCommand("Light 1", gatewayId, 1, 1, null);
+        insertNewCommand("Light 2", gatewayId, 2, 1, null);
+        insertNewCommand("Light 3", gatewayId, 3, 1, null);
+        insertNewCommand("Light 4", gatewayId, 4, 1, null);
+        insertNewCommand("Light 5", gatewayId, 5, 1, null);
+
+        List<Command> commands = new ArrayList<>();
+        commands.addAll(findCommands(gatewayId));
+
+        insertNewButton("Living Room", commands.subList(0, 2));
+        insertNewButton("Bedroom 1", commands.subList(1, 3));
+        insertNewButton("Master Bathroom", commands.subList(3, 4));
+        insertNewButton("Stove Light", commands.subList(0, 1));
+        insertNewButton("Porch Light", commands.subList(2, 4));
+
+        List<Button> buttons = new ArrayList<>();
+        buttons.addAll(findButtons(gatewayId));
+
+        insertNewZone("Whole House", buttons);
+        insertNewZone("Basement", buttons.subList(0, 4));
+        insertNewZone("Main Floor", buttons.subList(1, 2));
+        insertNewZone("Upper Floor", buttons.subList(3, 4));
+    }*/
 }
