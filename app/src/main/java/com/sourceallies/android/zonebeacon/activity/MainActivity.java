@@ -37,12 +37,7 @@ import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
 import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
-import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
-import com.sourceallies.android.zonebeacon.data.model.Zone;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -143,7 +138,7 @@ public class MainActivity extends RoboAppCompatActivity {
      * @return Spinner spinnerAdapter holding the gateway information
      */
     @VisibleForTesting
-    protected GatewaySpinnerAdapter createAdapter(DataSource dataSource) {
+    protected GatewaySpinnerAdapter createSpinnerAdapter(DataSource dataSource) {
         return new GatewaySpinnerAdapter(this, dataSource.findGateways());
     }
 
@@ -186,7 +181,7 @@ public class MainActivity extends RoboAppCompatActivity {
         DataSource dataSource = DataSource.getInstance(this);
         dataSource.open();
 
-        spinnerAdapter = createAdapter(dataSource);
+        spinnerAdapter = createSpinnerAdapter(dataSource);
         spinner.setAdapter(spinnerAdapter);
 
         dataSource.close();
