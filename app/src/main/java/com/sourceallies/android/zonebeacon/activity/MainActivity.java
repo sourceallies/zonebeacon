@@ -124,7 +124,7 @@ public class MainActivity extends RoboAppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fabMenu.collapse();
+                collapseFab();
                 makeSnackbar(fab.getTitle());
             }
         });
@@ -241,6 +241,23 @@ public class MainActivity extends RoboAppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fabMenu.isExpanded()) {
+            collapseFab();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    /**
+     * Collapse the fab menu.
+     */
+    @VisibleForTesting
+    protected void collapseFab() {
+        fabMenu.collapse();
     }
 
     @Override
