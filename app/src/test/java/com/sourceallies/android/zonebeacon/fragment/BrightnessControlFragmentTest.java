@@ -1,13 +1,9 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
-import android.content.Intent;
-import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
 import android.widget.SeekBar;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
-import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +12,7 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
-public class BrightnessControlTest extends ZoneBeaconRobolectricSuite {
+public class BrightnessControlFragmentTest extends ZoneBeaconRobolectricSuite {
 
     @Mock
     FragmentActivity activity;
