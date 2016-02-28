@@ -5,15 +5,22 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.sourceallies.android.zonebeacon.data.model.*;
+import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.ButtonCommandLink;
 import com.sourceallies.android.zonebeacon.data.model.Command;
+import com.sourceallies.android.zonebeacon.data.model.CommandType;
+import com.sourceallies.android.zonebeacon.data.model.DatabaseTable;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.data.model.SystemType;
+import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 
 /**
  * Handles creating and updating databases.
- *
+ * <p/>
  * CHANGELOG BY VERSION:
  * version 1 - create zone, zoneButtonLink, button, buttonCommandLink, command, gateway, systemType
- *             and commandType tables
+ * and commandType tables
  */
 public class DatabaseSQLiteHelper extends SQLiteOpenHelper {
 
