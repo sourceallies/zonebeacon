@@ -55,6 +55,7 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
         // change percent text to current SeekBar value
+        //noinspection AndroidLintSetTextI18n
         percent.setText(progress + "%");
         // set the Alpha value of the image equal to the percent value
         float ratio = (float) progress / 100;
