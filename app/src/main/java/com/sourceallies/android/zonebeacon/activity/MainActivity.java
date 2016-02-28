@@ -23,6 +23,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +39,7 @@ import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
 import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -133,9 +135,19 @@ public class MainActivity extends RoboAppCompatActivity {
     }
 
     /**
-     * Creates the spinnerAdapter for the toolbar spinner that displays the gateways
-     * @param dataSource The database for the spinnerAdapter
-     * @return Spinner spinnerAdapter holding the gateway information
+     * Displays the the brightness control fragment.
+     */
+    public void showBrightnessDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        BrightnessControlFragment brightnessControl = BrightnessControlFragment.newInstance();
+        brightnessControl.show(fm, "fragment_brightness_control");
+    }
+
+
+    /**
+     * Creates the adapter for the toolbar spinner that displays the gateways
+     * @param dataSource The database for the adapter
+     * @return Spinner adapter holding the gateway information
      */
     @VisibleForTesting
     protected GatewaySpinnerAdapter createSpinnerAdapter(DataSource dataSource) {
@@ -300,7 +312,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
     /**
      * Start the activity for the class you want to open
-     * @param toOpen
+     * @param toOpen the class that should be opened.
      */
     public void openOption(Class toOpen) {
         if (toOpen != null) {

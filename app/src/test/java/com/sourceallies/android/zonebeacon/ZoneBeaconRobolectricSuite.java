@@ -16,10 +16,13 @@
 
 package com.sourceallies.android.zonebeacon;
 
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -57,6 +60,24 @@ public abstract class ZoneBeaconRobolectricSuite {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(fragment, null);
         fragmentTransaction.commit();
+
+        return fragment;
+    }
+
+    /**
+     * Helper for displaying a dialog fragment.
+     *
+     * @param fragment the fragment to display.
+     * @return the fragment.
+     */
+    public static Fragment startDialogFragment(DialogFragment fragment) {
+        FragmentActivity activity = Robolectric.buildActivity(RoboFragmentActivity.class)
+                .create()
+                .start()
+                .get();
+
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+        fragment.show(fragmentManager, "fragment");
 
         return fragment;
     }
