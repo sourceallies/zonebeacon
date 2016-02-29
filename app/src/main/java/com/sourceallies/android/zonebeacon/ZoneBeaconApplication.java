@@ -17,16 +17,25 @@
 package com.sourceallies.android.zonebeacon;
 
 import android.app.Application;
+import android.app.UiModeManager;
+import android.content.Context;
+import android.support.v7.app.AppCompatDelegate;
 
 /**
  * Base application for zone beacon responsible for initializing any analytics information and
  * other things that need to be active app-wide.
  */
 public class ZoneBeaconApplication extends Application {
+    static {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        UiModeManager uiManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+        uiManager.setNightMode(UiModeManager.MODE_NIGHT_AUTO);
     }
 
 }
