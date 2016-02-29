@@ -12,13 +12,12 @@
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textSize="16sp"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@color/black_semi_transparent" />
+        android:fontFamily="sans-serif-light" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_divider"/>
+        android:background="?list_item_divider"/>
 
 </LinearLayout>
 
