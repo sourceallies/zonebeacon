@@ -3,13 +3,11 @@ package com.sourceallies.android.zonebeacon.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import android.support.design.widget.TextInputLayout;
 
 import com.github.paolorotolo.appintro.AppIntro2;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.github.paolorotolo.appintro.AppIntroViewPager;
 import com.sourceallies.android.zonebeacon.R;
-import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.fragment.AbstractSetupFragment;
 import com.sourceallies.android.zonebeacon.fragment.GatewaySetupFragment;
 
@@ -77,6 +75,11 @@ public class IntroActivity extends AppIntro2 {
         setupFragment.save();
     }
 
-    @Override public void onNextPressed() { }
-    @Override public void onSlideChanged() { }
+    @Override
+    public void onNextPressed() {
+    }
+
+    @Override
+    public void onSlideChanged() {
+    }
 }

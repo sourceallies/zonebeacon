@@ -35,5 +35,11 @@
     <string name="get_help">Get Help</string>
     <string name="transfer_settings">Transfer Settings</string>
     <string name="create_gateway">Create New Gateway</string>
+    <string name="zones">Zones</string>
+    <string name="buttons">Buttons</string>
+    <string name="light_dimmer">Light Dimmer</string>
+    <string name="full_percent">100%</string>
+    <string name="full_brightness">Full Brightness</string>
+    <string name="no_brightness">No Brightness</string>
 
 </resources>

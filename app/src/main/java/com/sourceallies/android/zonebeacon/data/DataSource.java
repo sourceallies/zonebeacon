@@ -7,8 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.sourceallies.android.zonebeacon.data.model.*;
+import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.ButtonCommandLink;
 import com.sourceallies.android.zonebeacon.data.model.Command;
+import com.sourceallies.android.zonebeacon.data.model.CommandType;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +49,7 @@ public class DataSource {
 
     /**
      * Private constructor to force a singleton.
+     *
      * @param context Current calling context
      */
     private DataSource(Context context) {
@@ -150,12 +156,11 @@ public class DataSource {
      */
 
 
-
     /**
      * Insert a new gateway into the database
      *
      * @param name Gateway name
-     * @param ip ip address for the gateway
+     * @param ip   ip address for the gateway
      * @param port port number for the gateway
      * @return id of the inserted row
      */
@@ -210,10 +215,10 @@ public class DataSource {
     /**
      * Inserts a new command into the database.
      *
-     * @param name the name of the command.
-     * @param gatewayId the gateway id.
-     * @param number the number.
-     * @param commandType the command type.
+     * @param name             the name of the command.
+     * @param gatewayId        the gateway id.
+     * @param number           the number.
+     * @param commandType      the command type.
      * @param controllerNumber the controller number.
      * @return the id of the inserted row.
      */
@@ -225,10 +230,10 @@ public class DataSource {
     /**
      * Inserts a new command into the database.
      *
-     * @param name the name of the command.
-     * @param gatewayId the gateway id.
-     * @param number the number.
-     * @param commandTypeId the command type id.
+     * @param name             the name of the command.
+     * @param gatewayId        the gateway id.
+     * @param number           the number.
+     * @param commandTypeId    the command type id.
      * @param controllerNumber the controller number.
      * @return the id of the inserted row.
      */
@@ -297,7 +302,7 @@ public class DataSource {
      * Inserts a new button into the database. This will also insert links between the button and
      * the commands that are provided.
      *
-     * @param name the name for the button.
+     * @param name     the name for the button.
      * @param commands the commands to execute when the button is pressed.
      * @return the id of the inserted button.
      */
@@ -366,10 +371,10 @@ public class DataSource {
                         "c.command_type_id as command_type_id, " +
                         "c.controller_number as controller_number " +
                         "FROM button b " +
-                            "JOIN button_command_link bcl " +
-                                "ON b._id=bcl.button_id " +
-                            "JOIN command c " +
-                                "ON c._id=bcl.command_id " +
+                        "JOIN button_command_link bcl " +
+                        "ON b._id=bcl.button_id " +
+                        "JOIN command c " +
+                        "ON c._id=bcl.command_id " +
                         "WHERE c.gateway_id=" + gatewayId + " " +
                         "ORDER BY b._id asc, c._id asc"
         );
@@ -421,7 +426,7 @@ public class DataSource {
      * Inserts a new zone into the database. This will also insert links between the zone and
      * the buttons that are provided.
      *
-     * @param name the name for the zone.
+     * @param name    the name for the zone.
      * @param buttons the buttons to execute when the button is pressed. Each button holds a list
      *                of commands.
      * @return the id of the inserted zone.
@@ -493,14 +498,14 @@ public class DataSource {
                         "c.command_type_id as command_type_id, " +
                         "c.controller_number as controller_number " +
                         "FROM zone z " +
-                            "JOIN zone_button_link zbl " +
-                                "ON z._id=zbl.zone_id " +
-                            "JOIN button b " +
-                                "ON b._id=zbl.button_id " +
-                            "JOIN button_command_link bcl " +
-                                "ON b._id=bcl.button_id " +
-                            "JOIN command c " +
-                                "ON c._id=bcl.command_id " +
+                        "JOIN zone_button_link zbl " +
+                        "ON z._id=zbl.zone_id " +
+                        "JOIN button b " +
+                        "ON b._id=zbl.button_id " +
+                        "JOIN button_command_link bcl " +
+                        "ON b._id=bcl.button_id " +
+                        "JOIN command c " +
+                        "ON c._id=bcl.command_id " +
                         "WHERE c.gateway_id=" + gatewayId + " " +
                         "ORDER BY z._id, b._id asc, c._id asc"
         );
@@ -568,4 +573,29 @@ public class DataSource {
         return new ArrayList<>(zones.values());
     }
 
+    // You could call this sometime on the system to insert some dummy data for the UI.
+    /*public void insertFakeButtonsAndZones(int gatewayId) {
+        insertNewCommand("Light 1", gatewayId, 1, 1, null);
+        insertNewCommand("Light 2", gatewayId, 2, 1, null);
+        insertNewCommand("Light 3", gatewayId, 3, 1, null);
+        insertNewCommand("Light 4", gatewayId, 4, 1, null);
+        insertNewCommand("Light 5", gatewayId, 5, 1, null);
+
+        List<Command> commands = new ArrayList<>();
+        commands.addAll(findCommands(gatewayId));
+
+        insertNewButton("Living Room", commands.subList(0, 2));
+        insertNewButton("Bedroom 1", commands.subList(1, 3));
+        insertNewButton("Master Bathroom", commands.subList(3, 4));
+        insertNewButton("Stove Light", commands.subList(0, 1));
+        insertNewButton("Porch Light", commands.subList(2, 4));
+
+        List<Button> buttons = new ArrayList<>();
+        buttons.addAll(findButtons(gatewayId));
+
+        insertNewZone("Whole House", buttons);
+        insertNewZone("Basement", buttons.subList(0, 4));
+        insertNewZone("Main Floor", buttons.subList(1, 2));
+        insertNewZone("Upper Floor", buttons.subList(3, 4));
+    }*/
 }

@@ -2,7 +2,6 @@ package com.sourceallies.android.zonebeacon.activity;
 
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 
@@ -19,7 +18,8 @@ public class CreationActivity extends IntroActivity {
 
     /**
      * Static factory method to start the activity
-     * @param activity The current context
+     *
+     * @param activity  The current context
      * @param setupType TYPE_GATEWAY, TYPE_ZONE, TYPE_BUTTON, or TYPE_COMMAND
      */
     public static void startCreation(Activity activity, int setupType) {
@@ -39,6 +39,7 @@ public class CreationActivity extends IntroActivity {
 
     /**
      * Get the fragment type we want to use to create data
+     *
      * @return TYPE_GATEWAY, TYPE_ZONE, TYPE_BUTTON, or TYPE_COMMAND
      */
     @VisibleForTesting
