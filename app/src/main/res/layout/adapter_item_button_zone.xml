@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/white">
+    android:background="?list_item_background">
 
     <TextView
         android:id="@+id/title"
@@ -19,6 +19,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/black_divider"/>
+        android:background="?list_item_divider"/>
 
 </LinearLayout>

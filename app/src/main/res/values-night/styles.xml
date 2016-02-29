@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.DayNight" parent="AppTheme">
+        <item name="list_item_background">@android:color/black</item>
+        <item name="list_item_divider">@color/white_divider</item>
+    </style>
+</resources>
