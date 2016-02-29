@@ -19,15 +19,11 @@ package com.sourceallies.android.zonebeacon.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
-import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
-import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import org.junit.Before;
@@ -43,14 +39,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -71,7 +64,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         activity = spy(activity);
 
         adapter = createAdapter();
-        activity.setAdapter(adapter);
+        activity.setSpinnerAdapter(adapter);
         activity.getSpinner().setAdapter(adapter);
     }
 
@@ -88,7 +81,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Test
     public void test_startIntro() {
-        activity.setAdapter(new GatewaySpinnerAdapter(activity, new ArrayList<Gateway>()));
+        activity.setSpinnerAdapter(new GatewaySpinnerAdapter(activity, new ArrayList<Gateway>()));
         assertTrue(activity.startIntro());
     }
 
@@ -117,6 +110,12 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(activity.getAddButton());
         assertNotNull(activity.getAddCommand());
         assertNotNull(activity.getSpinner());
+        assertNotNull(activity.getRecycler());
+    }
+
+    @Test
+    public void test_noAdapter() {
+        assertNull(activity.getMainAdapter());
     }
 
     @Test
@@ -244,7 +243,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         gateways.add(two);
 
         adapter = new GatewaySpinnerAdapter(activity, gateways);
-        activity.setAdapter(adapter);
+        activity.setSpinnerAdapter(adapter);
         activity.getSpinner().setAdapter(adapter);
         activity.getSpinner().setSelection(0);
 
@@ -258,6 +257,11 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
         activity.getSpinner().setSelection(2);
         assertEquals(1, activity.getCurrentSpinnerSelection());
+    }
+
+    @Test
+    public void test_showBrightnessDialog() {
+        activity.showBrightnessDialog();
     }
 
     private GatewaySpinnerAdapter createAdapter() {

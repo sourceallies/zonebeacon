@@ -17,13 +17,13 @@
 package com.sourceallies.android.zonebeacon.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,18 +34,16 @@ import android.widget.Spinner;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.google.inject.Inject;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
+import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
-
-import java.util.List;
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 
 import lombok.Getter;
 import lombok.Setter;
 import roboguice.inject.ContentView;
-import roboguice.inject.InjectView;
 
 /**
  * Main activity that the user will be interacting with when using the app.
@@ -55,20 +53,35 @@ public class MainActivity extends RoboAppCompatActivity {
 
     public static final int RESULT_INTRO = 1;
 
-    @Getter private CoordinatorLayout rootLayout;
-    @Getter private Toolbar toolbar;
-    @Getter private Spinner spinner;
-    @Getter private FloatingActionsMenu fabMenu;
+    @Getter
+    private CoordinatorLayout rootLayout;
+    @Getter
+    private RecyclerView recycler;
+    @Getter
+    private Toolbar toolbar;
+    @Getter
+    private Spinner spinner;
+    @Getter
+    private FloatingActionsMenu fabMenu;
 
-    @Getter private FloatingActionButton addZone;
-    @Getter private FloatingActionButton addButton;
-    @Getter private FloatingActionButton addCommand;
+    @Getter
+    private FloatingActionButton addZone;
+    @Getter
+    private FloatingActionButton addButton;
+    @Getter
+    private FloatingActionButton addCommand;
 
-    @Getter @Setter
-    private GatewaySpinnerAdapter adapter;
-    @Getter private int currentSpinnerSelection = 0;
+    @Getter
+    private MainAdapter mainAdapter;
 
-    @Getter private boolean startedIntro = false;
+    @Getter
+    @Setter
+    private GatewaySpinnerAdapter spinnerAdapter;
+    @Getter
+    private int currentSpinnerSelection = 0;
+
+    @Getter
+    private boolean startedIntro = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +89,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // Find the layout information
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
+        recycler = (RecyclerView) findViewById(R.id.recycler_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         spinner = (Spinner) findViewById(R.id.toolbar_spinner);
         fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
@@ -91,6 +105,9 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // put the labels on the floating action buttons.
         setFabButtons();
+
+        // Add the data to the spinnerAdapter and disply it in the recycler
+        setRecycler();
     }
 
     /**
@@ -115,6 +132,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
     /**
      * Replaces the %s placeholder in the Floating Action Buttons with the current gateway
+     *
      * @param fab floating action button that we are setting the text for
      */
     private void setFabTitle(final FloatingActionButton fab) {
@@ -129,12 +147,23 @@ public class MainActivity extends RoboAppCompatActivity {
     }
 
     /**
+     * Displays the the brightness control fragment.
+     */
+    public void showBrightnessDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        BrightnessControlFragment brightnessControl = BrightnessControlFragment.newInstance();
+        brightnessControl.show(fm, "fragment_brightness_control");
+    }
+
+
+    /**
      * Creates the adapter for the toolbar spinner that displays the gateways
+     *
      * @param dataSource The database for the adapter
      * @return Spinner adapter holding the gateway information
      */
     @VisibleForTesting
-    protected GatewaySpinnerAdapter createAdapter(DataSource dataSource) {
+    protected GatewaySpinnerAdapter createSpinnerAdapter(DataSource dataSource) {
         return new GatewaySpinnerAdapter(this, dataSource.findGateways());
     }
 
@@ -144,7 +173,30 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     @VisibleForTesting
     protected void setRecycler() {
-        // TODO: things for recycler view here
+        DataSource source = DataSource.getInstance(this);
+        source.open();
+
+        Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
+
+        if (currentGateway != null) {
+            mainAdapter = new MainAdapter(this, source.findZones(currentGateway), source.findButtons(currentGateway));
+
+            try {
+                recycler.setLayoutManager(getLayoutManager());
+            } catch (NullPointerException e) {
+            }
+
+            recycler.setAdapter(mainAdapter);
+        } else {
+            mainAdapter = null;
+        }
+
+        source.close();
+    }
+
+    @VisibleForTesting
+    protected RecyclerView.LayoutManager getLayoutManager() {
+        return new LinearLayoutManager(this);
     }
 
     /**
@@ -155,15 +207,17 @@ public class MainActivity extends RoboAppCompatActivity {
         DataSource dataSource = DataSource.getInstance(this);
         dataSource.open();
 
-        adapter = createAdapter(dataSource);
-        spinner.setAdapter(adapter);
+        spinnerAdapter = createSpinnerAdapter(dataSource);
+        spinner.setAdapter(spinnerAdapter);
 
         dataSource.close();
 
         startIntro();
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onNothingSelected(AdapterView<?> parent) { }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -171,8 +225,9 @@ public class MainActivity extends RoboAppCompatActivity {
                     createNewGateway();
                     spinner.setSelection(currentSpinnerSelection);
                 } else {
-                    setFabButtons();
                     currentSpinnerSelection = position;
+                    setFabButtons();
+                    setRecycler();
                 }
             }
         });
@@ -187,17 +242,18 @@ public class MainActivity extends RoboAppCompatActivity {
 
     /**
      * Get the name of whatever gateway the user has currently selected
+     *
      * @return String of the gateway name
      */
     private String getGatewayName() {
-        return adapter.getTitle(spinner.getSelectedItemPosition());
+        return spinnerAdapter.getTitle(getCurrentSpinnerSelection());
     }
 
     /**
      * Start the intro activity if necessary
      */
     public boolean startIntro() {
-        if (adapter.getCount() == 1) {
+        if (spinnerAdapter.getCount() == 1) {
             startActivityForResult(new Intent(this, IntroActivity.class), RESULT_INTRO);
             return true;
         }
@@ -207,6 +263,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
     /**
      * Display a snackbar for the user. Snackbars display temporary messages
+     *
      * @param text Message that you want to tell the user
      */
     private void makeSnackbar(String text) {
@@ -258,13 +315,17 @@ public class MainActivity extends RoboAppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.settings: openOption(IntroActivity.class);
+            case R.id.settings:
+                openOption(IntroActivity.class);
                 return true;
-            case R.id.diagnosis: openOption(null);
+            case R.id.diagnosis:
+                openOption(null);
                 return true;
-            case R.id.get_help: openOption(null);
+            case R.id.get_help:
+                openOption(null);
                 return true;
-            case R.id.transfer_settings: openOption(null);
+            case R.id.transfer_settings:
+                openOption(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -273,7 +334,8 @@ public class MainActivity extends RoboAppCompatActivity {
 
     /**
      * Start the activity for the class you want to open
-     * @param toOpen
+     *
+     * @param toOpen the class that should be opened.
      */
     public void openOption(Class toOpen) {
         if (toOpen != null) {

@@ -2,7 +2,6 @@ package com.sourceallies.android.zonebeacon.util;
 
 import android.app.Activity;
 import android.support.annotation.VisibleForTesting;
-import android.util.Log;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
