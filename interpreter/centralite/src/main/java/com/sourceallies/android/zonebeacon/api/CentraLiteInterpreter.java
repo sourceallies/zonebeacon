@@ -10,12 +10,14 @@ public class CentraLiteInterpreter implements Interpreter {
 
     @Override
     public String getExecutable(Command command) {
+        // TODO
         return null;
     }
 
     @Override
     public String processResponse(String response) {
-        return null;
+        // TODO
+        return response;
     }
 
 }

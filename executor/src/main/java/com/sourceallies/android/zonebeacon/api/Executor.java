@@ -41,13 +41,6 @@ public abstract class Executor {
     abstract void connect(Gateway gateway);
 
     /**
-     * Checks to see if this executor is connected to a gateway.
-     *
-     * @return true if connected, otherwise false.
-     */
-    abstract boolean isConnected();
-
-    /**
      * Disconnects from any gateways that are currently connected.
      */
     abstract void disconnect();
@@ -58,7 +51,7 @@ public abstract class Executor {
      * @param command the command to send (processed through the interpreter).
      * @return the response from the gateway. This will need to be processed by the interpreter.
      */
-    abstract String send(String command);
+    abstract String send(Gateway gateway, String command);
 
     /**
      * Sets a callback that should be called when a command has finished sending.
@@ -101,8 +94,8 @@ public abstract class Executor {
      * Executes a transaction on the currently established connection by sending all commands that
      * have been added.
      */
-    public void execute() {
-        if (!isRunning && isConnected()) {
+    public void execute(final Gateway gateway) {
+        if (!isRunning) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -112,7 +105,7 @@ public abstract class Executor {
                         Command command = commands.get(0);
                         commands.remove(0);
 
-                        String response = send(interpreter.getExecutable(command));
+                        String response = send(gateway, interpreter.getExecutable(command));
                         response = interpreter.processResponse(response);
 
                         if (response != null && callback != null) {
