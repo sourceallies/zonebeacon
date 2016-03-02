@@ -16,7 +16,7 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.getkeepsafe.dexcount'
-apply from: '../test_output.gradle'
+apply from: '../test_counter.gradle'
 
 android {
     compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
