@@ -65,11 +65,7 @@ dependencies {
     provided "org.projectlombok:lombok:${LOMBOK_VERSION}"
     provided "org.roboguice:roboblender:${ROBOGUICE_VERSION}"
 
-    compile project(':model')
-    compile project(':executor')
-    compile project(':interpreter')
-    compile project(':executor:serial')
-    compile project(':interpreter:centralite')
+    compile project(':api')
 
     compile('com.github.afollestad:sectioned-recyclerview:0.2.0') {
         transitive = true
