@@ -28,6 +28,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -62,6 +63,8 @@ public class MainActivity extends RoboAppCompatActivity {
     @Getter
     private Spinner spinner;
     @Getter
+    private View dim;
+    @Getter
     private FloatingActionsMenu fabMenu;
 
     @Getter
@@ -92,6 +95,7 @@ public class MainActivity extends RoboAppCompatActivity {
         recycler = (RecyclerView) findViewById(R.id.recycler_view);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         spinner = (Spinner) findViewById(R.id.toolbar_spinner);
+        dim = findViewById(R.id.dim);
         fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
 
         addZone = (FloatingActionButton) findViewById(R.id.add_zone);
@@ -128,6 +132,30 @@ public class MainActivity extends RoboAppCompatActivity {
         setFabTitle(addZone);
         setFabTitle(addButton);
         setFabTitle(addCommand);
+
+        fabMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+            @Override public void onMenuCollapsed() {
+                dim.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onMenuExpanded() {
+                dim.setVisibility(View.VISIBLE);
+            }
+        });
+
+        dim.setOnTouchListener(getDimListener());
+    }
+
+    @VisibleForTesting
+    protected View.OnTouchListener getDimListener() {
+        return new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                fabMenu.collapse();
+                return true;
+            }
+        };
     }
 
     /**

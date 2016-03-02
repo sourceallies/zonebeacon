@@ -6,7 +6,8 @@
     android:id="@+id/root_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true" >
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -38,11 +39,20 @@
         android:layout_marginTop="?android:actionBarSize"
         android:saveEnabled="false" />
 
+    <View
+        android:id="@+id/dim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?dim"
+        android:visibility="gone"
+        android:elevation="4dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         fab:layout_behavior="com.sourceallies.android.zonebeacon.util.FloatingActionButtonBehavior"
-        android:gravity="bottom|end">
+        android:gravity="bottom|end"
+        android:elevation="5dp">
 
         <com.getbase.floatingactionbutton.FloatingActionsMenu
             android:id="@+id/fab_menu"

@@ -20,6 +20,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
@@ -110,12 +111,27 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(activity.getAddButton());
         assertNotNull(activity.getAddCommand());
         assertNotNull(activity.getSpinner());
+        assertNotNull(activity.getDim());
         assertNotNull(activity.getRecycler());
     }
 
     @Test
     public void test_noAdapter() {
         assertNull(activity.getMainAdapter());
+    }
+
+    @Test
+    public void test_dimListener() {
+        assertTrue(activity.getDimListener().onTouch(null, null));
+    }
+
+    @Test
+    public void test_dimShown() {
+        activity.getFabMenu().expand();
+        assertTrue(activity.getDim().getVisibility() == View.VISIBLE);
+
+        activity.getFabMenu().collapse();
+        assertTrue(activity.getDim().getVisibility() == View.GONE);
     }
 
     @Test
