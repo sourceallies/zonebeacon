@@ -8,7 +8,7 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
  * Once implemented, that interpreter can be loaded into the app so that we can support different
  * control unit types easily.
  */
-public abstract class Interpreter {
+public interface Interpreter {
 
     /**
      * Receives a command that is stored in the database and turns it into an executable string
@@ -17,7 +17,7 @@ public abstract class Interpreter {
      * @param command the command to execute.
      * @return a string representing the command for the control unit.
      */
-    public abstract String getExecutable(Command command);
+    String getExecutable(Command command);
 
     /**
      * Processes the response provided by the control unit and hands it off back to the app.
@@ -27,6 +27,6 @@ public abstract class Interpreter {
      * @param response the response from the control unit.
      * @return a processed response.
      */
-    public abstract String processResponse(String response);
+    String processResponse(String response);
 
 }

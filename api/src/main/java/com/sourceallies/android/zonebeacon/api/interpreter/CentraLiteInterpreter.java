@@ -6,7 +6,7 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
  * Interpreter for handling creating commands for a CentraLite control unit and receiving and
  * processing the results.
  */
-public class CentraLiteInterpreter extends Interpreter {
+public class CentraLiteInterpreter implements Interpreter {
 
     @Override
     public String getExecutable(Command command) {

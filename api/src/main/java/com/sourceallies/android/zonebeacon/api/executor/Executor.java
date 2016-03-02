@@ -5,6 +5,7 @@ import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public abstract class Executor {
      * @param command the command to send (processed through the interpreter).
      * @return the response from the gateway. This will need to be processed by the interpreter.
      */
-    public abstract String send(String command);
+    public abstract String send(String command) throws IOException;
 
     /**
      * Sets a callback that should be called when a command has finished sending.
@@ -79,7 +80,9 @@ public abstract class Executor {
      * @param commands the commands to send.
      */
     public void addCommands(List<Command> commands) {
-        commands.addAll(commands);
+        for (Command command : commands) {
+            addCommand(command);
+        }
     }
 
     /**
@@ -89,7 +92,20 @@ public abstract class Executor {
      * @param command the command to pass through an interpreter and send through the connection.
      */
     public void addCommand(Command command) {
+        if (command == null) {
+            throw new RuntimeException("Command cannot be null");
+        }
+
         commands.add(command);
+    }
+
+    /**
+     * Gets a list of the currently added commands.
+     *
+     * @return the commands that have been added.
+     */
+    public List<Command> getCommands() {
+        return commands;
     }
 
     /**
@@ -107,11 +123,15 @@ public abstract class Executor {
                         Command command = commands.get(0);
                         commands.remove(0);
 
-                        String response = send(interpreter.getExecutable(command));
-                        response = interpreter.processResponse(response);
+                        try {
+                            String response = send(interpreter.getExecutable(command));
+                            response = interpreter.processResponse(response);
 
-                        if (response != null && callback != null) {
-                            callback.onResponse(command, response);
+                            if (callback != null) {
+                                callback.onResponse(command, response);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
 

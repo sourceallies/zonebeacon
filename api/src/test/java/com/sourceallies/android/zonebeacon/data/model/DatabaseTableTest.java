@@ -71,4 +71,8 @@ public abstract class DatabaseTableTest extends ZoneBeaconRobolectricSuite {
         assertTrue(bool);
     }
 
+    protected void assertColumnNotFilled(Integer integer) {
+        assertNull(integer);
+    }
+
 }
