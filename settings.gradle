@@ -14,5 +14,4 @@
  * limitations under the License.
  */
 
-include ':app', ':model', ':test_helper', ':executor', ':interpreter', ':executor:serial',
-		':interpreter:centralite'
+include ':app', ':api', ':test_helper'
