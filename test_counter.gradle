@@ -1,0 +1,15 @@
+def success = 0
+def failure = 0
+
+android.testOptions.unitTests.all {
+    afterTest { descriptor, result ->
+        print "Executing: ${descriptor.name}. Result: ${result.resultType}. "
+
+        if (result.resultType.toString().equals('SUCCESS'))
+            success += 1
+        else
+            failures += 1
+
+        println "Successes: ${success}, Failures: ${failure}"
+    }
+}

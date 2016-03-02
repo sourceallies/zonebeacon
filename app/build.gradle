@@ -17,12 +17,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.getkeepsafe.dexcount'
 
-android.testOptions.unitTests.all {
-    afterTest { descriptor, result ->
-        println "Executing: ${descriptor.name}. Result: ${result.resultType}"
-    }
-}
-
 android {
     compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
     buildToolsVersion BUILD_TOOLS_VERSION
@@ -57,7 +51,7 @@ android {
     lintOptions {
         abortOnError true
         disable 'GoogleAppIndexingWarning', 'AllowBackup', 'InvalidPackage', 'IconMissingDensityFolder',
-                'UnusedAttribute'
+                'UnusedAttribute', 'ClickableViewAccessibility'
         textReport true
         textOutput 'stdout'
         xmlReport false
@@ -67,8 +61,14 @@ android {
 
 dependencies {
 
-    provided 'org.projectlombok:lombok:1.14.8'
-    provided 'org.roboguice:roboblender:3.0.1'
+    provided "org.projectlombok:lombok:${LOMBOK_VERSION}"
+    provided "org.roboguice:roboblender:${ROBOGUICE_VERSION}"
+
+    compile project(':model')
+    compile project(':executor')
+    compile project(':interpreter')
+    compile project(':executor:serial')
+    compile project(':interpreter:centralite')
 
     compile('com.github.afollestad:sectioned-recyclerview:0.2.0') {
         transitive = true
@@ -85,14 +85,7 @@ dependencies {
     compile "com.android.support:cardview-v7:${ANDROID_SUPPORT_VERSION}"
     compile "com.android.support:support-annotations:${ANDROID_SUPPORT_VERSION}"
 
-    compile 'org.roboguice:roboguice:3.0.1'
+    compile "org.roboguice:roboguice:${ROBOGUICE_VERSION}"
 
-    testCompile 'junit:junit:4.12'
-    testCompile "org.robolectric:robolectric:3.0"
-    testCompile 'org.mockito:mockito-all:1.9.5'
-    testCompile 'org.powermock:powermock-mockito-release-full:1.6.1'
-    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.0'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.0'
-    testCompile 'org.powermock:powermock-classloading-xstream:1.6.0'
-    testCompile 'org.apache.maven:maven-ant-tasks:2.1.3'
+    testCompile project(':test_helper')
 }

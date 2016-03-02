@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
+    buildToolsVersion BUILD_TOOLS_VERSION
+
+    defaultConfig {
+        minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
+        targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
+        versionName VERSION_NAME
+        versionCode Integer.parseInt(VERSION_CODE)
+    }
+
+    lintOptions {
+        abortOnError true
+        disable 'InvalidPackage'
+        textReport true
+        textOutput 'stdout'
+        xmlReport false
+        htmlReport true
+    }
+}
+
+dependencies {
+    compile "com.android.support:support-v4:${ANDROID_SUPPORT_VERSION}"
+    compile "org.roboguice:roboguice:${ROBOGUICE_VERSION}"
+
+    compile 'junit:junit:4.12'
+    compile "org.robolectric:robolectric:3.0"
+    compile 'org.mockito:mockito-all:1.9.5'
+    compile 'org.powermock:powermock-mockito-release-full:1.6.1'
+    compile 'org.powermock:powermock-module-junit4-rule:1.6.0'
+    compile 'org.powermock:powermock-api-mockito:1.6.0'
+    compile 'org.powermock:powermock-classloading-xstream:1.6.0'
+    compile 'org.apache.maven:maven-ant-tasks:2.1.3'
+}
