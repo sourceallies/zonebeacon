@@ -34,7 +34,7 @@ public class SerialExecutor extends Executor {
     @Override
     public boolean pingGateway(Gateway gateway) {
         // TODO how should we accomplish this?
-        return false;
+        return true;
     }
 
     @Override
@@ -61,38 +61,37 @@ public class SerialExecutor extends Executor {
     }
 
     @Override
-    public String send(String command) {
-        try {
-            PrintWriter w = createPrintWriter(connection);
-            w.print(command + "\r\n");
-            w.flush();
+    public String send(String command) throws IOException {
+        PrintWriter w = createPrintWriter(connection);
+        w.print(command + "\r\n");
+        w.flush();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            int value;
+        BufferedReader br = createBufferedReader(connection);
+        StringBuilder sb = new StringBuilder();
+        int value;
 
-            setTimeoutOnSocket(connection.getSocket());
-            while ((value = br.read()) != -1) {
-                char c = (char) value;
-                sb.append(c);
+        setTimeoutOnSocket(connection.getSocket());
+        while ((value = br.read()) != -1) {
+            char c = (char) value;
+            sb.append(c);
 
-                if (!br.ready())
-                    break;
-                else
-                    setTimeoutOnSocket(connection.getSocket());
-            }
-
-            handler.removeCallbacksAndMessages(null);
-
-            return sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            if (!br.ready())
+                break;
+            else
+                setTimeoutOnSocket(connection.getSocket());
         }
+
+        handler.removeCallbacksAndMessages(null);
+
+        return sb.toString();
     }
 
-    protected PrintWriter createPrintWriter(SocketConnection socketConnection) {
-        return new PrintWriter(socketConnection.getOutputStream(), true);
+    protected BufferedReader createBufferedReader(SocketConnection connection) {
+        return new BufferedReader(new InputStreamReader(connection.getInputStream()));
+    }
+
+    protected PrintWriter createPrintWriter(SocketConnection connection) {
+        return new PrintWriter(connection.getOutputStream(), true);
     }
 
     /**
@@ -106,14 +105,17 @@ public class SerialExecutor extends Executor {
      *
      * @param socket that we are reading from.
      */
-    private void setTimeoutOnSocket(final Socket socket) {
+    protected void setTimeoutOnSocket(final Socket socket) {
         // remove any old timeouts
         handler.removeCallbacksAndMessages(null);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 closeSocket(socket);
-                getCommandCallback().onResponse(null, "No Response");
+
+                if (getCommandCallback() != null) {
+                    getCommandCallback().onResponse(null, "No Response");
+                }
             }
         }, READER_TIMEOUT);
     }

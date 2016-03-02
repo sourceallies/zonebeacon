@@ -3,6 +3,9 @@ package com.sourceallies.android.zonebeacon.data.model;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class ZoneTest extends DatabaseTableTest {
@@ -44,8 +47,16 @@ public class ZoneTest extends DatabaseTableTest {
         assertColumnFilled(zone.getName());
     }
 
+    @Test
+    public void test_getCommands() {
+        List<Button> buttons = new ArrayList<>();
+        zone.setButtons(buttons);
+        assertEquals(buttons, zone.getButtons());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return zone;
     }
+
 }
