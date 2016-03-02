@@ -11,3 +11,8 @@ android {
         versionCode Integer.parseInt(VERSION_CODE)
     }
 }
+
+dependencies {
+    compile project(':model')
+    compile project(':interpreter')
+}
