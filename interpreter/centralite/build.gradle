@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: '../test_counter.gradle'
+apply from: '../../test_counter.gradle'
 
 android {
     compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
