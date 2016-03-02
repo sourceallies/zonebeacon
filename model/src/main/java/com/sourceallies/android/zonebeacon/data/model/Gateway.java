@@ -59,11 +59,6 @@ public class Gateway implements DatabaseTable {
     @Setter
     @Getter
     private long systemTypeId;
-    
-    // A handler is created so that we can set a timeout in case this command fails
-    // to return a response.
-    @Getter
-    private Handler handler = new Handler();
 
     @Override
     public String getCreateStatement() {
