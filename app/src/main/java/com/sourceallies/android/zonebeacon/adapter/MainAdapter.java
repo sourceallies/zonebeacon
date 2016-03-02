@@ -3,8 +3,10 @@ package com.sourceallies.android.zonebeacon.adapter;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -144,7 +146,14 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
+        @NonNull
         public TextView title;
+
+        @Nullable
+        public View root;
+
+        @Nullable
+        public SwitchCompat buttonSwitch;
 
         /**
          * Constructor accepting the inflated view.
@@ -153,7 +162,28 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
          */
         public ViewHolder(View itemView) {
             super(itemView);
+            root = itemView.findViewById(R.id.root_layout);
             title = (TextView) itemView.findViewById(R.id.title);
+            buttonSwitch = (SwitchCompat) itemView.findViewById(R.id.button_switch);
+
+            setItemClick(root, buttonSwitch);
+        }
+
+        @VisibleForTesting
+        protected void setItemClick(View root, final SwitchCompat buttonSwitch) {
+            if (root != null && buttonSwitch != null) { // Null for the header
+                root.setOnClickListener(getClickListener(buttonSwitch));
+            }
+        }
+
+        @VisibleForTesting
+        protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch) {
+            return new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    buttonSwitch.setChecked(!buttonSwitch.isChecked());
+                }
+            };
         }
     }
 }

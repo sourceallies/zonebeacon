@@ -74,9 +74,9 @@ public class MainActivity extends RoboAppCompatActivity {
     @Getter
     private MainAdapter mainAdapter;
 
-    @Getter
     @Setter
     private GatewaySpinnerAdapter spinnerAdapter;
+
     @Getter
     private int currentSpinnerSelection = 0;
 
