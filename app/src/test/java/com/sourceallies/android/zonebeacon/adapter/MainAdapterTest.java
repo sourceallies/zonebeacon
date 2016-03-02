@@ -2,6 +2,7 @@ package com.sourceallies.android.zonebeacon.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
     View view;
     @Mock
     TextView title;
+    @Mock
+    SwitchCompat buttonSwitch;
     @Mock
     ViewGroup parent;
 
@@ -147,12 +150,40 @@ public class MainAdapterTest extends ZoneBeaconSuite {
     @Test
     public void test_create_view() {
         MainAdapter adapter = new MainAdapter(context, getZoneList(1), getButtonList(1));
-        adapter.onCreateViewHolder(parent, -1); // View type item
+        MainAdapter.ViewHolder holder = adapter.onCreateViewHolder(parent, -1); // View type item
 
         Mockito.verify(inflater)
                 .inflate(Mockito.eq(R.layout.adapter_item_button_zone),
                         Mockito.any(ViewGroup.class),
                         Mockito.anyBoolean());
+    }
+
+    @Test
+    public void test_itemClick() {
+        MainAdapter.ViewHolder holder = new MainAdapter.ViewHolder(title);
+        holder.setItemClick(view, buttonSwitch);
+
+        Mockito.verify(view).setOnClickListener(Mockito.any(View.OnClickListener.class));
+    }
+
+    @Test
+    public void test_clickListener() {
+        MainAdapter.ViewHolder holder = new MainAdapter.ViewHolder(title);
+
+        holder.getClickListener(buttonSwitch).onClick(buttonSwitch);
+        Mockito.verify(buttonSwitch).setChecked(true);
+
+        Mockito.doReturn(true).when(buttonSwitch).isChecked();
+        holder.getClickListener(buttonSwitch).onClick(buttonSwitch);
+        Mockito.verify(buttonSwitch).setChecked(false);
+    }
+
+    @Test
+    public void test_itemClick_header() {
+        MainAdapter.ViewHolder holder = new MainAdapter.ViewHolder(title);
+        holder.setItemClick(view, null);
+
+        Mockito.verifyZeroInteractions(view);
     }
 
     private List<Zone> getZoneList(int count) {
