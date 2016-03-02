@@ -9,26 +9,22 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import lombok.Getter;
 
 /**
- * Executor that sends commands serially to a control unit. This is required for CentraLite systems
- * and perhaps others as well.
+ * Executor that sends commands serially and through a network connection to a control unit.
+ * This is required for CentraLite systems and perhaps others as well.
  */
 public class SerialExecutor extends Executor {
 
     private static final long READER_TIMEOUT = 1000;
 
-    private Map<String, SocketConnection> connections;
+    private Gateway gateway;
+    private SocketConnection connection;
 
     public SerialExecutor(Interpreter interpreter) {
         super(interpreter);
-
-        this.connections = new HashMap<>();
     }
 
     @Override
@@ -39,21 +35,12 @@ public class SerialExecutor extends Executor {
 
     @Override
     public void connect(Gateway gateway) {
-        getOrCreateSocketConnection(gateway);
+        this.gateway = gateway;
+        this.connection = createSocketConnection(gateway);
     }
 
     @Override
     public void disconnect() {
-        Iterator it = connections.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            disconnect((SocketConnection) pair.getValue());
-
-            it.remove();
-        }
-    }
-
-    private void disconnect(SocketConnection connection) {
         try {
             connection.getSocket().close();
         } catch (IOException e) {
@@ -66,23 +53,13 @@ public class SerialExecutor extends Executor {
             connection.getOutputStream().close();
         } catch (IOException e) {
         }
-    }
 
-    /**
-     * Returns of string of the address plus port number to communicate on.
-     *
-     * @param gateway contains address and port number
-     * @return string of host.ip:port
-     */
-    private String buildKey(Gateway gateway) {
-        return gateway.getIpAddress() + ":" + gateway.getPortNumber();
+        connection = null;
     }
 
     @Override
-    protected String send(Gateway gateway, String command) {
+    protected String send(String command) {
         try {
-            SocketConnection connection = getOrCreateSocketConnection(gateway);
-
             PrintWriter w = createPrintWriter(connection);
             w.print(command + "\r\n");
             w.flush();
@@ -149,25 +126,6 @@ public class SerialExecutor extends Executor {
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * We want to be able to keep the socket open over multiple commands.
-     * So, store them in a HashMap and be able to access them.
-     *
-     * @param gateway contains the host ip and port.
-     * @return connection that was created or found.
-     */
-    public SocketConnection getOrCreateSocketConnection(Gateway gateway) {
-        String key = buildKey(gateway);
-        if (connections.containsKey(key)) {
-            return connections.get(key);
-        } else {
-            SocketConnection connection = createSocketConnection(gateway);
-            connections.put(key, connection);
-
-            return connection;
         }
     }
 
