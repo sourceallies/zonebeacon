@@ -25,4 +25,6 @@ public class SerialExecutorTest extends ZoneBeaconSuite {
         assertNotNull(executor);
     }
 
+    // TODO more tests needed
+
 }

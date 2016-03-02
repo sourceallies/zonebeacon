@@ -51,7 +51,7 @@ public abstract class Executor {
      * @param command the command to send (processed through the interpreter).
      * @return the response from the gateway. This will need to be processed by the interpreter.
      */
-    abstract String send(Gateway gateway, String command);
+    abstract String send(String command);
 
     /**
      * Sets a callback that should be called when a command has finished sending.
@@ -94,7 +94,7 @@ public abstract class Executor {
      * Executes a transaction on the currently established connection by sending all commands that
      * have been added.
      */
-    public void execute(final Gateway gateway) {
+    public void execute() {
         if (!isRunning) {
             new Thread(new Runnable() {
                 @Override
@@ -105,7 +105,7 @@ public abstract class Executor {
                         Command command = commands.get(0);
                         commands.remove(0);
 
-                        String response = send(gateway, interpreter.getExecutable(command));
+                        String response = send(interpreter.getExecutable(command));
                         response = interpreter.processResponse(response);
 
                         if (response != null && callback != null) {
