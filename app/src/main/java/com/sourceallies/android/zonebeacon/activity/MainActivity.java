@@ -169,7 +169,6 @@ public class MainActivity extends RoboAppCompatActivity {
             @Override
             public void onClick(View v) {
                 collapseFab();
-                makeSnackbar(fab.getTitle());
             }
         });
     }
@@ -289,15 +288,6 @@ public class MainActivity extends RoboAppCompatActivity {
         return false;
     }
 
-    /**
-     * Display a snackbar for the user. Snackbars display temporary messages
-     *
-     * @param text Message that you want to tell the user
-     */
-    private void makeSnackbar(String text) {
-        Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG).show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == RESULT_INTRO &&
@@ -369,9 +359,6 @@ public class MainActivity extends RoboAppCompatActivity {
         if (toOpen != null) {
             Intent option = new Intent(this, toOpen);
             startActivity(option);
-        } else {
-            // class is not defined yet, so display a message to the user.
-            makeSnackbar("No class to open.");
         }
     }
 
