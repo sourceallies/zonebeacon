@@ -151,14 +151,22 @@ public class RoboAppCompatActivity extends RoboFragmentActivity implements AppCo
         getDelegate().onPostResume();
     }
 
+    @VisibleForTesting
+    protected boolean superOnMenuItemSelected(int featureId, android.view.MenuItem item) {
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    public boolean supportNavUp(android.view.MenuItem item) {
+        final ActionBar ab = getSupportActionBar();
+        return item.getItemId() == android.R.id.home && ab != null &&
+                (ab.getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP) != 0;
+    }
     @Override
     public final boolean onMenuItemSelected(int featureId, android.view.MenuItem item) {
-        if (super.onMenuItemSelected(featureId, item)) {
+        if (superOnMenuItemSelected(featureId, item)) {
             return true;
         }
-        final ActionBar ab = getSupportActionBar();
-        if (item.getItemId() == android.R.id.home && ab != null &&
-                (ab.getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP) != 0) {
+        if (supportNavUp(item)) {
             return onSupportNavigateUp();
         }
         return false;
@@ -316,17 +324,11 @@ public class RoboAppCompatActivity extends RoboFragmentActivity implements AppCo
         Intent upIntent = getSupportParentActivityIntent();
         if (upIntent != null) {
             if (supportShouldUpRecreateTask(upIntent)) {
-                TaskStackBuilder b = TaskStackBuilder.create(this);
+                TaskStackBuilder b = getStackBuilder();
                 onCreateSupportNavigateUpTaskStack(b);
                 onPrepareSupportNavigateUpTaskStack(b);
                 b.startActivities();
-                try {
-                    ActivityCompat.finishAffinity(this);
-                } catch (IllegalStateException e) {
-                    // This can only happen on 4.1+, when we don't have a parent or a result set.
-                    // In that case we should just finish().
-                    finish();
-                }
+                finish();
             } else {
                 // This activity is part of the application's task, so simply
                 // navigate up to the hierarchical parent activity.
@@ -335,6 +337,11 @@ public class RoboAppCompatActivity extends RoboFragmentActivity implements AppCo
             return true;
         }
         return false;
+    }
+
+    @VisibleForTesting
+    protected TaskStackBuilder getStackBuilder() {
+        return TaskStackBuilder.create(this);
     }
 
     /**
