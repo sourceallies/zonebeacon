@@ -1,5 +1,7 @@
 package com.sourceallies.android.zonebeacon.api;
 
+import android.os.Handler;
+
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import java.io.BufferedReader;
@@ -20,11 +22,12 @@ public class SerialExecutor extends Executor {
 
     private static final long READER_TIMEOUT = 1000;
 
-    private Gateway gateway;
+    private Handler handler;
     private SocketConnection connection;
 
     public SerialExecutor(Interpreter interpreter) {
         super(interpreter);
+        this.handler = new Handler();
     }
 
     @Override
@@ -35,7 +38,6 @@ public class SerialExecutor extends Executor {
 
     @Override
     public void connect(Gateway gateway) {
-        this.gateway = gateway;
         this.connection = createSocketConnection(gateway);
     }
 
@@ -68,7 +70,7 @@ public class SerialExecutor extends Executor {
             StringBuilder sb = new StringBuilder();
             int value;
 
-            setTimeoutOnSocket(connection.getSocket(), gateway);
+            setTimeoutOnSocket(connection.getSocket());
             while ((value = br.read()) != -1) {
                 char c = (char) value;
                 sb.append(c);
@@ -76,11 +78,10 @@ public class SerialExecutor extends Executor {
                 if (!br.ready())
                     break;
                 else
-                    setTimeoutOnSocket(connection.getSocket(), gateway);
-
+                    setTimeoutOnSocket(connection.getSocket());
             }
 
-            gateway.getHandler().removeCallbacksAndMessages(null);
+            handler.removeCallbacksAndMessages(null);
 
             return sb.toString();
         } catch (IOException e) {
@@ -104,10 +105,10 @@ public class SerialExecutor extends Executor {
      *
      * @param socket that we are reading from.
      */
-    private void setTimeoutOnSocket(final Socket socket, final Gateway gateway) {
+    private void setTimeoutOnSocket(final Socket socket) {
         // remove any old timeouts
-        gateway.getHandler().removeCallbacksAndMessages(null);
-        gateway.getHandler().postDelayed(new Runnable() {
+        handler.removeCallbacksAndMessages(null);
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 closeSocket(socket);
