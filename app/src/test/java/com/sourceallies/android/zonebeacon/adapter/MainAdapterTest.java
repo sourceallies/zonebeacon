@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
@@ -45,6 +46,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
     ViewGroup parent;
     @Mock
     Gateway gateway;
+    @Mock
+    Executor executor;
 
     @Before
     public void setUp() {
@@ -57,7 +60,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
         Mockito.when(gateway.getIpAddress()).thenReturn("192.168.1.150");
         Mockito.when(gateway.getPortNumber()).thenReturn(11000);
-        
+
+        Mockito.doNothing().when(executor).execute(Mockito.any(Gateway.class));
         Mockito.doNothing().when(title).setText(Mockito.anyString());
         viewHolder.title = title;
     }
@@ -164,33 +168,45 @@ public class MainAdapterTest extends ZoneBeaconSuite {
                         Mockito.anyBoolean());
     }
 
-    /*@Test
+    @Test
+    public void test_getStatus() {
+        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+
+        Mockito.when(buttonSwitch.isChecked()).thenReturn(true);
+        assertEquals(Executor.LoadStatus.ON, adapter.getStatus(buttonSwitch));
+
+        Mockito.when(buttonSwitch.isChecked()).thenReturn(false);
+        assertEquals(Executor.LoadStatus.OFF, adapter.getStatus(buttonSwitch));
+    }
+
+    @Test
+    public void test_clickListener() {
+        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        adapter.executor = executor;
+
+        adapter.getClickListener(buttonSwitch, 0, 0).onClick(buttonSwitch);
+        Mockito.verify(buttonSwitch).setChecked(true);
+
+        Mockito.doReturn(true).when(buttonSwitch).isChecked();
+        adapter.getClickListener(buttonSwitch, 1, 0).onClick(buttonSwitch);
+        Mockito.verify(buttonSwitch).setChecked(false);
+    }
+
+    @Test
     public void test_itemClick() {
-        MainAdapter.ViewHolder holder = new MainAdapter.ViewHolder(title);
-        holder.setItemClick(view, buttonSwitch);
+        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        adapter.setItemClick(view, buttonSwitch, 0, 0);
 
         Mockito.verify(view).setOnClickListener(Mockito.any(View.OnClickListener.class));
     }
 
     @Test
-    public void test_clickListener() {
-        MainAdapter.ViewHolder holder = new MainAdapter.ViewHolder(title);
-
-        holder.getClickListener(buttonSwitch).onClick(buttonSwitch);
-        Mockito.verify(buttonSwitch).setChecked(true);
-
-        Mockito.doReturn(true).when(buttonSwitch).isChecked();
-        holder.getClickListener(buttonSwitch).onClick(buttonSwitch);
-        Mockito.verify(buttonSwitch).setChecked(false);
-    }
-
-    @Test
     public void test_itemClick_header() {
-        MainAdapter.ViewHolder holder = new MainAdapter.ViewHolder(title);
-        holder.setItemClick(view, null);
+        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        adapter.setItemClick(view, null, 0, 0);
 
         Mockito.verifyZeroInteractions(view);
-    }*/
+    }
 
     private List<Zone> getZoneList(int count) {
         List<Zone> zones = new ArrayList<>();
@@ -198,6 +214,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         for (int i = 0; i < count; i++) {
             Zone zone = new Zone();
             zone.setName("Test Zone " + i);
+            zone.setButtons(getButtonList(1));
             zones.add(zone);
         }
 

@@ -17,6 +17,13 @@ public class ExecutorTest extends ZoneBeaconSuite {
         assertTrue(e.getInterpreter() instanceof CentraLiteInterpreter);
     }
 
+    @Test
+    public void test_getDefault() {
+        Executor e = Executor.createForGateway(getGatewayForSystem(-1));
+        assertTrue(e instanceof SerialExecutor);
+        assertTrue(e.getInterpreter() instanceof CentraLiteInterpreter);
+    }
+
     private Gateway getGatewayForSystem(int systemTypeId) {
         Gateway gateway = new Gateway();
         gateway.setSystemTypeId(systemTypeId);
