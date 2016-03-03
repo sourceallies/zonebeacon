@@ -30,6 +30,7 @@ import java.util.List;
 public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHolder> {
 
     private Activity context;
+    private Executor executor;
 
     private String zonesTitle;
     private String buttonsTitle;
@@ -47,6 +48,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     public MainAdapter(Activity context, @NonNull Gateway gateway,
                        @NonNull List<Zone> zones, @NonNull List<Button> buttons) {
         this.context = context;
+        this.executor = new SerialExecutor(new CentraLiteInterpreter());
 
         this.gateway = gateway;
         this.zones = zones;
@@ -132,24 +134,23 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Executor centralite = new SerialExecutor(new CentraLiteInterpreter());
-
                 if (!isZone(section)) {
-                    centralite.addCommands(buttons.get(relativePosition).getCommands());
+                    executor.addCommands(buttons.get(relativePosition).getCommands(), getStatus(buttonSwitch));
                 } else {
                     for (Button button : zones.get(relativePosition).getButtons()) {
-                        centralite.addCommands(button.getCommands());
+                        executor.addCommands(button.getCommands(), getStatus(buttonSwitch));
                     }
                 }
 
-                centralite.setLoadStatus(buttonSwitch.isChecked() ?
-                        Executor.LoadStatus.ON :
-                        Executor.LoadStatus.OFF);
-                centralite.execute(gateway);
+                executor.execute(gateway);
 
                 buttonSwitch.setChecked(!buttonSwitch.isChecked());
             }
         };
+    }
+
+    private Executor.LoadStatus getStatus(SwitchCompat buttonSwitch) {
+        return buttonSwitch.isChecked() ? Executor.LoadStatus.ON : Executor.LoadStatus.OFF;
     }
 
     /**

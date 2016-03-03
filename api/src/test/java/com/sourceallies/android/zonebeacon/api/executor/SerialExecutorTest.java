@@ -76,12 +76,12 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
 
     @Test(expected = RuntimeException.class)
     public void test_addNullCommand() {
-        executor.addCommand(null);
+        executor.addCommand(null, Executor.LoadStatus.OFF);
     }
 
     @Test
     public void test_addCommand() {
-        executor.addCommand(command);
+        executor.addCommand(command, Executor.LoadStatus.OFF);
         assertEquals(1, executor.getCommands().size());
     }
 
@@ -92,7 +92,7 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         commands.add(command);
         commands.add(command);
         commands.add(command);
-        executor.addCommands(commands);
+        executor.addCommands(commands, Executor.LoadStatus.OFF);
 
         assertEquals(4, executor.getCommands().size());
     }
@@ -104,7 +104,7 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         commands.add(null);
         commands.add(command);
         commands.add(command);
-        executor.addCommands(commands);
+        executor.addCommands(commands, Executor.LoadStatus.OFF);
     }
 
     @Test
@@ -125,10 +125,9 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         when(interpreter.getExecutable(eq(command2), any(Executor.LoadStatus.class))).thenReturn("test 2");
         when(interpreter.getExecutable(eq(command3), any(Executor.LoadStatus.class))).thenReturn("test 3");
 
-        executor.addCommand(command1);
-        executor.addCommand(command2);
-        executor.addCommand(command3);
-        executor.setLoadStatus(Executor.LoadStatus.OFF);
+        executor.addCommand(command1, Executor.LoadStatus.OFF);
+        executor.addCommand(command2, Executor.LoadStatus.OFF);
+        executor.addCommand(command3, Executor.LoadStatus.ON);
 
         executor.setCommandCallback(commandCallback);
         executor.execute(gateway);
@@ -164,10 +163,9 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         when(interpreter.getExecutable(eq(command2), any(Executor.LoadStatus.class))).thenReturn("test 2");
         when(interpreter.getExecutable(eq(command3), any(Executor.LoadStatus.class))).thenReturn("test 3");
 
-        executor.addCommand(command1);
-        executor.addCommand(command2);
-        executor.addCommand(command3);
-        executor.setLoadStatus(Executor.LoadStatus.OFF);
+        executor.addCommand(command1, Executor.LoadStatus.OFF);
+        executor.addCommand(command2, Executor.LoadStatus.ON);
+        executor.addCommand(command3, Executor.LoadStatus.OFF);
 
         executor.setCommandCallback(commandCallback);
         executor.execute(gateway);
@@ -185,7 +183,7 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
 
         Command command1 = mock(Command.class);
         when(interpreter.getExecutable(eq(command1), any(Executor.LoadStatus.class))).thenReturn("test 1");
-        executor.addCommand(command1);
+        executor.addCommand(command1, Executor.LoadStatus.OFF);
 
         executor.execute(gateway);
     }
