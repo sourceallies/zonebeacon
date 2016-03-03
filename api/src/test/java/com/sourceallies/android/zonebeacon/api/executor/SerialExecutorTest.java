@@ -108,7 +108,8 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_executeCommands_multiple() throws Exception {
+    public void test_executeCommands_multiple_notCombined() throws Exception {
+        doReturn(false).when(executor).commandsCombinable();
         doReturn(socketConnection).when(executor).createSocketConnection(any(Gateway.class));
         doReturn(printWriter).when(executor).createPrintWriter(socketConnection);
         doReturn(bufferedReader).when(executor).createBufferedReader(socketConnection);
@@ -120,19 +121,19 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         Command command2 = mock(Command.class);
         Command command3 = mock(Command.class);
 
-        when(interpreter.getExecutable(command1)).thenReturn("test 1");
-        when(interpreter.getExecutable(command2)).thenReturn("test 2");
-        when(interpreter.getExecutable(command3)).thenReturn("test 3");
+        when(interpreter.getExecutable(eq(command1), any(Executor.LoadStatus.class))).thenReturn("test 1");
+        when(interpreter.getExecutable(eq(command2), any(Executor.LoadStatus.class))).thenReturn("test 2");
+        when(interpreter.getExecutable(eq(command3), any(Executor.LoadStatus.class))).thenReturn("test 3");
 
         executor.addCommand(command1);
         executor.addCommand(command2);
         executor.addCommand(command3);
+        executor.setLoadStatus(Executor.LoadStatus.OFF);
 
         executor.setCommandCallback(commandCallback);
-        executor.connect(gateway);
-        executor.execute();
+        executor.execute(gateway);
 
-        Thread.sleep(10);
+        Thread.sleep(5);
         when(bufferedReader.ready()).thenReturn(false);
 
         InOrder inOrder = inOrder(printWriter);
@@ -147,16 +148,46 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
+    public void test_executeCommands_multiple() throws Exception {
+        doReturn(socketConnection).when(executor).createSocketConnection(any(Gateway.class));
+        doReturn(printWriter).when(executor).createPrintWriter(socketConnection);
+        doReturn(bufferedReader).when(executor).createBufferedReader(socketConnection);
+        doReturn(inputStream).when(socketConnection).getInputStream();
+        when(bufferedReader.read()).thenReturn(1);
+        when(bufferedReader.ready()).thenReturn(true);
+
+        Command command1 = mock(Command.class);
+        Command command2 = mock(Command.class);
+        Command command3 = mock(Command.class);
+
+        when(interpreter.getExecutable(eq(command1), any(Executor.LoadStatus.class))).thenReturn("test 1");
+        when(interpreter.getExecutable(eq(command2), any(Executor.LoadStatus.class))).thenReturn("test 2");
+        when(interpreter.getExecutable(eq(command3), any(Executor.LoadStatus.class))).thenReturn("test 3");
+
+        executor.addCommand(command1);
+        executor.addCommand(command2);
+        executor.addCommand(command3);
+        executor.setLoadStatus(Executor.LoadStatus.OFF);
+
+        executor.setCommandCallback(commandCallback);
+        executor.execute(gateway);
+
+        Thread.sleep(5);
+        when(bufferedReader.ready()).thenReturn(false);
+
+        verify(printWriter).print("test 1test 2test 3\r\n");
+    }
+
+    @Test
     public void test_ioExceptionOnExecute() throws Exception {
         doReturn(socketConnection).when(executor).createSocketConnection(any(Gateway.class));
         doThrow(IOException.class).when(executor).send("test 1");
 
         Command command1 = mock(Command.class);
-        when(interpreter.getExecutable(command1)).thenReturn("test 1");
+        when(interpreter.getExecutable(eq(command1), any(Executor.LoadStatus.class))).thenReturn("test 1");
         executor.addCommand(command1);
 
-        executor.connect(gateway);
-        executor.execute();
+        executor.execute(gateway);
     }
 
     @Test

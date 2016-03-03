@@ -118,8 +118,9 @@ public class Command implements DatabaseTable {
             }
         }
 
-        commandType = new CommandType();
+        CommandType commandType = new CommandType();
         commandType.fillFromCursor(cursor);
+        setCommandType(commandType);
     }
 
 }
