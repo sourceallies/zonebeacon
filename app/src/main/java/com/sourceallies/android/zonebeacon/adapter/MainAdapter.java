@@ -113,6 +113,43 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             holder.title.setText(zones.get(relativePosition).getName());
         else
             holder.title.setText(buttons.get(relativePosition).getName());
+
+
+        setItemClick(holder.root, holder.buttonSwitch, section, relativePosition);
+    }
+
+    @VisibleForTesting
+    protected void setItemClick(View root, final SwitchCompat buttonSwitch,
+                                int section, int relativePosition) {
+        if (root != null && buttonSwitch != null) { // Null for the header
+            root.setOnClickListener(getClickListener(buttonSwitch, section, relativePosition));
+        }
+    }
+
+    @VisibleForTesting
+    protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch,
+                                                    final int section, final int relativePosition) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Executor centralite = new SerialExecutor(new CentraLiteInterpreter());
+
+                if (!isZone(section)) {
+                    centralite.addCommands(buttons.get(relativePosition).getCommands());
+                } else {
+                    for (Button button : zones.get(relativePosition).getButtons()) {
+                        centralite.addCommands(button.getCommands());
+                    }
+                }
+
+                centralite.setLoadStatus(buttonSwitch.isChecked() ?
+                        Executor.LoadStatus.ON :
+                        Executor.LoadStatus.OFF);
+                centralite.execute(gateway);
+
+                buttonSwitch.setChecked(!buttonSwitch.isChecked());
+            }
+        };
     }
 
     /**
@@ -171,31 +208,6 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             root = itemView.findViewById(R.id.root_layout);
             title = (TextView) itemView.findViewById(R.id.title);
             buttonSwitch = (SwitchCompat) itemView.findViewById(R.id.button_switch);
-
-            setItemClick(root, buttonSwitch);
-        }
-
-        @VisibleForTesting
-        protected void setItemClick(View root, final SwitchCompat buttonSwitch) {
-            if (root != null && buttonSwitch != null) { // Null for the header
-                root.setOnClickListener(getClickListener(buttonSwitch));
-            }
-        }
-
-        @VisibleForTesting
-        protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (!buttonSwitch.isChecked()) {
-                        Executor centralite = new SerialExecutor(new CentraLiteInterpreter());
-                        centralite.addCommands(buttons.get(1).getCommands());
-                        centralite.execute(gateway);
-                    }
-
-                    buttonSwitch.setChecked(!buttonSwitch.isChecked());
-                }
-            };
         }
     }
 }

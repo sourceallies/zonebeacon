@@ -1,5 +1,6 @@
 package com.sourceallies.android.zonebeacon.api.interpreter;
 
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 
 /**
@@ -9,7 +10,7 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
 public class CentraLiteInterpreter implements Interpreter {
 
     @Override
-    public String getExecutable(Command command) {
+    public String getExecutable(Command command, Executor.LoadStatus loadStatus) {
         String zeros = "";
 
         if (command.getNumber() < 100) {
@@ -20,7 +21,21 @@ public class CentraLiteInterpreter implements Interpreter {
             zeros += "0";
         }
 
-        return "^A" + zeros + command.getNumber();
+        String base;
+        if (loadStatus == Executor.LoadStatus.OFF) { // we want to turn the light on
+            base = command.getCommandType().getBaseSerialOnCode();
+        } else { // we want to turn the lights off
+            base = command.getCommandType().getBaseSerialOffCode();
+        }
+
+        String commandString;
+        if (command.getControllerNumber() != null) {
+            commandString = base + command.getControllerNumber() + zeros + command.getNumber();
+        } else {
+            commandString =  base + zeros + command.getNumber();
+        }
+
+        return commandString;
     }
 
     @Override

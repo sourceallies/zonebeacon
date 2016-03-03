@@ -369,12 +369,19 @@ public class DataSource {
                         "c.gateway_id as gateway_id, " +
                         "c.number as number, " +
                         "c.command_type_id as command_type_id, " +
-                        "c.controller_number as controller_number " +
+                        "c.controller_number as controller_number, " +
+                        "t._id as command_type_id, " +
+                        "t.name as command_type_name, " +
+                        "t.base_serial_on_code as base_serial_on_code, " +
+                        "t.base_serial_off_code as base_serial_off_code, " +
+                        "t.activate_controller_selection as activate_controller_selection " +
                         "FROM button b " +
                         "JOIN button_command_link bcl " +
                         "ON b._id=bcl.button_id " +
                         "JOIN command c " +
                         "ON c._id=bcl.command_id " +
+                        "JOIN command_type t " +
+                        "ON c.command_type_id=t._id " +
                         "WHERE c.gateway_id=" + gatewayId + " " +
                         "ORDER BY b._id asc, c._id asc"
         );
@@ -412,6 +419,15 @@ public class DataSource {
                 } catch (Exception e) {
                     command.setControllerNumber(null);
                 }
+
+                CommandType commandType = new CommandType();
+                commandType.setId(cursor.getLong(8));
+                commandType.setName(cursor.getString(9));
+                commandType.setBaseSerialOnCode(cursor.getString(10));
+                commandType.setBaseSerialOffCode(cursor.getString(11));
+                commandType.setActivateControllerSelection(cursor.getInt(12) == 1);
+
+                command.setCommandType(commandType);
 
                 button.getCommands().add(command);
             } while (cursor.moveToNext());
@@ -496,7 +512,12 @@ public class DataSource {
                         "c.gateway_id as gateway_id, " +
                         "c.number as number, " +
                         "c.command_type_id as command_type_id, " +
-                        "c.controller_number as controller_number " +
+                        "c.controller_number as controller_number, " +
+                        "t._id as command_type_id, " +
+                        "t.name as command_type_name, " +
+                        "t.base_serial_on_code as base_serial_on_code, " +
+                        "t.base_serial_off_code as base_serial_off_code, " +
+                        "t.activate_controller_selection as activate_controller_selection " +
                         "FROM zone z " +
                         "JOIN zone_button_link zbl " +
                         "ON z._id=zbl.zone_id " +
@@ -506,6 +527,8 @@ public class DataSource {
                         "ON b._id=bcl.button_id " +
                         "JOIN command c " +
                         "ON c._id=bcl.command_id " +
+                        "JOIN command_type t " +
+                        "ON t._id=c.command_type_id " +
                         "WHERE c.gateway_id=" + gatewayId + " " +
                         "ORDER BY z._id, b._id asc, c._id asc"
         );
@@ -561,6 +584,15 @@ public class DataSource {
                 } catch (Exception e) {
                     command.setControllerNumber(null);
                 }
+
+                CommandType commandType = new CommandType();
+                commandType.setId(cursor.getLong(10));
+                commandType.setName(cursor.getString(11));
+                commandType.setBaseSerialOnCode(cursor.getString(12));
+                commandType.setBaseSerialOffCode(cursor.getString(13));
+                commandType.setActivateControllerSelection(cursor.getInt(14) == 1);
+
+                command.setCommandType(commandType);
 
                 if (!button.getCommands().contains(command)) {
                     button.getCommands().add(command);

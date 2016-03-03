@@ -46,18 +46,23 @@ public class SerialExecutor extends Executor {
     public void disconnect() {
         try {
             connection.getSocket().close();
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
         try {
             connection.getInputStream().close();
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
         try {
             connection.getOutputStream().close();
-        } catch (IOException e) {
+        } catch (Exception e) {
         }
 
         connection = null;
+    }
+
+    @Override
+    public boolean commandsCombinable() {
+        return true;
     }
 
     @Override

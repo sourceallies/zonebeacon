@@ -18,10 +18,13 @@ import java.util.List;
  */
 public abstract class Executor {
 
+    public enum LoadStatus { ON, OFF }
+
     private Interpreter interpreter;
     private List<Command> commands;
     private CommandCallback callback;
     private boolean isRunning = false;
+    private LoadStatus loadStatus = LoadStatus.OFF;
 
     public Executor(Interpreter interpreter) {
         this.interpreter = interpreter;
@@ -47,6 +50,15 @@ public abstract class Executor {
      * Disconnects from any gateways that are currently connected.
      */
     public abstract void disconnect();
+
+    /**
+     * Whether or not commands can be combined into a longer string.
+     * <p>
+     * For example, with Elegance, we can do "^A001^B001" in the same string
+     *
+     * @return true if commands can be combined, false otherwise
+     */
+    public abstract boolean commandsCombinable();
 
     /**
      * Sends a command directly to the connected gateway.
@@ -100,6 +112,15 @@ public abstract class Executor {
     }
 
     /**
+     * What is the current status of the load? This is the state that it is currently in.
+     *
+     * @param status LoadStatus.ON if the light is currently turned on or LoadStatus.OFF if the light is off.
+     */
+    public void setLoadStatus(LoadStatus status) {
+        this.loadStatus = status;
+    }
+
+    /**
      * Gets a list of the currently added commands.
      *
      * @return the commands that have been added.
@@ -120,20 +141,20 @@ public abstract class Executor {
                     isRunning = true;
                     connect(gateway);
 
+                    String commandString = "";
                     while (commands.size() > 0) {
                         Command command = commands.get(0);
                         commands.remove(0);
 
-                        try {
-                            String response = send(interpreter.getExecutable(command));
-                            response = interpreter.processResponse(response);
-
-                            if (callback != null) {
-                                callback.onResponse(command, response);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        if (!commandsCombinable()) {
+                            sendCommand(command);
+                        } else {
+                            commandString += interpreter.getExecutable(command, loadStatus);
                         }
+                    }
+
+                    if (!commandString.isEmpty()) {
+                        sendCommand(commandString, null);
                     }
 
                     disconnect();
@@ -143,4 +164,20 @@ public abstract class Executor {
         }
     }
 
+    protected void sendCommand(Command command) {
+        sendCommand(interpreter.getExecutable(command, loadStatus), command);
+    }
+
+    protected void sendCommand(String commandString, Command command) {
+        try {
+            String response = send(commandString);
+            response = interpreter.processResponse(response);
+
+            if (callback != null) {
+                callback.onResponse(command, response);
+            }
+        } catch (Exception e) {
+
+        }
+    }
 }
