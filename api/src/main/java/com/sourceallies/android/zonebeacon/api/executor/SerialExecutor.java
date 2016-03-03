@@ -38,12 +38,12 @@ public class SerialExecutor extends Executor {
     }
 
     @Override
-    public void connect(Gateway gateway) {
+    protected void connect(Gateway gateway) {
         this.connection = createSocketConnection(gateway);
     }
 
     @Override
-    public void disconnect() {
+    protected void disconnect() {
         try {
             connection.getSocket().close();
         } catch (Exception e) {
@@ -61,12 +61,12 @@ public class SerialExecutor extends Executor {
     }
 
     @Override
-    public boolean commandsCombinable() {
+    protected boolean commandsCombinable() {
         return true;
     }
 
     @Override
-    public String send(String command) throws IOException {
+    protected String send(String command) throws IOException {
         PrintWriter w = createPrintWriter(connection);
         w.print(command + "\r\n");
         w.flush();

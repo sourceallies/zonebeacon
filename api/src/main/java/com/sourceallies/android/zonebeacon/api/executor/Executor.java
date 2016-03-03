@@ -44,12 +44,12 @@ public abstract class Executor {
      *
      * @param gateway the gateway to connect to.
      */
-    public abstract void connect(Gateway gateway);
+    protected abstract void connect(Gateway gateway);
 
     /**
      * Disconnects from any gateways that are currently connected.
      */
-    public abstract void disconnect();
+    protected abstract void disconnect();
 
     /**
      * Whether or not commands can be combined into a longer string.
@@ -58,7 +58,7 @@ public abstract class Executor {
      *
      * @return true if commands can be combined, false otherwise
      */
-    public abstract boolean commandsCombinable();
+    protected abstract boolean commandsCombinable();
 
     /**
      * Sends a command directly to the connected gateway.
@@ -66,7 +66,7 @@ public abstract class Executor {
      * @param command the command to send (processed through the interpreter).
      * @return the response from the gateway. This will need to be processed by the interpreter.
      */
-    public abstract String send(String command) throws IOException;
+    protected abstract String send(String command) throws IOException;
 
     /**
      * Sets a callback that should be called when a command has finished sending.
@@ -164,10 +164,21 @@ public abstract class Executor {
         }
     }
 
+    /**
+     * Send the command to the gateway
+     *
+     * @param command command object to send
+     */
     protected void sendCommand(Command command) {
         sendCommand(interpreter.getExecutable(command, loadStatus), command);
     }
 
+    /**
+     * Send a string of commands to the gateway
+     *
+     * @param commandString String of commands to send to the gateway
+     * @param command Can be null
+     */
     protected void sendCommand(String commandString, Command command) {
         try {
             String response = send(commandString);
