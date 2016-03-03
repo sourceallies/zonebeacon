@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
 public class CommandTest extends DatabaseTableTest {
 
@@ -45,6 +46,7 @@ public class CommandTest extends DatabaseTableTest {
     @Test
     public void test_fillFromCursor() {
         setupMockCursor(Command.ALL_COLUMNS);
+        when(cursor.getString(5)).thenReturn("1");
         command.fillFromCursor(cursor);
 
         assertColumnFilled(command.getId());
@@ -53,6 +55,23 @@ public class CommandTest extends DatabaseTableTest {
         assertColumnFilled(command.getControllerNumber());
         assertColumnFilled(command.getGatewayId());
         assertColumnFilled(command.getNumber());
+
+        assertNotNull(command.getCommandType());
+    }
+
+    @Test
+    public void test_fillFromCursor_noControllerNumber() {
+        setupMockCursor(Command.ALL_COLUMNS);
+        when(cursor.getString(5)).thenReturn(null);
+        command.fillFromCursor(cursor);
+
+        assertColumnFilled(command.getId());
+        assertColumnFilled(command.getName());
+        assertColumnFilled(command.getCommandTypeId());
+        assertColumnFilled(command.getGatewayId());
+        assertColumnFilled(command.getNumber());
+
+        assertColumnNotFilled(command.getControllerNumber());
     }
 
     @Override

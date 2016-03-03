@@ -13,10 +13,16 @@ import android.widget.TextView;
 
 import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.api.executor.SerialExecutor;
+import com.sourceallies.android.zonebeacon.api.interpreter.CentraLiteInterpreter;
 import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 
 import java.util.List;
+
+import lombok.Setter;
 
 /**
  * Adapter used on the MainActivity of the app to display the buttons and zones available.
@@ -26,12 +32,14 @@ import java.util.List;
 public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHolder> {
 
     private Activity context;
+    protected Executor executor;
 
     private String zonesTitle;
     private String buttonsTitle;
 
-    private List<Zone> zones;
-    private List<Button> buttons;
+    protected Gateway gateway;
+    protected List<Zone> zones;
+    protected List<Button> buttons;
 
     /**
      * Constructor for the spinnerAdapter.
@@ -39,10 +47,12 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * @param zones   List of zones in the current gateway
      * @param buttons List of buttons in the current gateway
      */
-    public MainAdapter(Activity context, @NonNull List<Zone> zones,
-                       @NonNull List<Button> buttons) {
+    public MainAdapter(Activity context, @NonNull Gateway gateway,
+                       @NonNull List<Zone> zones, @NonNull List<Button> buttons) {
         this.context = context;
+        this.executor = Executor.createForGateway(gateway);
 
+        this.gateway = gateway;
         this.zones = zones;
         this.buttons = buttons;
 
@@ -107,6 +117,49 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             holder.title.setText(zones.get(relativePosition).getName());
         else
             holder.title.setText(buttons.get(relativePosition).getName());
+
+
+        setItemClick(holder.root, holder.buttonSwitch, section, relativePosition);
+    }
+
+    @VisibleForTesting
+    protected void setItemClick(View root, final SwitchCompat buttonSwitch,
+                                int section, int relativePosition) {
+        if (root != null && buttonSwitch != null) { // Null for the header
+            root.setOnClickListener(getClickListener(buttonSwitch, section, relativePosition));
+        }
+    }
+
+    @VisibleForTesting
+    protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch,
+                                                    final int section, final int relativePosition) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isZone(section)) {
+                    executor.addCommands(buttons.get(relativePosition).getCommands(), getStatus(buttonSwitch));
+                } else {
+                    for (Button button : zones.get(relativePosition).getButtons()) {
+                        executor.addCommands(button.getCommands(), getStatus(buttonSwitch));
+                    }
+                }
+
+                executor.execute(gateway);
+
+                buttonSwitch.setChecked(!buttonSwitch.isChecked());
+            }
+        };
+    }
+
+    /**
+     * Tells us whether or not the switch says the light is currently on or not.
+     *
+     * @param buttonSwitch the switch we want to check the status on
+     * @return ON if the switch is currently on, OFF otherwise
+     */
+    @VisibleForTesting
+    protected Executor.LoadStatus getStatus(SwitchCompat buttonSwitch) {
+        return buttonSwitch.isChecked() ? Executor.LoadStatus.ON : Executor.LoadStatus.OFF;
     }
 
     /**
@@ -144,7 +197,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * This holds the different views so that they do not have to be found every time.
      * It allows them to be recycled.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected class ViewHolder extends RecyclerView.ViewHolder {
 
         @NonNull
         public TextView title;
@@ -165,25 +218,6 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             root = itemView.findViewById(R.id.root_layout);
             title = (TextView) itemView.findViewById(R.id.title);
             buttonSwitch = (SwitchCompat) itemView.findViewById(R.id.button_switch);
-
-            setItemClick(root, buttonSwitch);
-        }
-
-        @VisibleForTesting
-        protected void setItemClick(View root, final SwitchCompat buttonSwitch) {
-            if (root != null && buttonSwitch != null) { // Null for the header
-                root.setOnClickListener(getClickListener(buttonSwitch));
-            }
-        }
-
-        @VisibleForTesting
-        protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    buttonSwitch.setChecked(!buttonSwitch.isChecked());
-                }
-            };
         }
     }
 }

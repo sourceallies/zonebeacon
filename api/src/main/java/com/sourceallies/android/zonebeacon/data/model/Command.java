@@ -1,6 +1,7 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
 import android.database.Cursor;
+import android.os.Handler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -68,6 +69,10 @@ public class Command implements DatabaseTable {
     @Getter
     private Integer controllerNumber;
 
+    @Setter
+    @Getter
+    private CommandType commandType;
+
     @Override
     public String getCreateStatement() {
         return DATABASE_CREATE;
@@ -112,6 +117,10 @@ public class Command implements DatabaseTable {
                 }
             }
         }
+
+        CommandType commandType = new CommandType();
+        commandType.fillFromCursor(cursor);
+        setCommandType(commandType);
     }
 
 }

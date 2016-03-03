@@ -206,7 +206,7 @@ public class MainActivity extends RoboAppCompatActivity {
         Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
 
         if (currentGateway != null) {
-            mainAdapter = new MainAdapter(this, source.findZones(currentGateway), source.findButtons(currentGateway));
+            mainAdapter = new MainAdapter(this, currentGateway, source.findZones(currentGateway), source.findButtons(currentGateway));
 
             try {
                 recycler.setLayoutManager(getLayoutManager());
