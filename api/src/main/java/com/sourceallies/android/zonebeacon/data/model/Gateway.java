@@ -1,6 +1,7 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
 import android.database.Cursor;
+import android.os.Handler;
 
 import lombok.Getter;
 import lombok.Setter;

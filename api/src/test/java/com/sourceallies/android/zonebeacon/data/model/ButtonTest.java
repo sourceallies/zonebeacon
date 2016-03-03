@@ -7,6 +7,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class ButtonTest extends DatabaseTableTest {
@@ -48,8 +51,16 @@ public class ButtonTest extends DatabaseTableTest {
         assertColumnFilled(button.getName());
     }
 
+    @Test
+    public void test_getCommands() {
+        List<Command> commands = new ArrayList<>();
+        button.setCommands(commands);
+        assertEquals(commands, button.getCommands());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return button;
     }
+
 }

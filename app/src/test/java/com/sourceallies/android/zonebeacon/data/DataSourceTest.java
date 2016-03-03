@@ -244,15 +244,16 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     public void test_findButtons() {
         MatrixCursor cursor = new MatrixCursor(new String[] {
                 "button_id", "button_name", "command_id", "command_name", "gateway_id", "number",
-                "command_type_id", "controller_number"
+                "command_type_id", "controller_number", "command_type_name", "base_serial_on_code",
+                "base_serial_off_code", "activate_controller_selection"
         });
 
-        cursor.addRow(new String[] {"1", "button 1", "1", "command 1", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"2", "button 2", "1", "command 1", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"2", "button 2", "2", "command 2", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"2", "button 2", "3", "command 3", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"3", "button 3", "3", "command 3", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"3", "button 3", "4", "command 4", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"1", "button 1", "1", "command 1", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"2", "button 2", "1", "command 1", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"2", "button 2", "2", "command 2", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"2", "button 2", "3", "command 3", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"3", "button 3", "3", "command 3", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"3", "button 3", "4", "command 4", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
 
         when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
 
@@ -284,7 +285,8 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     public void test_findButtons_noRows() {
         MatrixCursor cursor = new MatrixCursor(new String[] {
                 "button_id", "button_name", "command_id", "command_name", "gateway_id", "number",
-                "command_type_id", "controller_number"
+                "command_type_id", "controller_number", "command_type_name", "base_serial_on_code",
+                "base_serial_off_code", "activate_controller_selection"
         });
 
         when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
@@ -345,15 +347,16 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     public void test_findZones() {
         MatrixCursor cursor = new MatrixCursor(new String[] {
                 "zone_id", "zone_name", "button_id", "button_name", "command_id", "command_name",
-                "gateway_id", "number", "command_type_id", "controller_number"
+                "gateway_id", "number", "command_type_id", "controller_number", "command_type_name",
+                "base_serial_on_code", "base_serial_off_code", "activate_controller_selection"
         });
 
-        cursor.addRow(new String[] {"1", "zone 1", "1", "button 1", "1", "command 1", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "1", "command 1", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "2", "command 2", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "3", "command 3", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"2", "zone 2", "3", "button 3", "3", "command 3", "1", "1", "1", "1"});
-        cursor.addRow(new String[] {"2", "zone 2", "3", "button 3", "4", "command 4", "1", "1", "1", "1"});
+        cursor.addRow(new String[] {"1", "zone 1", "1", "button 1", "1", "command 1", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "1", "command 1", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "2", "command 2", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"1", "zone 1", "2", "button 2", "3", "command 3", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"2", "zone 2", "3", "button 3", "3", "command 3", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
+        cursor.addRow(new String[] {"2", "zone 2", "3", "button 3", "4", "command 4", "1", "1", "1", "1", "type 1", "^A", "^B", "0"});
 
         when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
 
@@ -391,7 +394,8 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     public void test_findZones_noRows() {
         MatrixCursor cursor = new MatrixCursor(new String[] {
                 "zone_id", "zone_name", "button_id", "button_name", "command_id", "command_name",
-                "gateway_id", "number", "command_type_id", "controller_number"
+                "gateway_id", "number", "command_type_id", "controller_number", "command_type_name",
+                "base_serial_on_code", "base_serial_off_code", "activate_controller_selection"
         });
 
         when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
