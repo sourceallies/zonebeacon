@@ -26,7 +26,7 @@ public class SerialExecutor extends Executor {
     private Handler handler;
     private SocketConnection connection;
 
-    public SerialExecutor(Interpreter interpreter) {
+    protected SerialExecutor(Interpreter interpreter) {
         super(interpreter);
         this.handler = new Handler();
     }
