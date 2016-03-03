@@ -55,6 +55,8 @@ public class CommandTest extends DatabaseTableTest {
         assertColumnFilled(command.getControllerNumber());
         assertColumnFilled(command.getGatewayId());
         assertColumnFilled(command.getNumber());
+
+        assertNotNull(command.getCommandType());
     }
 
     @Test
