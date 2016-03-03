@@ -157,15 +157,16 @@ public class SerialExecutor extends Executor {
                 this.socket = socket;
                 this.inputStream = socket.getInputStream();
                 this.outputStream = socket.getOutputStream();
-            } catch (Exception e) {
-
+            } catch (Throwable e) {
+                e.printStackTrace();
             }
         }
 
         public static Socket createSocket(Gateway gateway) {
             try {
                 return new Socket(gateway.getIpAddress(), gateway.getPortNumber());
-            } catch (Exception e) {
+            } catch (Throwable e) {
+                e.printStackTrace();
                 return null;
             }
         }
