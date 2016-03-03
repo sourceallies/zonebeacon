@@ -1,5 +1,7 @@
 # Zone Beacon
 
+![Screenshot](preview.png)
+
 ### Building
 
 `./gradlew build`
