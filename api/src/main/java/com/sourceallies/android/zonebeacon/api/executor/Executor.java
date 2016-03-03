@@ -112,12 +112,13 @@ public abstract class Executor {
      * Executes a transaction on the currently established connection by sending all commands that
      * have been added.
      */
-    public void execute() {
+    public void execute(final Gateway gateway) {
         if (!isRunning) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     isRunning = true;
+                    connect(gateway);
 
                     while (commands.size() > 0) {
                         Command command = commands.get(0);
@@ -135,6 +136,7 @@ public abstract class Executor {
                         }
                     }
 
+                    disconnect();
                     isRunning = false;
                 }
             }).start();

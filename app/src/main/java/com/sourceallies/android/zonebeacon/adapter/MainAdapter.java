@@ -13,7 +13,11 @@ import android.widget.TextView;
 
 import com.afollestad.sectionedrecyclerview.SectionedRecyclerViewAdapter;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.api.executor.SerialExecutor;
+import com.sourceallies.android.zonebeacon.api.interpreter.CentraLiteInterpreter;
 import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 
 import java.util.List;
@@ -30,8 +34,9 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     private String zonesTitle;
     private String buttonsTitle;
 
-    private List<Zone> zones;
-    private List<Button> buttons;
+    protected Gateway gateway;
+    protected List<Zone> zones;
+    protected List<Button> buttons;
 
     /**
      * Constructor for the spinnerAdapter.
@@ -39,10 +44,11 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * @param zones   List of zones in the current gateway
      * @param buttons List of buttons in the current gateway
      */
-    public MainAdapter(Activity context, @NonNull List<Zone> zones,
-                       @NonNull List<Button> buttons) {
+    public MainAdapter(Activity context, @NonNull Gateway gateway,
+                       @NonNull List<Zone> zones, @NonNull List<Button> buttons) {
         this.context = context;
 
+        this.gateway = gateway;
         this.zones = zones;
         this.buttons = buttons;
 
@@ -144,7 +150,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * This holds the different views so that they do not have to be found every time.
      * It allows them to be recycled.
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    protected class ViewHolder extends RecyclerView.ViewHolder {
 
         @NonNull
         public TextView title;
@@ -181,6 +187,12 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             return new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!buttonSwitch.isChecked()) {
+                        Executor centralite = new SerialExecutor(new CentraLiteInterpreter());
+                        centralite.addCommands(buttons.get(1).getCommands());
+                        centralite.execute(gateway);
+                    }
+
                     buttonSwitch.setChecked(!buttonSwitch.isChecked());
                 }
             };

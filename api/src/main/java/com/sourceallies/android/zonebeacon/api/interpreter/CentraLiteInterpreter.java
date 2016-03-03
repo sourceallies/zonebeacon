@@ -20,7 +20,7 @@ public class CentraLiteInterpreter implements Interpreter {
             zeros += "0";
         }
 
-        return "^a1" + zeros + command.getNumber();
+        return "^A" + zeros + command.getNumber();
     }
 
     @Override
