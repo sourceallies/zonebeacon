@@ -21,14 +21,13 @@ public abstract class Executor {
     public enum LoadStatus { ON, OFF }
 
     private Interpreter interpreter;
-    private List<Command> commands;
+    private List<OnOffCommand> commands;
     private CommandCallback callback;
     private boolean isRunning = false;
-    private LoadStatus loadStatus = LoadStatus.OFF;
 
     public Executor(Interpreter interpreter) {
         this.interpreter = interpreter;
-        this.commands = new ArrayList<Command>();
+        this.commands = new ArrayList<OnOffCommand>();
     }
 
     /**
@@ -90,10 +89,11 @@ public abstract class Executor {
      * Adds multiple commands at the same time.
      *
      * @param commands the commands to send.
+     * @param status the current status of the load (LoadStatus.ON or LoadStatus.OFF)
      */
-    public void addCommands(List<Command> commands) {
+    public void addCommands(List<Command> commands, LoadStatus status) {
         for (Command command : commands) {
-            addCommand(command);
+            addCommand(command, status);
         }
     }
 
@@ -102,22 +102,14 @@ public abstract class Executor {
      * exception will be thrown.
      *
      * @param command the command to pass through an interpreter and send through the connection.
+     * @param status the current status of the load (LoadStatus.ON or LoadStatus.OFF)
      */
-    public void addCommand(Command command) {
+    public void addCommand(Command command, LoadStatus status) {
         if (command == null) {
             throw new RuntimeException("Command cannot be null");
         }
 
-        commands.add(command);
-    }
-
-    /**
-     * What is the current status of the load? This is the state that it is currently in.
-     *
-     * @param status LoadStatus.ON if the light is currently turned on or LoadStatus.OFF if the light is off.
-     */
-    public void setLoadStatus(LoadStatus status) {
-        this.loadStatus = status;
+        commands.add(new OnOffCommand(command, status));
     }
 
     /**
@@ -125,7 +117,7 @@ public abstract class Executor {
      *
      * @return the commands that have been added.
      */
-    public List<Command> getCommands() {
+    public List<OnOffCommand> getCommands() {
         return commands;
     }
 
@@ -143,13 +135,13 @@ public abstract class Executor {
 
                     String commandString = "";
                     while (commands.size() > 0) {
-                        Command command = commands.get(0);
+                        OnOffCommand command = commands.get(0);
                         commands.remove(0);
 
                         if (!commandsCombinable()) {
                             sendCommand(command);
                         } else {
-                            commandString += interpreter.getExecutable(command, loadStatus);
+                            commandString += interpreter.getExecutable(command.command, command.status);
                         }
                     }
 
@@ -169,8 +161,8 @@ public abstract class Executor {
      *
      * @param command command object to send
      */
-    protected void sendCommand(Command command) {
-        sendCommand(interpreter.getExecutable(command, loadStatus), command);
+    protected void sendCommand(OnOffCommand command) {
+        sendCommand(interpreter.getExecutable(command.command, command.status), command.command);
     }
 
     /**
@@ -189,6 +181,16 @@ public abstract class Executor {
             }
         } catch (Exception e) {
 
+        }
+    }
+
+    protected class OnOffCommand {
+        public LoadStatus status;
+        public Command command;
+
+        public OnOffCommand(Command command, LoadStatus status) {
+            this.status = status;
+            this.command = command;
         }
     }
 }
