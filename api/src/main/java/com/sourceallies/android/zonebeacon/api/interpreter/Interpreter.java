@@ -1,5 +1,6 @@
 package com.sourceallies.android.zonebeacon.api.interpreter;
 
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 
 /**
@@ -17,7 +18,7 @@ public interface Interpreter {
      * @param command the command to execute.
      * @return a string representing the command for the control unit.
      */
-    String getExecutable(Command command);
+    String getExecutable(Command command, Executor.LoadStatus status);
 
     /**
      * Processes the response provided by the control unit and hands it off back to the app.

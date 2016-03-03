@@ -69,6 +69,10 @@ public class Command implements DatabaseTable {
     @Getter
     private Integer controllerNumber;
 
+    @Setter
+    @Getter
+    private CommandType commandType;
+
     @Override
     public String getCreateStatement() {
         return DATABASE_CREATE;
@@ -113,6 +117,9 @@ public class Command implements DatabaseTable {
                 }
             }
         }
+
+        commandType = new CommandType();
+        commandType.fillFromCursor(cursor);
     }
 
 }
