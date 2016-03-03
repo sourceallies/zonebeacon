@@ -48,7 +48,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     public MainAdapter(Activity context, @NonNull Gateway gateway,
                        @NonNull List<Zone> zones, @NonNull List<Button> buttons) {
         this.context = context;
-        this.executor = new SerialExecutor(new CentraLiteInterpreter());
+        this.executor = Executor.createForGateway(gateway);
 
         this.gateway = gateway;
         this.zones = zones;

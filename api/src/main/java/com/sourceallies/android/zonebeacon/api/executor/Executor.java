@@ -1,6 +1,7 @@
 package com.sourceallies.android.zonebeacon.api.executor;
 
 import com.sourceallies.android.zonebeacon.api.CommandCallback;
+import com.sourceallies.android.zonebeacon.api.interpreter.CentraLiteInterpreter;
 import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
@@ -18,6 +19,21 @@ import java.util.List;
  */
 public abstract class Executor {
 
+    /**
+     * Static factory method to get the correct executor and interpreter based on the system type.
+     *
+     * @param gateway The gateway we are going to be using
+     * @return Correct executor for the Gateway
+     */
+    public static Executor createForGateway(Gateway gateway) {
+        switch ((int) gateway.getSystemTypeId()) {
+            case 1:
+                return new SerialExecutor(new CentraLiteInterpreter());
+            default:
+                return new SerialExecutor(new CentraLiteInterpreter());
+        }
+    }
+
     public enum LoadStatus { ON, OFF }
 
     private Interpreter interpreter;
@@ -25,7 +41,7 @@ public abstract class Executor {
     private CommandCallback callback;
     private boolean isRunning = false;
 
-    public Executor(Interpreter interpreter) {
+    protected Executor(Interpreter interpreter) {
         this.interpreter = interpreter;
         this.commands = new ArrayList<OnOffCommand>();
     }
@@ -119,6 +135,15 @@ public abstract class Executor {
      */
     public List<OnOffCommand> getCommands() {
         return commands;
+    }
+
+    /**
+     * Get the current interpreter for the executor
+     *
+     * @return the interpreter that has been created.
+     */
+    protected Interpreter getInterpreter() {
+        return interpreter;
     }
 
     /**
