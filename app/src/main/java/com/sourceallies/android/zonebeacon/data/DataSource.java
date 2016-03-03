@@ -370,7 +370,6 @@ public class DataSource {
                         "c.number as number, " +
                         "c.command_type_id as command_type_id, " +
                         "c.controller_number as controller_number, " +
-                        "t._id as command_type_id, " +
                         "t.name as command_type_name, " +
                         "t.base_serial_on_code as base_serial_on_code, " +
                         "t.base_serial_off_code as base_serial_off_code, " +
@@ -421,11 +420,11 @@ public class DataSource {
                 }
 
                 CommandType commandType = new CommandType();
-                commandType.setId(cursor.getLong(8));
-                commandType.setName(cursor.getString(9));
-                commandType.setBaseSerialOnCode(cursor.getString(10));
-                commandType.setBaseSerialOffCode(cursor.getString(11));
-                commandType.setActivateControllerSelection(cursor.getInt(12) == 1);
+                commandType.setId(cursor.getLong(6));
+                commandType.setName(cursor.getString(8));
+                commandType.setBaseSerialOnCode(cursor.getString(9));
+                commandType.setBaseSerialOffCode(cursor.getString(10));
+                commandType.setActivateControllerSelection(cursor.getInt(11) == 1);
 
                 command.setCommandType(commandType);
 
@@ -513,7 +512,6 @@ public class DataSource {
                         "c.number as number, " +
                         "c.command_type_id as command_type_id, " +
                         "c.controller_number as controller_number, " +
-                        "t._id as command_type_id, " +
                         "t.name as command_type_name, " +
                         "t.base_serial_on_code as base_serial_on_code, " +
                         "t.base_serial_off_code as base_serial_off_code, " +
@@ -586,11 +584,11 @@ public class DataSource {
                 }
 
                 CommandType commandType = new CommandType();
-                commandType.setId(cursor.getLong(10));
-                commandType.setName(cursor.getString(11));
-                commandType.setBaseSerialOnCode(cursor.getString(12));
-                commandType.setBaseSerialOffCode(cursor.getString(13));
-                commandType.setActivateControllerSelection(cursor.getInt(14) == 1);
+                commandType.setId(cursor.getLong(8));
+                commandType.setName(cursor.getString(10));
+                commandType.setBaseSerialOnCode(cursor.getString(11));
+                commandType.setBaseSerialOffCode(cursor.getString(12));
+                commandType.setActivateControllerSelection(cursor.getInt(13) == 1);
 
                 command.setCommandType(commandType);
 
