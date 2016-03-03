@@ -22,6 +22,8 @@ import com.sourceallies.android.zonebeacon.data.model.Zone;
 
 import java.util.List;
 
+import lombok.Setter;
+
 /**
  * Adapter used on the MainActivity of the app to display the buttons and zones available.
  * <p/>
@@ -30,7 +32,7 @@ import java.util.List;
 public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHolder> {
 
     private Activity context;
-    private Executor executor;
+    protected Executor executor;
 
     private String zonesTitle;
     private String buttonsTitle;
@@ -149,7 +151,14 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         };
     }
 
-    private Executor.LoadStatus getStatus(SwitchCompat buttonSwitch) {
+    /**
+     * Tells us whether or not the switch says the light is currently on or not.
+     *
+     * @param buttonSwitch the switch we want to check the status on
+     * @return ON if the switch is currently on, OFF otherwise
+     */
+    @VisibleForTesting
+    protected Executor.LoadStatus getStatus(SwitchCompat buttonSwitch) {
         return buttonSwitch.isChecked() ? Executor.LoadStatus.ON : Executor.LoadStatus.OFF;
     }
 
