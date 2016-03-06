@@ -16,6 +16,7 @@
 
 package com.sourceallies.android.zonebeacon.activity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
@@ -38,6 +39,7 @@ import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
 import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.fragment.AddZoneFragment;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -95,6 +97,8 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // Add the data to the spinnerAdapter and disply it in the recycler
         setRecycler();
+
+
     }
 
     /**
@@ -131,6 +135,16 @@ public class MainActivity extends RoboAppCompatActivity {
             }
         });
     }
+
+    /**
+     *
+
+    public void showAddZoneFragment(){
+        FragmentManager fm = getFragmentManager();
+        AddZoneFragment addZoneFragment = AddZoneFragment.newInstance();
+        addZoneFragment.show(fm,"fragment_add_zone");
+    }
+    */
 
     /**
      * Creates the spinnerAdapter for the toolbar spinner that displays the gateways
