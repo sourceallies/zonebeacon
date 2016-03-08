@@ -23,14 +23,27 @@ public class CreationActivity extends IntroActivity {
      * @param setupType TYPE_GATEWAY, TYPE_ZONE, TYPE_BUTTON, or TYPE_COMMAND
      */
     public static void startCreation(Activity activity, int setupType) {
+        startCreation(activity, setupType, -1l);
+    }
+
+    /**
+     * Static factory method to start the activity
+     *
+     * @param activity  The current context
+     * @param setupType TYPE_GATEWAY, TYPE_ZONE, TYPE_BUTTON, or TYPE_COMMAND
+     * @param gatewayId the id value for the current gateway
+     */
+    public static void startCreation(Activity activity, int setupType, long gatewayId) {
         Intent creation = new Intent(activity, CreationActivity.class);
         creation.putExtra(ARG_SETUP_TYPE, setupType);
+        creation.putExtra(ARG_GATEWAY_ID, gatewayId);
 
         activity.startActivityForResult(creation, setupType);
     }
 
     // argument to use with the intent
     public static final String ARG_SETUP_TYPE = "arg_setup_type";
+    public static final String ARG_GATEWAY_ID = "arg_gateway_id";
 
     public static final int TYPE_GATEWAY = 101;
     public static final int TYPE_ZONE = 102;
@@ -47,6 +60,11 @@ public class CreationActivity extends IntroActivity {
         return getIntent().getIntExtra(ARG_SETUP_TYPE, TYPE_GATEWAY);
     }
 
+    @VisibleForTesting
+    protected long getGatewayId() {
+        return getIntent().getLongExtra(ARG_GATEWAY_ID, -1);
+    }
+
     /**
      * Add the setup slide based on the ARG_SETUP_TYPE
      */
@@ -58,7 +76,7 @@ public class CreationActivity extends IntroActivity {
             case TYPE_BUTTON:
             case TYPE_COMMAND:
             case TYPE_GATEWAY:
-                setupFragment = new GatewaySetupFragment();
+                setupFragment = GatewaySetupFragment.getInstance(new GatewaySetupFragment(), getGatewayId());
                 break;
         }
 
