@@ -20,7 +20,7 @@
         android:textColor="@android:color/white"
         android:paddingRight="32dp"
         android:textSize="28sp"
-        android:text="Add Zone:"/>
+        android:text="Add Button:"/>
 
     <LinearLayout
         android:layout_width="300dp"
@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:singleLine="true"
                 android:inputType="textCapWords|textAutoCorrect"
-                android:hint="Zone Name" />
+                android:hint="Button Name" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
@@ -54,14 +54,14 @@
             android:textColor="@android:color/white"
             android:paddingRight="32dp"
             android:textSize="20sp"
-            android:text="Included Buttons:"/>
+            android:text="Include Commands:"/>
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="top"
             android:layout_weight="4"
-            android:id="@+id/buttonList">
+            android:id="@+id/commandList">
 
         </ListView>
 

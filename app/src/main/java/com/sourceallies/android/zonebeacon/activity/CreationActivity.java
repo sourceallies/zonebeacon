@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 
+import com.sourceallies.android.zonebeacon.fragment.AddZoneFragment;
 import com.sourceallies.android.zonebeacon.fragment.GatewaySetupFragment;
 
 /**
@@ -54,6 +55,8 @@ public class CreationActivity extends IntroActivity {
         switch (getFragmentType()) {
             // TODO: break these apart when more fragments are created.
             case TYPE_ZONE:
+                setupFragment = new AddZoneFragment();
+                break;
             case TYPE_BUTTON:
             case TYPE_COMMAND:
             case TYPE_GATEWAY:

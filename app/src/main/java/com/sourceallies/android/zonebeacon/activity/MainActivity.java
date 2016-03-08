@@ -16,7 +16,10 @@
 
 package com.sourceallies.android.zonebeacon.activity;
 
-import android.app.FragmentManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+//import android.app.FragmentManager;
+//import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
@@ -25,6 +28,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -97,8 +101,6 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // Add the data to the spinnerAdapter and disply it in the recycler
         setRecycler();
-
-
     }
 
     /**
@@ -131,20 +133,24 @@ public class MainActivity extends RoboAppCompatActivity {
             @Override
             public void onClick(View v) {
                 collapseFab();
-                makeSnackbar(fab.getTitle());
+                if (fab.getTitle().equals("Add Zone to %s".replace("%s", getGatewayName()))){
+                    addZone();
+                }
+                /*
+                else if (fab.getTitle().equals("Add Button to %s".replace("%s", getGatewayName()))){
+
+                }
+                else if (fab.getTitle().equals("Add Command to %s".replace("%s", getGatewayName()))){
+
+                }
+                */
+                else{
+                    makeSnackbar(fab.getTitle());
+                }
+
             }
         });
     }
-
-    /**
-     *
-
-    public void showAddZoneFragment(){
-        FragmentManager fm = getFragmentManager();
-        AddZoneFragment addZoneFragment = AddZoneFragment.newInstance();
-        addZoneFragment.show(fm,"fragment_add_zone");
-    }
-    */
 
     /**
      * Creates the spinnerAdapter for the toolbar spinner that displays the gateways
@@ -224,6 +230,14 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     public void createNewGateway() {
         CreationActivity.startCreation(this, CreationActivity.TYPE_GATEWAY);
+    }
+
+
+    /**
+     * Use the creation activity to add a zone
+     */
+    public void addZone() {
+        CreationActivity.startCreation(this, CreationActivity.TYPE_ZONE);
     }
 
     /**
