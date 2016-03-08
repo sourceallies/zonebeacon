@@ -27,24 +27,24 @@ import lombok.Getter;
 /**
  *
  */
-public class AddZoneFragment extends AbstractSetupFragment{
+public class AddButtonFragment extends AbstractSetupFragment{
     /**
      * Default constructor for the fragment
      */
-    public AddZoneFragment() { }
+    public AddButtonFragment() { }
 
     @Getter
     private TextInputLayout name;
     @Getter
-    private ListView buttonList;
+    private ListView commandList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_add_zone, container, false);
+        View root = inflater.inflate(R.layout.fragment_add_button, container, false);
 
         // setup the UI elements
         name = (TextInputLayout) root.findViewById(R.id.name);
-        buttonList = (ListView) root.findViewById(R.id.buttonList);
+        commandList = (ListView) root.findViewById(R.id.buttonList);
         populateButtonList();
 
         return root;
@@ -106,9 +106,9 @@ public class AddZoneFragment extends AbstractSetupFragment{
     }
 
     public void populateButtonList(){
-        ListView buttonList = getButtonList();
+        ListView buttonList = getCommandList();
         //create list of buttons
-        String[] buttonNames = {"Front", "Back", "Patio", "Lamp"};
+        String[] commandNames = {"Command1", "Back", "Patio", "Lamp"};
         //Build Adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_multiple_choice, buttonNames);
