@@ -212,6 +212,23 @@ public class DataSource {
         return gateways;
     }
 
+    public Gateway findGateway(long id) {
+        Cursor cursor = rawQuery("SELECT * from gateway where _id = " + id);
+        Gateway gateway = new Gateway();
+
+        if (cursor == null) {
+            return null;
+        }
+
+        if (cursor.moveToFirst()) {
+            gateway.fillFromCursor(cursor);
+        }
+
+        cursor.close();
+
+        return gateway;
+    }
+
     /**
      * Inserts a new command into the database.
      *
