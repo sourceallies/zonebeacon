@@ -54,6 +54,12 @@ public class ZoneTest extends DatabaseTableTest {
         assertEquals(buttons, zone.getButtons());
     }
 
+    @Test
+    public void test_toString() {
+        zone.setName("Test Zone");
+        assertEquals("Test Zone", zone.toString());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return zone;

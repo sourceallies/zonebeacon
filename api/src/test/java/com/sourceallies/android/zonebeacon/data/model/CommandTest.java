@@ -74,6 +74,12 @@ public class CommandTest extends DatabaseTableTest {
         assertColumnNotFilled(command.getControllerNumber());
     }
 
+    @Test
+    public void test_toString() {
+        command.setName("Test Command");
+        assertEquals("Test Command", command.toString());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return command;

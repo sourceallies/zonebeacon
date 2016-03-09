@@ -72,4 +72,9 @@ public class Button implements DatabaseTable {
         }
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }

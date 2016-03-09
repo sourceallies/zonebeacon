@@ -58,6 +58,12 @@ public class ButtonTest extends DatabaseTableTest {
         assertEquals(commands, button.getCommands());
     }
 
+    @Test
+    public void test_toString() {
+        button.setName("Test Button");
+        assertEquals("Test Button", button.toString());
+    }
+
     @Override
     public DatabaseTable getDatabaseTable() {
         return button;
