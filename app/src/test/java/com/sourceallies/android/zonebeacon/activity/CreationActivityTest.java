@@ -1,6 +1,8 @@
 package com.sourceallies.android.zonebeacon.activity;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+import com.sourceallies.android.zonebeacon.fragment.AddButtonFragment;
+import com.sourceallies.android.zonebeacon.fragment.AddZoneFragment;
 import com.sourceallies.android.zonebeacon.fragment.GatewaySetupFragment;
 
 import org.junit.Before;
@@ -23,27 +25,29 @@ public class CreationActivityTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_addGateway() {
         Mockito.doReturn(CreationActivity.TYPE_GATEWAY).when(activity).getFragmentType();
+        activity.addSlides();
         assertTrue(activity.getSetupFragment() instanceof GatewaySetupFragment);
     }
 
     @Test
     public void test_addZone() {
-        // TODO: change the instance of after new fragments are added
         Mockito.doReturn(CreationActivity.TYPE_ZONE).when(activity).getFragmentType();
-        assertTrue(activity.getSetupFragment() instanceof GatewaySetupFragment);
+        activity.addSlides();
+        assertTrue(activity.getSetupFragment() instanceof AddZoneFragment);
     }
 
     @Test
     public void test_addButton() {
-        // TODO: change the instance of after new fragments are added
         Mockito.doReturn(CreationActivity.TYPE_BUTTON).when(activity).getFragmentType();
-        assertTrue(activity.getSetupFragment() instanceof GatewaySetupFragment);
+        activity.addSlides();
+        assertTrue(activity.getSetupFragment() instanceof AddButtonFragment);
     }
 
     @Test
     public void test_addCommand() {
         // TODO: change the instance of after new fragments are added
         Mockito.doReturn(CreationActivity.TYPE_COMMAND).when(activity).getFragmentType();
+        activity.addSlides();
         assertTrue(activity.getSetupFragment() instanceof GatewaySetupFragment);
     }
 }

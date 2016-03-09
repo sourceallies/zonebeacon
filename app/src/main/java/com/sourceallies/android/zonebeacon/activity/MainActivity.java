@@ -305,7 +305,7 @@ public class MainActivity extends RoboAppCompatActivity {
     }
 
     private void startCreationActivity(int type) {
-        CreationActivity.startCreation(this, type, getCurrentGateway().getId());
+        CreationActivity.startCreation(this, type, getCurrentGatewayId());
     }
 
     /**
@@ -324,6 +324,10 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     private Gateway getCurrentGateway() {
         return spinnerAdapter.getItem(getCurrentSpinnerSelection());
+    }
+
+    protected long getCurrentGatewayId() {
+        return getCurrentGateway().getId();
     }
 
     /**

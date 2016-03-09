@@ -161,6 +161,7 @@ public class RoboAppCompatActivity extends RoboFragmentActivity implements AppCo
         return item.getItemId() == android.R.id.home && ab != null &&
                 (ab.getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP) != 0;
     }
+
     @Override
     public final boolean onMenuItemSelected(int featureId, android.view.MenuItem item) {
         if (superOnMenuItemSelected(featureId, item)) {

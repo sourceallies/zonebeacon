@@ -45,15 +45,19 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Mock
     private SharedPreferences sharedPrefs;
+    @Mock
+    private Gateway gateway;
 
     private MainActivity activity;
     private List<Gateway> gateways = new ArrayList<>();
@@ -135,11 +139,38 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_expandFab() {
+    public void test_expandFab_clickZone() {
+        test_spinnerSelection();
+        activity = spy(activity);
+
         activity.getFabMenu().expand();
         assertTrue(activity.getFabMenu().isExpanded());
 
         activity.getAddZone().performClick();
+        assertFalse(activity.getFabMenu().isExpanded());
+    }
+
+    @Test
+    public void test_expandFab_clickButton() {
+        test_spinnerSelection();
+        activity = spy(activity);
+
+        activity.getFabMenu().expand();
+        assertTrue(activity.getFabMenu().isExpanded());
+
+        activity.getAddButton().performClick();
+        assertFalse(activity.getFabMenu().isExpanded());
+    }
+
+    @Test
+    public void test_expandFab_clickCommand() {
+        test_spinnerSelection();
+        activity = spy(activity);
+
+        activity.getFabMenu().expand();
+        assertTrue(activity.getFabMenu().isExpanded());
+
+        activity.getAddCommand().performClick();
         assertFalse(activity.getFabMenu().isExpanded());
     }
 
