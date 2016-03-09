@@ -16,6 +16,7 @@
 
 package com.sourceallies.android.zonebeacon.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
@@ -33,9 +34,15 @@ import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.robolectric.Robolectric;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -236,4 +243,58 @@ public class RoboAppCompatActivityTest extends ZoneBeaconRobolectricSuite {
         activity.onPanelClosed(0, menu);
     }
 
+    @Test
+    public void test_superMenuItemSelected() {
+        activity = spy(activity);
+
+        doReturn(true).when(activity).superOnMenuItemSelected(anyInt(), any(MenuItem.class));
+        assertTrue(activity.onMenuItemSelected(1, Mockito.mock(MenuItem.class)));
+    }
+
+    @Test
+    public void test_menuItem_navUp() {
+        activity = spy(activity);
+
+        doReturn(true).when(activity).supportNavUp(any(MenuItem.class));
+        doReturn(true).when(activity).onSupportNavigateUp();
+        assertTrue(activity.onMenuItemSelected(1, Mockito.mock(MenuItem.class)));
+
+        doReturn(false).when(activity).onSupportNavigateUp();
+        assertFalse(activity.onMenuItemSelected(1, Mockito.mock(MenuItem.class)));
+    }
+
+    @Test
+    public void test_supportNavUpTo() {
+        assertFalse(activity.supportShouldUpRecreateTask(new Intent(activity, RoboAppCompatActivity.class)));
+    }
+
+    @Test
+    public void test_stackBuilder() {
+        assertNotNull(activity.getStackBuilder());
+    }
+
+    @Test
+    public void test_upIntentNotNull_recreateTask() {
+        activity = spy(activity);
+        TaskStackBuilder builder = Mockito.mock(TaskStackBuilder.class);
+
+        doReturn(new Intent(activity, RoboAppCompatActivity.class)).when(activity).getSupportParentActivityIntent();
+        doReturn(true).when(activity).supportShouldUpRecreateTask(any(Intent.class));
+        doNothing().when(builder).startActivities();
+        doReturn(builder).when(activity).getStackBuilder();
+
+        assertTrue(activity.onSupportNavigateUp());
+        verify(activity).finish();
+    }
+
+    @Test
+    public void test_upIntentNotNull_noRecreate() {
+        activity = spy(activity);
+
+        doReturn(new Intent(activity, RoboAppCompatActivity.class)).when(activity).getSupportParentActivityIntent();
+        doReturn(false).when(activity).supportShouldUpRecreateTask(any(Intent.class));
+
+        assertTrue(activity.onSupportNavigateUp());
+        verify(activity).supportNavigateUpTo(any(Intent.class));
+    }
 }

@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,10 @@ import com.klinker.android.link_builder.LinkBuilder;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.Command;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -37,6 +41,8 @@ public class AddZoneFragment extends AbstractSetupFragment{
     private TextInputLayout name;
     @Getter
     private ListView buttonList;
+    @Getter
+    private List<Button> allButtons;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -94,11 +100,25 @@ public class AddZoneFragment extends AbstractSetupFragment{
     @Override
     public void save() {
         String name = getText(this.name);
+        List<Button> buttonList = getCheckedButtons();
 
         DataSource source = DataSource.getInstance(getActivity());
         source.open();
-        //source.insertNewZone(name, );
+        source.insertNewZone(name, buttonList);
         source.close();
+    }
+
+    private List<Button> getCheckedButtons() {
+        SparseBooleanArray checked = buttonList.getCheckedItemPositions();
+        List<Button> checkedButtons = new ArrayList<Button>();
+        for (int i = 0; i < checked.size(); i++) {
+            int position = checked.keyAt(i);
+            if (checked.valueAt(i)) {
+                checkedButtons.add(allButtons.get(position));
+            }
+        }
+
+        return checkedButtons;
     }
 
     private String getText(TextInputLayout input) {
@@ -106,9 +126,21 @@ public class AddZoneFragment extends AbstractSetupFragment{
     }
 
     public void populateButtonList(){
+        Gateway currentGateway = getCurrentGateway();
+
+        DataSource source = DataSource.getInstance(getActivity());
+        source.open();
+        allButtons = source.findButtons(currentGateway);
+        source.close();
+
         ListView buttonList = getButtonList();
         //create list of buttons
-        String[] buttonNames = {"Front", "Back", "Patio", "Lamp"};
+        String[] buttonNames = new String[allButtons.size()];
+
+        for (int i = 0; i < allButtons.size(); i++) {
+            buttonNames[i] = allButtons.get(i).getName();
+        }
+
         //Build Adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_multiple_choice, buttonNames);

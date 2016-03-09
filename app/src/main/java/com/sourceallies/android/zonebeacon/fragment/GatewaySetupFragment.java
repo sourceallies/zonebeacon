@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -29,7 +28,8 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
     /**
      * Default constructor for the fragment
      */
-    public GatewaySetupFragment() { }
+    public GatewaySetupFragment() {
+    }
 
     @Getter
     private TextInputLayout name;
@@ -94,8 +94,13 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
 
             // used to clear the error message on the edit text
             input.getEditText().addTextChangedListener(new TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-                @Override public void afterTextChanged(Editable editable) { }
+                @Override
+                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable editable) {
+                }
 
                 @Override
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -115,9 +120,9 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
     public boolean isComplete() {
         boolean complete = true;
 
-        if (isEmpty(name))      complete = false;
+        if (isEmpty(name)) complete = false;
         if (isEmpty(ipAddress)) complete = false;
-        if (isEmpty(port))      complete = false;
+        if (isEmpty(port)) complete = false;
 
         return complete;
     }
@@ -126,7 +131,7 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
     public void save() {
         String name = getText(this.name);
         String ipAddress = getText(this.ipAddress);
-        int port =  Integer.parseInt(getText(this.port));
+        int port = Integer.parseInt(getText(this.port));
 
         DataSource source = DataSource.getInstance(getActivity());
         source.open();

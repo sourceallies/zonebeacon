@@ -7,8 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 
-import com.sourceallies.android.zonebeacon.data.model.*;
+import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.ButtonCommandLink;
 import com.sourceallies.android.zonebeacon.data.model.Command;
+import com.sourceallies.android.zonebeacon.data.model.CommandType;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +49,7 @@ public class DataSource {
 
     /**
      * Private constructor to force a singleton.
+     *
      * @param context Current calling context
      */
     private DataSource(Context context) {
@@ -150,12 +156,11 @@ public class DataSource {
      */
 
 
-
     /**
      * Insert a new gateway into the database
      *
      * @param name Gateway name
-     * @param ip ip address for the gateway
+     * @param ip   ip address for the gateway
      * @param port port number for the gateway
      * @return id of the inserted row
      */
@@ -207,13 +212,30 @@ public class DataSource {
         return gateways;
     }
 
+    public Gateway findGateway(long id) {
+        Cursor cursor = rawQuery("SELECT * from gateway where _id = " + id);
+        Gateway gateway = new Gateway();
+
+        if (cursor == null) {
+            return null;
+        }
+
+        if (cursor.moveToFirst()) {
+            gateway.fillFromCursor(cursor);
+        }
+
+        cursor.close();
+
+        return gateway;
+    }
+
     /**
      * Inserts a new command into the database.
      *
-     * @param name the name of the command.
-     * @param gatewayId the gateway id.
-     * @param number the number.
-     * @param commandType the command type.
+     * @param name             the name of the command.
+     * @param gatewayId        the gateway id.
+     * @param number           the number.
+     * @param commandType      the command type.
      * @param controllerNumber the controller number.
      * @return the id of the inserted row.
      */
@@ -225,10 +247,10 @@ public class DataSource {
     /**
      * Inserts a new command into the database.
      *
-     * @param name the name of the command.
-     * @param gatewayId the gateway id.
-     * @param number the number.
-     * @param commandTypeId the command type id.
+     * @param name             the name of the command.
+     * @param gatewayId        the gateway id.
+     * @param number           the number.
+     * @param commandTypeId    the command type id.
      * @param controllerNumber the controller number.
      * @return the id of the inserted row.
      */
@@ -297,7 +319,7 @@ public class DataSource {
      * Inserts a new button into the database. This will also insert links between the button and
      * the commands that are provided.
      *
-     * @param name the name for the button.
+     * @param name     the name for the button.
      * @param commands the commands to execute when the button is pressed.
      * @return the id of the inserted button.
      */
@@ -364,12 +386,18 @@ public class DataSource {
                         "c.gateway_id as gateway_id, " +
                         "c.number as number, " +
                         "c.command_type_id as command_type_id, " +
-                        "c.controller_number as controller_number " +
+                        "c.controller_number as controller_number, " +
+                        "t.name as command_type_name, " +
+                        "t.base_serial_on_code as base_serial_on_code, " +
+                        "t.base_serial_off_code as base_serial_off_code, " +
+                        "t.activate_controller_selection as activate_controller_selection " +
                         "FROM button b " +
-                            "JOIN button_command_link bcl " +
-                                "ON b._id=bcl.button_id " +
-                            "JOIN command c " +
-                                "ON c._id=bcl.command_id " +
+                        "JOIN button_command_link bcl " +
+                        "ON b._id=bcl.button_id " +
+                        "JOIN command c " +
+                        "ON c._id=bcl.command_id " +
+                        "JOIN command_type t " +
+                        "ON c.command_type_id=t._id " +
                         "WHERE c.gateway_id=" + gatewayId + " " +
                         "ORDER BY b._id asc, c._id asc"
         );
@@ -408,6 +436,15 @@ public class DataSource {
                     command.setControllerNumber(null);
                 }
 
+                CommandType commandType = new CommandType();
+                commandType.setId(cursor.getLong(6));
+                commandType.setName(cursor.getString(8));
+                commandType.setBaseSerialOnCode(cursor.getString(9));
+                commandType.setBaseSerialOffCode(cursor.getString(10));
+                commandType.setActivateControllerSelection(cursor.getInt(11) == 1);
+
+                command.setCommandType(commandType);
+
                 button.getCommands().add(command);
             } while (cursor.moveToNext());
         }
@@ -421,7 +458,7 @@ public class DataSource {
      * Inserts a new zone into the database. This will also insert links between the zone and
      * the buttons that are provided.
      *
-     * @param name the name for the zone.
+     * @param name    the name for the zone.
      * @param buttons the buttons to execute when the button is pressed. Each button holds a list
      *                of commands.
      * @return the id of the inserted zone.
@@ -491,16 +528,22 @@ public class DataSource {
                         "c.gateway_id as gateway_id, " +
                         "c.number as number, " +
                         "c.command_type_id as command_type_id, " +
-                        "c.controller_number as controller_number " +
+                        "c.controller_number as controller_number, " +
+                        "t.name as command_type_name, " +
+                        "t.base_serial_on_code as base_serial_on_code, " +
+                        "t.base_serial_off_code as base_serial_off_code, " +
+                        "t.activate_controller_selection as activate_controller_selection " +
                         "FROM zone z " +
-                            "JOIN zone_button_link zbl " +
-                                "ON z._id=zbl.zone_id " +
-                            "JOIN button b " +
-                                "ON b._id=zbl.button_id " +
-                            "JOIN button_command_link bcl " +
-                                "ON b._id=bcl.button_id " +
-                            "JOIN command c " +
-                                "ON c._id=bcl.command_id " +
+                        "JOIN zone_button_link zbl " +
+                        "ON z._id=zbl.zone_id " +
+                        "JOIN button b " +
+                        "ON b._id=zbl.button_id " +
+                        "JOIN button_command_link bcl " +
+                        "ON b._id=bcl.button_id " +
+                        "JOIN command c " +
+                        "ON c._id=bcl.command_id " +
+                        "JOIN command_type t " +
+                        "ON t._id=c.command_type_id " +
                         "WHERE c.gateway_id=" + gatewayId + " " +
                         "ORDER BY z._id, b._id asc, c._id asc"
         );
@@ -557,6 +600,15 @@ public class DataSource {
                     command.setControllerNumber(null);
                 }
 
+                CommandType commandType = new CommandType();
+                commandType.setId(cursor.getLong(8));
+                commandType.setName(cursor.getString(10));
+                commandType.setBaseSerialOnCode(cursor.getString(11));
+                commandType.setBaseSerialOffCode(cursor.getString(12));
+                commandType.setActivateControllerSelection(cursor.getInt(13) == 1);
+
+                command.setCommandType(commandType);
+
                 if (!button.getCommands().contains(command)) {
                     button.getCommands().add(command);
                 }
@@ -569,7 +621,7 @@ public class DataSource {
     }
 
     // You could call this sometime on the system to insert some dummy data for the UI.
-    /*public void insertFakeButtonsAndZones(int gatewayId) {
+    /*public void insertFakeButtonsAndZones(long gatewayId) {
         insertNewCommand("Light 1", gatewayId, 1, 1, null);
         insertNewCommand("Light 2", gatewayId, 2, 1, null);
         insertNewCommand("Light 3", gatewayId, 3, 1, null);
