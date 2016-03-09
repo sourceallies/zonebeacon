@@ -1,150 +1,47 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.LinkBuilder;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.data.DataSource;
-import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import lombok.Getter;
-
 /**
- *
+ * Fragment for creating a button and adding it to the current gateway that is selected.
  */
-public class AddButtonFragment extends AbstractSetupFragment{
-    /**
-     * Default constructor for the fragment
-     */
-    public AddButtonFragment() { }
-
-    @Getter
-    private TextInputLayout name;
-    @Getter
-    private ListView commandList;
-    @Getter
-    private List<Command> allCommands;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.fragment_add_button, container, false);
-
-        // setup the UI elements
-        name = (TextInputLayout) root.findViewById(R.id.name);
-        commandList = (ListView) root.findViewById(R.id.commandList);
-        populateCommandList();
-
-        return root;
-    }
+public class AddButtonFragment extends AbstractAddFragment<Command> {
 
     /**
-     * Check whether or not the text input layout is empty or not. If it is, set an error and
-     * set up a TextWatcher to clear that error.
-     *
-     * @param input TextInputLayout that is either empty or filled
-     * @return true if the layout is empty, false otherwise
+     * Default constructor for the fragment.
      */
-    public boolean isEmpty(final TextInputLayout input) {
-        if (TextUtils.isEmpty(input.getEditText().getText())) {
-            // display an error message on the edit text
-            input.setError(getString(R.string.fill_field));
+    public AddButtonFragment() {
 
-            // used to clear the error message on the edit text
-            input.getEditText().addTextChangedListener(new TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-                @Override public void afterTextChanged(Editable editable) { }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    input.setError("");
-                }
-            });
-            return true;
-        } else {
-            // clear the error
-            input.setError("");
-        }
-
-        return false;
     }
 
     @Override
-    public boolean isComplete() {
-        boolean complete = true;
-
-        if (isEmpty(name))      complete = false;
-
-        return complete;
+    public String getPageTitle() {
+        return getString(R.string.add_button_title);
     }
-
 
     @Override
-    public void save() {
-        String name = getText(this.name);
-        List<Command> commandList = getCheckedCommands();
-
-        DataSource source = DataSource.getInstance(getActivity());
-        source.open();
-        source.insertNewButton(name, commandList);
-        source.close();
+    public String getListTitle() {
+        return getString(R.string.include_commands_title);
     }
 
-    private List<Command> getCheckedCommands() {
-        SparseBooleanArray checked = commandList.getCheckedItemPositions();
-        List<Command> checkedCommands = new ArrayList<Command>();
-        for (int i = 0; i < checked.size(); i++) {
-            int position = checked.keyAt(i);
-            if (checked.valueAt(i)) {
-                checkedCommands.add(allCommands.get(position));
-            }
-        }
-        return checkedCommands;
+    @Override
+    public String getNameHint() {
+        return getString(R.string.button_name_hint);
     }
 
-    private String getText(TextInputLayout input) {
-        return input.getEditText().getText().toString();
+    @Override
+    public void insertItems(DataSource dataSource, String name, List<Command> items) {
+        dataSource.insertNewButton(name, items);
     }
 
-    private void populateCommandList(){
-        Gateway currentGateway = getCurrentGateway();
-
-        DataSource source = DataSource.getInstance(getActivity());
-        source.open();
-        allCommands = source.findCommands(currentGateway);
-        source.close();
-
-        ListView commandList = getCommandList();
-        //create list of buttons
-        String[] commandNames = new String[allCommands.size()];
-
-        for (int i = 0; i < allCommands.size(); i++) {
-            commandNames[i] = allCommands.get(i).getName();
-        }
-
-        //Build Adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_multiple_choice, commandNames);
-        //Configure the list
-        commandList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        commandList.setAdapter(adapter);
+    @Override
+    public List<Command> findItems(DataSource dataSource, Gateway currentGateway) {
+        return dataSource.findCommands(currentGateway);
     }
+
 }

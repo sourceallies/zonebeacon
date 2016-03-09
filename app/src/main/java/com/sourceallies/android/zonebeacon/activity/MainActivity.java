@@ -171,23 +171,19 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     private void setFabTitle(final FloatingActionButton fab) {
         fab.setTitle(fab.getTitle().replace("%s", getGatewayName()));
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 collapseFab();
 
-                if (fab.getTitle().equals("Add Zone to %s".replace("%s", getGatewayName()))){
+                if (fab == addZone){
                     addZone();
-                }
-
-                else if (fab.getTitle().equals("Add Button to %s".replace("%s", getGatewayName()))){
+                } else if (fab == addButton) {
                     addButton();
+                } else if (fab == addCommand) {
+                    addCommand();
                 }
-                /*
-                else if (fab.getTitle().equals("Add Command to %s".replace("%s", getGatewayName()))){
-
-                }
-                */
             }
         });
     }
@@ -288,17 +284,28 @@ public class MainActivity extends RoboAppCompatActivity {
 
 
     /**
-     * Use the creation activity to add a zone
+     * Use the creation activity to add a zone.
      */
     public void addZone() {
-        CreationActivity.startCreation(this, CreationActivity.TYPE_ZONE, getCurrentGateway().getId());
+        startCreationActivity(CreationActivity.TYPE_ZONE);
     }
 
     /**
-     * Use the creation activity to add a Button
+     * Use the creation activity to add a button.
      */
     public void addButton() {
-        CreationActivity.startCreation(this, CreationActivity.TYPE_BUTTON, getCurrentGateway().getId());
+        startCreationActivity(CreationActivity.TYPE_BUTTON);
+    }
+
+    /**
+     * Use the creation activity to add a command.
+     */
+    public void addCommand() {
+        startCreationActivity(CreationActivity.TYPE_COMMAND);
+    }
+
+    private void startCreationActivity(int type) {
+        CreationActivity.startCreation(this, type, getCurrentGateway().getId());
     }
 
     /**

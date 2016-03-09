@@ -25,7 +25,7 @@ public class CreationActivity extends IntroActivity {
      * @param setupType TYPE_GATEWAY, TYPE_ZONE, TYPE_BUTTON, or TYPE_COMMAND
      */
     public static void startCreation(Activity activity, int setupType) {
-        startCreation(activity, setupType, -1l);
+        startCreation(activity, setupType, -1L);
     }
 
     /**
@@ -73,16 +73,18 @@ public class CreationActivity extends IntroActivity {
     @Override
     public void addSlides() {
         switch (getFragmentType()) {
-            // TODO: break these apart when more fragments are created.
             case TYPE_ZONE:
-                setupFragment = AddZoneFragment.getInstance(new AddZoneFragment(), getGatewayId());
+                setupFragment = AddZoneFragment.
+                        getInstance(new AddZoneFragment(), getGatewayId());
                 break;
             case TYPE_BUTTON:
-                setupFragment = AddButtonFragment.getInstance(new AddButtonFragment(), getGatewayId());
+                setupFragment = AddButtonFragment.
+                        getInstance(new AddButtonFragment(), getGatewayId());
                 break;
             case TYPE_COMMAND:
             case TYPE_GATEWAY:
-                setupFragment = GatewaySetupFragment.getInstance(new GatewaySetupFragment(), getGatewayId());
+                setupFragment = GatewaySetupFragment.
+                        getInstance(new GatewaySetupFragment(), getGatewayId());
                 break;
         }
 

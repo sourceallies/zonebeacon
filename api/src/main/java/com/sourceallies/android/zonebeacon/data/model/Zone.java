@@ -71,4 +71,9 @@ public class Zone implements DatabaseTable {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

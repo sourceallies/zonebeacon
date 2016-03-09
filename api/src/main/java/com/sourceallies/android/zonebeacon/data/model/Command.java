@@ -123,4 +123,9 @@ public class Command implements DatabaseTable {
         setCommandType(commandType);
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
 }
