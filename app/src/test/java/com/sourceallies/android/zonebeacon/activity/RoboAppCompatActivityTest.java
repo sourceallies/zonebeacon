@@ -104,8 +104,8 @@ public class RoboAppCompatActivityTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_setContentView_withLayout() {
         activity.setDelegate(delegate);
-        activity.setContentView(R.layout.activity_send_tcp);
-        verify(delegate).setContentView(R.layout.activity_send_tcp);
+        activity.setContentView(R.layout.fragment_add);
+        verify(delegate).setContentView(R.layout.fragment_add);
     }
 
     @Test
