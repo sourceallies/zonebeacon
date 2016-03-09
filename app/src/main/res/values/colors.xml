@@ -22,8 +22,18 @@
     <color name="colorAccent">#FFAB40</color>
     <color name="colorAccentDark">#FF9100</color>
 
+    <color name="dark_background">#202B30</color>
+    <color name="dark_list_item">#2d353a</color>
+
+    <color name="dark_dim">#92000000</color>
+    <color name="light_dim">#92FFFFFF</color>
+
     <color name="black_semi_transparent">#B2000000</color>
-    <color name="black_divider">#05000000</color>
+    <!--<color name="white_semi_transparent">#B2FFFFFF</color>-->
+
+    <color name="black_divider">#11000000</color>
+    <color name="white_divider">#05FFFFFF</color>
+
     <color name="white">#fafafa</color>
     <color name="white_pressed">#f1f1f1</color>
 

@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,10 @@ import com.klinker.android.link_builder.LinkBuilder;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.Command;
+import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -37,6 +41,8 @@ public class AddButtonFragment extends AbstractSetupFragment{
     private TextInputLayout name;
     @Getter
     private ListView commandList;
+    @Getter
+    private List<Command> allCommands;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,8 +50,8 @@ public class AddButtonFragment extends AbstractSetupFragment{
 
         // setup the UI elements
         name = (TextInputLayout) root.findViewById(R.id.name);
-        commandList = (ListView) root.findViewById(R.id.buttonList);
-        populateButtonList();
+        commandList = (ListView) root.findViewById(R.id.commandList);
+        populateCommandList();
 
         return root;
     }
@@ -94,30 +100,51 @@ public class AddButtonFragment extends AbstractSetupFragment{
     @Override
     public void save() {
         String name = getText(this.name);
+        List<Command> commandList = getCheckedCommands();
 
         DataSource source = DataSource.getInstance(getActivity());
         source.open();
-        //source.insertNewZone(name, );
+        source.insertNewButton(name, commandList);
         source.close();
+    }
+
+    private List<Command> getCheckedCommands() {
+        SparseBooleanArray checked = commandList.getCheckedItemPositions();
+        List<Command> checkedCommands = new ArrayList<Command>();
+        for (int i = 0; i < checked.size(); i++) {
+            int position = checked.keyAt(i);
+            if (checked.valueAt(i)) {
+                checkedCommands.add(allCommands.get(position));
+            }
+        }
+        return checkedCommands;
     }
 
     private String getText(TextInputLayout input) {
         return input.getEditText().getText().toString();
     }
 
-    public void populateButtonList(){
-        ListView buttonList = getCommandList();
+    private void populateCommandList(){
+        Gateway currentGateway = getCurrentGateway();
+
+        DataSource source = DataSource.getInstance(getActivity());
+        source.open();
+        allCommands = source.findCommands(currentGateway);
+        source.close();
+
+        ListView commandList = getCommandList();
         //create list of buttons
-        String[] commandNames = {"Command1", "Back", "Patio", "Lamp"};
+        String[] commandNames = new String[allCommands.size()];
+
+        for (int i = 0; i < allCommands.size(); i++) {
+            commandNames[i] = allCommands.get(i).getName();
+        }
+
         //Build Adapter
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_multiple_choice, buttonNames);
+                android.R.layout.simple_list_item_multiple_choice, commandNames);
         //Configure the list
-        buttonList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        buttonList.setAdapter(adapter);
-
-
-
-
+        commandList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        commandList.setAdapter(adapter);
     }
 }

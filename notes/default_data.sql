@@ -1,0 +1,7 @@
+INSERT INTO `system_type` (`id`, `name`, `version`) VALUES (1, 'CentraLite Elegance', '1.0');
+INSERT INTO `command_type` (`id`, `system_type_id`, `name`, `base_serial_on_code`, `base_serial_off_code`, `activate_controller_selection`) VALUES (1, 1, 'Single MCP - Load/Relay', '^A', '^B', 'false');
+INSERT INTO `command_type` (`id`, `system_type_id`, `name`, `base_serial_on_code`, `base_serial_off_code`, `activate_controller_selection`) VALUES (2, 1, 'Single MCP - Switch', '^S', '^S', 'false');
+INSERT INTO `command_type` (`id`, `system_type_id`, `name`, `base_serial_on_code`, `base_serial_off_code`, `activate_controller_selection`) VALUES (3, 1, 'Single MCP - Scene', '^C', '^D', 'false');
+INSERT INTO `command_type` (`id`, `system_type_id`, `name`, `base_serial_on_code`, `base_serial_off_code`, `activate_controller_selection`) VALUES (4, 1, 'Multi MCP - Load/Relay', '^a', '^b', 'true');
+INSERT INTO `command_type` (`id`, `system_type_id`, `name`, `base_serial_on_code`, `base_serial_off_code`, `activate_controller_selection`) VALUES (5, 1, 'Multi MCP - Switch', '^s', '^s', 'true');
+INSERT INTO `command_type` (`id`, `system_type_id`, `name`, `base_serial_on_code`, `base_serial_off_code`, `activate_controller_selection`) VALUES (6, 1, 'Multi MCP - Scene', '^c', '^d', 'true');

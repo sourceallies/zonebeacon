@@ -1,8 +1,6 @@
 package com.sourceallies.android.zonebeacon.adapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -69,9 +67,8 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
      * Get the view for the drop down item in the spinner.
      *
      * @param position Posiiton of the item you want to fill
-     * @param view Recycled view that may or may not have been previously created.
-     * @param parent Parent that holds the views
-     *
+     * @param view     Recycled view that may or may not have been previously created.
+     * @param parent   Parent that holds the views
      * @return the view that you want to display on the spinner dropdown items.
      */
     @Override
@@ -94,9 +91,8 @@ public class GatewaySpinnerAdapter extends BaseAdapter {
      * Get the view for the non-drop down, displayed item in the spinner.
      *
      * @param position Position of the item you want to fill
-     * @param view Recycled view that may or may not have been previously created.
-     * @param parent Parent that holds the views
-     *
+     * @param view     Recycled view that may or may not have been previously created.
+     * @param parent   Parent that holds the views
      * @return the view of the currently selected spinner item
      */
     @Override
