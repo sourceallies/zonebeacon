@@ -52,7 +52,6 @@ public abstract class AbstractAddFragment<T> extends AbstractSetupFragment {
         pageTitle.setText(getPageTitle());
         name.setHint(getNameHint());
 
-
         return root;
     }
 

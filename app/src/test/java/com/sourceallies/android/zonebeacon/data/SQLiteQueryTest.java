@@ -50,6 +50,12 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
+    public void test_findGateway() {
+        Gateway gateway = source.findGateway(1L);
+        assertEquals("Gateway 1", gateway.getName());
+    }
+
+    @Test
     public void test_insertNewGateway() {
         int originalNum = getTableCount("gateway");
         source.insertNewGateway("Test Gateway", "192.168.1.100", 11000);

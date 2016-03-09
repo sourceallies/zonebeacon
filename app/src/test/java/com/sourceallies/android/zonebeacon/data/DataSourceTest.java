@@ -106,6 +106,40 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
+    public void test_getGateway() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "ip_address", "port_number", "system_type_id"
+        });
+
+        cursor.addRow(new String[] {"1", "gateway 1", "192.168.1.100", "11000", "1"});
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        Gateway gateway = source.findGateway(1L);
+
+        assertEquals("gateway 1", gateway.getName());
+    }
+
+    @Test
+    public void test_getGateway_noRows() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "ip_address", "port_number", "system_type_id"
+        });
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        Gateway gateway = source.findGateway(1L);
+
+        assertNull(gateway.getName());
+    }
+
+    @Test
+    public void test_getGateway_nullCursor() {
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(null);
+        Gateway gateway = source.findGateway(1L);
+
+        assertNull(gateway);
+    }
+
+    @Test
     public void test_findGateways() {
         MatrixCursor cursor = new MatrixCursor(new String[] {
                 "_id", "name", "ip_address", "port_number", "system_type_id"

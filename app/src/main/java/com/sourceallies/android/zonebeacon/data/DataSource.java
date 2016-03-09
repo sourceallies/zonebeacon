@@ -212,6 +212,12 @@ public class DataSource {
         return gateways;
     }
 
+    /**
+     * Gets the instance of the gateway based on an id.
+     *
+     * @param id the id of the gateway.
+     * @return the gateway.
+     */
     public Gateway findGateway(long id) {
         Cursor cursor = rawQuery("SELECT * from gateway where _id = " + id);
         Gateway gateway = new Gateway();
