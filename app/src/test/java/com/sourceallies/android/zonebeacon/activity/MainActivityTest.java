@@ -19,6 +19,9 @@ package com.sourceallies.android.zonebeacon.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -45,6 +48,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -59,6 +63,9 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     @Mock
     private Gateway gateway;
 
+    @Mock
+    private RecyclerView recycler;
+
     private MainActivity activity;
     private List<Gateway> gateways = new ArrayList<>();
     private GatewaySpinnerAdapter adapter;
@@ -68,9 +75,12 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         activity = Robolectric.setupActivity(MainActivity.class);
         activity = spy(activity);
 
+        doNothing().when(recycler).setLayoutManager(any(RecyclerView.LayoutManager.class));
+
         adapter = createAdapter();
         activity.setSpinnerAdapter(adapter);
         activity.getSpinner().setAdapter(adapter);
+        activity.setRecycler(recycler);
     }
 
     @Test
@@ -292,6 +302,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         adapter = new GatewaySpinnerAdapter(activity, gateways);
         activity.setSpinnerAdapter(adapter);
         activity.getSpinner().setAdapter(adapter);
+        activity.setRecycler(recycler);
         activity.getSpinner().setSelection(0);
 
         activity.getSpinner().getOnItemSelectedListener().onNothingSelected(null);
@@ -326,4 +337,22 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         return new GatewaySpinnerAdapter(activity, gateways);
     }
 
+    @Test
+    public void test_columnCount() {
+        Resources res = Mockito.mock(Resources.class);
+        Configuration config = Mockito.mock(Configuration.class);
+        doReturn(res).when(activity).getResources();
+        doReturn(config).when(res).getConfiguration();
+
+        config.orientation = Configuration.ORIENTATION_LANDSCAPE;
+        assertEquals(2, activity.getColumnCount());
+
+        config.orientation = Configuration.ORIENTATION_PORTRAIT;
+        doReturn(true).when(res).getBoolean(R.bool.tablet);
+        assertEquals(2, activity.getColumnCount());
+
+        config.orientation = Configuration.ORIENTATION_PORTRAIT;
+        doReturn(false).when(res).getBoolean(R.bool.tablet);
+        assertEquals(1, activity.getColumnCount());
+    }
 }
