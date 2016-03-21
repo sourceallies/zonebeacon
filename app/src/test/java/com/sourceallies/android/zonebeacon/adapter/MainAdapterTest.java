@@ -41,6 +41,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
     @Mock
     TextView title;
     @Mock
+    TextView fabSpacer;
+    @Mock
     SwitchCompat buttonSwitch;
     @Mock
     ViewGroup parent;
@@ -54,6 +56,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         Mockito.when(context.getLayoutInflater()).thenReturn(inflater);
         Mockito.doReturn(view).when(inflater).inflate(Mockito.anyInt(), Mockito.any(ViewGroup.class), Mockito.eq(false));
         Mockito.doReturn(title).when(view).findViewById(R.id.title);
+        Mockito.doReturn(fabSpacer).when(view).findViewById(R.id.fab_spacer);
+        Mockito.doReturn(View.VISIBLE).when(fabSpacer).getVisibility();
 
         Mockito.when(context.getString(R.string.zones)).thenReturn(ZONES_TITLE);
         Mockito.when(context.getString(R.string.buttons)).thenReturn(BUTTONS_TITLE);
@@ -64,6 +68,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         Mockito.doNothing().when(executor).execute(Mockito.any(Gateway.class));
         Mockito.doNothing().when(title).setText(Mockito.anyString());
         viewHolder.title = title;
+        viewHolder.fabSpacer = fabSpacer;
     }
 
     @Test

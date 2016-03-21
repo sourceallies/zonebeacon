@@ -118,8 +118,13 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         else
             holder.title.setText(buttons.get(relativePosition).getName());
 
-
         setItemClick(holder.root, holder.buttonSwitch, section, relativePosition);
+
+        if (showFabSpacer(section, relativePosition)) {
+            holder.fabSpacer.setVisibility(View.VISIBLE);
+        } else if (holder.fabSpacer.getVisibility() != View.GONE) {
+            holder.fabSpacer.setVisibility(View.GONE);
+        }
     }
 
     @VisibleForTesting
@@ -192,6 +197,19 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     }
 
     /**
+     * If we are in the buttons section and it is the last item in the list, then we need to put
+     * a spacer in the list for the FAB.
+     *
+     * @param section section index
+     * @param item item index
+     * @return true if we should show the FAB spacer layout, false otherwise
+     */
+    @VisibleForTesting
+    protected boolean showFabSpacer(int section, int item) {
+        return !isZone(section) && getItemCount(section) - 1 == item;
+    }
+
+    /**
      * View holder to go with the recycler view.
      * <p/>
      * This holds the different views so that they do not have to be found every time.
@@ -206,6 +224,9 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         public View root;
 
         @Nullable
+        public View fabSpacer;
+
+        @Nullable
         public SwitchCompat buttonSwitch;
 
         /**
@@ -217,6 +238,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             super(itemView);
             root = itemView.findViewById(R.id.root_layout);
             title = (TextView) itemView.findViewById(R.id.title);
+            fabSpacer = itemView.findViewById(R.id.fab_spacer);
             buttonSwitch = (SwitchCompat) itemView.findViewById(R.id.button_switch);
         }
     }
