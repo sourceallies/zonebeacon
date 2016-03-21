@@ -19,41 +19,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?list_item_background"
-    android:descendantFocusability="blocksDescendants" >
+    android:layout_height="wrap_content" >
 
-    <com.sourceallies.android.zonebeacon.view.InterceptingLinearLayout
-        android:id="@+id/root_layout"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:background="?android:selectableItemBackground"  >
+        android:layout_height="wrap_content"
+        android:background="?list_item_background"
+        android:descendantFocusability="blocksDescendants" >
 
-        <TextView
-            android:id="@+id/title"
+        <com.sourceallies.android.zonebeacon.view.InterceptingLinearLayout
+            android:id="@+id/root_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:clickable="true"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:textSize="14sp"
-            android:maxLines="1" />
+            android:background="?android:selectableItemBackground"  >
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/button_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp"
-            android:layout_marginRight="12dp"
-            android:clickable="false" />
+            <TextView
+                android:id="@+id/title"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textSize="14sp"
+                android:maxLines="1" />
 
-    </com.sourceallies.android.zonebeacon.view.InterceptingLinearLayout>
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/button_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="12dp"
+                android:clickable="false" />
+
+        </com.sourceallies.android.zonebeacon.view.InterceptingLinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?list_item_divider"/>
+
+    </LinearLayout>
 
     <View
+        android:id="@+id/fab_spacer"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?list_item_divider"/>
-
+        android:layout_height="98dp"
+        android:visibility="gone"/>
 </LinearLayout>
