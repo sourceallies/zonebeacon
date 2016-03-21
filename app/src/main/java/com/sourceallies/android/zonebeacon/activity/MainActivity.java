@@ -21,13 +21,17 @@ import android.support.v4.app.FragmentTransaction;
 //import android.app.FragmentManager;
 //import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -61,7 +65,7 @@ public class MainActivity extends RoboAppCompatActivity {
 
     @Getter
     private CoordinatorLayout rootLayout;
-    @Getter
+    @Setter @Getter
     private RecyclerView recycler;
     @Getter
     private Toolbar toolbar;
@@ -223,11 +227,9 @@ public class MainActivity extends RoboAppCompatActivity {
         if (currentGateway != null) {
             mainAdapter = new MainAdapter(this, currentGateway, source.findZones(currentGateway), source.findButtons(currentGateway));
 
-            try {
-                recycler.setLayoutManager(getLayoutManager());
-            } catch (NullPointerException e) {
-            }
-
+            GridLayoutManager manager = getLayoutManager();
+            recycler.setLayoutManager(manager);
+            mainAdapter.setLayoutManager(manager);
             recycler.setAdapter(mainAdapter);
         } else {
             mainAdapter = null;
@@ -236,9 +238,29 @@ public class MainActivity extends RoboAppCompatActivity {
         source.close();
     }
 
+    /**
+     * Grab the layout manager for the list and adapter;
+     *
+     * @return GridLayoutManager for the view
+     */
     @VisibleForTesting
-    protected RecyclerView.LayoutManager getLayoutManager() {
-        return new LinearLayoutManager(this);
+    protected GridLayoutManager getLayoutManager() {
+        return new GridLayoutManager(this, getColumnCount());
+    }
+
+    /**
+     * Get the number of columns in the grid.
+     *
+     * @return integer for the number of columns used in the grid
+     */
+    @VisibleForTesting
+    protected int getColumnCount() {
+        Resources res = getResources();
+
+        if (res.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) return 2;
+        if (res.getBoolean(R.bool.tablet)) return 2;
+
+        return 1;
     }
 
     /**
