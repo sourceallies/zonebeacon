@@ -45,7 +45,7 @@ public class AddZoneFragmentTest extends AbstractAddFragmentTest {
 
     @Test
     public void test_getPageTitle() {
-        assertEquals("Add Zone:", fragment.getPageTitle());
+        assertEquals("Add a Zone", fragment.getPageTitle());
     }
 
     @Test
