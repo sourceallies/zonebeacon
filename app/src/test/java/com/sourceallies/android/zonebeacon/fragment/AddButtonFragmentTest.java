@@ -45,7 +45,7 @@ public class AddButtonFragmentTest extends AbstractAddFragmentTest {
 
     @Test
     public void test_getPageTitle() {
-        assertEquals("Add Button:", fragment.getPageTitle());
+        assertEquals("Add a Button", fragment.getPageTitle());
     }
 
     @Test
