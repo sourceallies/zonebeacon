@@ -60,14 +60,14 @@ public class CommandType implements DatabaseTable {
     // since a user should NOT be able to select a brightness command when creating a new command for a gateway.
     
     private static final String[] DEFAULTS = {										// Command Examples
-            "1, 1, 'Single MCP - Load/Relay', '^A', '^B', 0",						// ^A001 or ^B001
-            "2, 1, 'Single MCP - Switch', '^S', '^S', 0",							// ^S001
-            "3, 1, 'Single MCP - Scene', '^C', '^D', 0",							// ^C001 or ^D001
-            "4, 1, 'Multi MCP - Load/Relay', '^a', '^b', 1",						// ^a1001 or ^b1001 (^<base code> + <controller selection (1-9)> + <load number (001-999)>)
-            "5, 1, 'Multi MCP - Switch', '^s', '^s', 1",							// ^s1001 (^s<controller selection (1-9)> + <load number (001-999)>)
-            "6, 1, 'Multi MCP - Scene', '^c', '^d', 1",								// ^c1001 or ^d1001 (^<base code> + <controller selection (1-9)> + <load number (001-999)>)
-            "7, 1, 'Single MCP - Brightness', '^E%nnn%ll00', '^E%nnn0000', 0",		// ^E0019000 (^<base code> + <load number (001-999)> + <level (01-99)> + <pulse width (00 for us)>)
-            "8, 1, 'Multi MCP - Brightness', '^e%s%nnn%ll00', '^e%s%nnn0000', 1"	// ^e10019000 (^<base code> + <controller selection (1 char)> + <load number (3 chars)> + <level (01-99)> + <pulse width (00 for us)>)
+            "1, 1, 'Single MCP - Load/Relay', '^A%nnn', '^B%nnn', 0",						// ^A001 or ^B001
+            "2, 1, 'Single MCP - Switch', '^S%nnn', '^S%nnn', 0",							// ^S001
+            "3, 1, 'Single MCP - Scene', '^C%nnn', '^D%nnn', 0",							// ^C001 or ^D001
+            "4, 1, 'Multi MCP - Load/Relay', '^a%s%nnn', '^b%s%nnn', 1",					// ^a1001 or ^b1001 (^<base code> + <controller selection (1-9)> + <load number (001-999)>)
+            "5, 1, 'Multi MCP - Switch', '^s%s%nnn', '^s%s%nnn', 1",						// ^s1001 (^s<controller selection (1-9)> + <load number (001-999)>)
+            "6, 1, 'Multi MCP - Scene', '^c%s%nnn', '^d%s%nnn', 1",							// ^c1001 or ^d1001 (^<base code> + <controller selection (1-9)> + <load number (001-999)>)
+            "7, 1, 'Single MCP - Brightness', '^E%nnn%ll00', '^E%nnn0000', 0",				// ^E0019000 (^<base code> + <load number (001-999)> + <level (01-99)> + <pulse width (00 for us)>)
+            "8, 1, 'Multi MCP - Brightness', '^e%s%nnn%ll00', '^e%s%nnn0000', 1"			// ^e10019000 (^<base code> + <controller selection (1 char)> + <load number (3 chars)> + <level (01-99)> + <pulse width (00 for us)>)
     };
 
     @Setter
