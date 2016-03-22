@@ -124,7 +124,7 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         Gateway gateway = new Gateway();
         gateway.setSystemTypeId(1L);
 
-        List<CommandType> commandTypes = source.findCommandTypesShownInCommandList(gateway);
+        List<CommandType> commandTypes = source.findCommandTypesShownInUI(gateway);
         assertEquals(6, commandTypes.size());
         assertEquals("Single MCP - Load/Relay", commandTypes.get(0).getName());
         assertEquals("Single MCP - Switch", commandTypes.get(1).getName());
@@ -139,7 +139,7 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         Gateway gateway = new Gateway();
         gateway.setSystemTypeId(1L);
 
-        List<CommandType> commandTypes = source.findCommandTypesNotShownInCommandList(gateway);
+        List<CommandType> commandTypes = source.findCommandTypesNotShownInUI(gateway);
         assertEquals(2, commandTypes.size());
         assertEquals("Single MCP - Brightness", commandTypes.get(0).getName());
         assertEquals("Multi MCP - Brightness", commandTypes.get(1).getName());
