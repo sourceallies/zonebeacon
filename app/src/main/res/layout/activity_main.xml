@@ -89,7 +89,8 @@
                 fab:fab_colorNormal="@color/white"
                 fab:fab_size="mini"
                 fab:fab_title="@string/add_zone"
-                fab:fab_colorPressed="@color/white_pressed"/>
+                fab:fab_colorPressed="@color/white_pressed"
+                fab:fab_icon="@drawable/ic_zone"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_button"
@@ -98,7 +99,8 @@
                 fab:fab_colorNormal="@color/white"
                 fab:fab_size="mini"
                 fab:fab_title="@string/add_button"
-                fab:fab_colorPressed="@color/white_pressed"/>
+                fab:fab_colorPressed="@color/white_pressed"
+                fab:fab_icon="@drawable/ic_button"/>
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_command"
@@ -107,7 +109,8 @@
                 fab:fab_colorNormal="@color/white"
                 fab:fab_size="mini"
                 fab:fab_title="@string/add_command"
-                fab:fab_colorPressed="@color/white_pressed"/>
+                fab:fab_colorPressed="@color/white_pressed"
+                fab:fab_icon="@drawable/ic_command" />
 
         </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
