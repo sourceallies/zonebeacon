@@ -38,6 +38,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -111,7 +113,7 @@ public class AbstractAddFragmentTest extends ZoneBeaconRobolectricSuite {
         allItems.add("3");
 
         fragment = spy(fragment);
-        when(fragment.findItems(any(DataSource.class), any(Gateway.class))).thenReturn(allItems);
+        doReturn(allItems).when(fragment).findItems(any(DataSource.class), any(Gateway.class));
 
         fragment.populateCommandList();
         assertEquals(3, fragment.getList().getAdapter().getCount());
@@ -147,11 +149,13 @@ public class AbstractAddFragmentTest extends ZoneBeaconRobolectricSuite {
         test_getCheckedItems();
         test_isComplete();
 
-        fragment.save();
-
         List<String> items = new ArrayList<String>();
         items.add("1");
         items.add("3");
+
+        doNothing().when(fragment).insertItems(any(DataSource.class), eq("apartment"), eq(items));
+        fragment.save();
+
         verify(fragment).insertItems(any(DataSource.class), eq("apartment"), eq(items));
     }
 
