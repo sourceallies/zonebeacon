@@ -17,6 +17,9 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
 import android.support.design.widget.TextInputLayout;
+import android.text.Editable;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
@@ -26,15 +29,31 @@ import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class AbstractAddFragmentTest extends ZoneBeaconRobolectricSuite {
 
     public AbstractAddFragment fragment;
+
+    @Mock
+    private TextInputLayout textInputLayout;
+    @Mock
+    private EditText editText;
+    @Mock
+    private Editable editable;
+    @Mock
+    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -75,7 +94,66 @@ public class AbstractAddFragmentTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(fragment.getList());
     }
 
-    // TODO add more tests for isEmpty, isComplete, save, etc here.
+    @Test
+    public void test_getText() {
+        when(textInputLayout.getEditText()).thenReturn(editText);
+        when(editText.getText()).thenReturn(editable);
+        when(editable.toString()).thenReturn("Test String");
+
+        assertEquals("Test String", fragment.getText(textInputLayout));
+    }
+
+    @Test
+    public void test_populateCommandList() {
+        List<String> allItems = new ArrayList<String>();
+        allItems.add("1");
+        allItems.add("2");
+        allItems.add("3");
+
+        fragment = spy(fragment);
+        when(fragment.findItems(any(DataSource.class), any(Gateway.class))).thenReturn(allItems);
+
+        fragment.populateCommandList();
+        assertEquals(3, fragment.getList().getAdapter().getCount());
+    }
+
+    @Test
+    public void test_getCheckedItems() {
+        test_populateCommandList();
+        fragment.getList().setItemChecked(0, true);
+        fragment.getList().setItemChecked(1, false);
+        fragment.getList().setItemChecked(2, true);
+
+        List<String> checkedItems = fragment.getCheckedItems();
+        assertEquals(2, checkedItems.size());
+        assertEquals("1", checkedItems.get(0));
+        assertEquals("3", checkedItems.get(1));
+    }
+
+    @Test
+    public void test_multiSelectEnabled() {
+        assertEquals(ListView.CHOICE_MODE_MULTIPLE, fragment.getList().getChoiceMode());
+    }
+
+    @Test
+    public void test_isComplete() {
+        assertFalse(fragment.isComplete());
+        fragment.getName().getEditText().setText("apartment");
+        assertTrue(fragment.isComplete());
+    }
+
+    @Test
+    public void test_save() {
+        test_getCheckedItems();
+        test_isComplete();
+
+        fragment.save();
+
+        List<String> items = new ArrayList<String>();
+        items.add("1");
+        items.add("3");
+        verify(fragment).insertItems(any(DataSource.class), eq("apartment"), eq(items));
+    }
 
     public AbstractAddFragment getAddFragment() {
         return (AbstractAddFragment) AbstractSetupFragment.getInstance(new AbstractAddFragment() {
