@@ -667,4 +667,9 @@ public class DataSource {
         insertNewZone("Main Floor", buttons.subList(1, 2));
         insertNewZone("Upper Floor", buttons.subList(3, 4));
     }*/
+
+    // you can call this to make the gateway point to our test box
+    /*public void changeGatewayIp(long gatewayId) {
+        execSql("UPDATE gateway SET ip_address = '173.29.143.178' WHERE _id = " + gatewayId);
+    }*/
 }
