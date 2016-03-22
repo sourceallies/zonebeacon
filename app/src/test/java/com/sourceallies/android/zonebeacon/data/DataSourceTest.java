@@ -195,6 +195,99 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
+    public void test_findCommandTypes() {
+        Gateway gateway = new Gateway();
+        gateway.setSystemTypeId(1L);
+
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "base_serial_on_code", "base_serial_off_code", "system_type_id",
+                "activate_controller_selection"
+        });
+
+        cursor.addRow(new String[] {"1", "command type 1", "1", "1", "1", "0"});
+        cursor.addRow(new String[] {"2", "command type 2", "1", "1", "1", "0"});
+        cursor.addRow(new String[] {"3", "command type 3", "1", "1", "1", "0"});
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        List<CommandType> types = source.findCommandTypes(gateway);
+
+        assertEquals(3, types.size());
+        assertEquals("command type 1", types.get(0).getName());
+        assertEquals("command type 2", types.get(1).getName());
+        assertEquals("command type 3", types.get(2).getName());
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findCommandTypes_noRows() {
+        Gateway gateway = new Gateway();
+        gateway.setSystemTypeId(1L);
+
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "base_serial_on_code", "base_serial_off_code", "system_type_id",
+                "activate_controller_selection"
+        });
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        List<CommandType> types = source.findCommandTypes(gateway);
+
+        assertEquals(0, types.size());
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findCommandTypes_nullCursor() {
+        Gateway gateway = new Gateway();
+        gateway.setSystemTypeId(1L);
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(null);
+        List<CommandType> types = source.findCommandTypes(gateway);
+
+        assertEquals(0, types.size());
+    }
+
+    @Test
+    public void test_findSystemTypes() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "version"
+        });
+
+        cursor.addRow(new String[] {"1", "system type 1", "1"});
+        cursor.addRow(new String[] {"2", "system type 2", "1"});
+        cursor.addRow(new String[] {"3", "system type 3", "2"});
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        List<SystemType> types = source.findSystemTypes();
+
+        assertEquals(3, types.size());
+        assertEquals("system type 1", types.get(0).getName());
+        assertEquals("system type 2", types.get(1).getName());
+        assertEquals("system type 3", types.get(2).getName());
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findSystemTypes_noRows() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "version"
+        });
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        List<SystemType> types = source.findSystemTypes();
+
+        assertEquals(0, types.size());
+        assertTrue(cursor.isClosed());
+    }
+
+    @Test
+    public void test_findSystemTypes_nullCursor() {
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(null);
+        List<SystemType> types = source.findSystemTypes();
+
+        assertEquals(0, types.size());
+    }
+
+    @Test
     public void test_insertCommand() {
         CommandType commandType = new CommandType();
         commandType.setId(1);

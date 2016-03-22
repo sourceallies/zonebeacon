@@ -28,6 +28,7 @@ import com.sourceallies.android.zonebeacon.data.model.ButtonCommandLink;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.data.model.SystemType;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 
@@ -249,6 +250,72 @@ public class DataSource {
         cursor.close();
 
         return gateway;
+    }
+
+    /**
+     * Gets a list of all of the command types in the database for the given gateway.
+     *
+     * @param gateway the gateway to find command types for.
+     * @return a list of command types.
+     */
+    public List<CommandType> findCommandTypes(Gateway gateway) {
+        return findCommandTypes(gateway.getSystemTypeId());
+    }
+
+    /**
+     * Gets a list of all of the command types in the database for the given system type id.
+     *
+     * @param systemTypeId the system type id.
+     * @return a list of command types.
+     */
+    private List<CommandType> findCommandTypes(long systemTypeId) {
+        Cursor cursor = rawQuery("SELECT * from command_type where system_type_id = "
+                + systemTypeId);
+        List<CommandType> types = new ArrayList<>();
+
+        if (cursor == null) {
+            return types;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                CommandType type = new CommandType();
+                type.fillFromCursor(cursor);
+
+                types.add(type);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return types;
+    }
+
+    /**
+     * Gets a list of all system types in the database that we can work with.
+     *
+     * @return the system types.
+     */
+    public List<SystemType> findSystemTypes() {
+        Cursor cursor = rawQuery("SELECT * from system_type");
+        List<SystemType> types = new ArrayList<>();
+
+        if (cursor == null) {
+            return types;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                SystemType type = new SystemType();
+                type.fillFromCursor(cursor);
+
+                types.add(type);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return types;
     }
 
     /**
