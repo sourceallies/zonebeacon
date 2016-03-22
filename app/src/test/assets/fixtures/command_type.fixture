@@ -1,1 +1,1 @@
-| _id   | name          | base_serial_code  | system_type_id    |
+| _id   | system_type_id    | name                  | base_serial_on_code   | base_serial_off_code  | activate_controller_selection |

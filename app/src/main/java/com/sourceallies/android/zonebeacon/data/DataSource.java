@@ -28,6 +28,7 @@ import com.sourceallies.android.zonebeacon.data.model.ButtonCommandLink;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.data.model.SystemType;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 
@@ -197,7 +198,20 @@ public class DataSource {
      * @return the number of items deleted with the statement.
      */
     public int deleteGateway(long gatewayId) {
-        // TODO delete all of the zones, buttons and commands associated with the gateway
+        List<Zone> zones = findZones(gatewayId);
+
+        for (Zone zone : zones) {
+            for (Button button : zone.getButtons()) {
+                for (Command command : button.getCommands()) {
+                    database.delete(Command.TABLE_COMMAND, Command.COLUMN_ID + " = " + command.getId(), null);
+                }
+
+                database.delete(Button.TABLE_BUTTON, Button.COLUMN_ID + " = " + button.getId(), null);
+            }
+
+            database.delete(Zone.TABLE_ZONE, Zone.COLUMN_ID + " = " + zone.getId(), null);
+        }
+
         return database.delete(Gateway.TABLE_GATEWAY, Gateway.COLUMN_ID + " = " + gatewayId, null);
     }
 
@@ -249,6 +263,98 @@ public class DataSource {
         cursor.close();
 
         return gateway;
+    }
+
+    /**
+     * Gets a list of all of the command types in the database for the given gateway.
+     *
+     * @param gateway the gateway to find command types for.
+     * @return a list of command types.
+     */
+    public List<CommandType> findCommandTypes(Gateway gateway) {
+        return findCommandTypes(gateway.getSystemTypeId());
+    }
+
+    private List<CommandType> findCommandTypes(long systemTypeId) {
+        return findCommandTypes("SELECT * from command_type where system_type_id = "
+                + systemTypeId);
+    }
+
+    /**
+     * Gets a list of command types that should be shown in the UI when a user is inserting a
+     * new command.
+     *
+     * @param gateway the gateway to find command types for.
+     * @return a list of command types.
+     */
+    public List<CommandType> findCommandTypesShownInUI(Gateway gateway) {
+        return findCommandTypes(gateway.getSystemTypeId(), true);
+    }
+
+    /**
+     * Gets a list of command types that should NOT be shown in the UI when a user is inserting a
+     * new command (eg. brightness controls).
+     *
+     * @param gateway the gateway to find command types for.
+     * @return a list of command types.
+     */
+    public List<CommandType> findCommandTypesNotShownInUI(Gateway gateway) {
+        return findCommandTypes(gateway.getSystemTypeId(), false);
+    }
+
+    private List<CommandType> findCommandTypes(long systemTypeId, boolean shownInList) {
+        return findCommandTypes("SELECT * from command_type where system_type_id = "
+                + systemTypeId + " AND shown_in_command_list = " + (shownInList ? "1" : "0"));
+
+    }
+
+    private List<CommandType> findCommandTypes(String sqlQuery) {
+        Cursor cursor = rawQuery(sqlQuery);
+        List<CommandType> types = new ArrayList<>();
+
+        if (cursor == null) {
+            return types;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                CommandType type = new CommandType();
+                type.fillFromCursor(cursor);
+
+                types.add(type);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return types;
+    }
+
+    /**
+     * Gets a list of all system types in the database that we can work with.
+     *
+     * @return the system types.
+     */
+    public List<SystemType> findSystemTypes() {
+        Cursor cursor = rawQuery("SELECT * from system_type");
+        List<SystemType> types = new ArrayList<>();
+
+        if (cursor == null) {
+            return types;
+        }
+
+        if (cursor.moveToFirst()) {
+            do {
+                SystemType type = new SystemType();
+                type.fillFromCursor(cursor);
+
+                types.add(type);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+
+        return types;
     }
 
     /**
