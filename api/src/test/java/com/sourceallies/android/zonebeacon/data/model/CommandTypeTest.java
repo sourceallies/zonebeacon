@@ -48,10 +48,10 @@ public class CommandTypeTest extends DatabaseTableTest {
         assertEquals(8, type.getDefaultDataStatements().length);
 
         assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_on_code', 'base_serial_off_code', " +
-                "'activate_controller_selection') VALUES (1, 1, 'Single MCP - Load/Relay', '^A%nnn', '^B%nnn', 0);",
+                "'activate_controller_selection', 'shown_in_command_list') VALUES (1, 1, 'Single MCP - Load/Relay', '^A%nnn', '^B%nnn', 0, 1);",
                 type.getDefaultDataStatements()[0]);
         assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_on_code', 'base_serial_off_code', " +
-                "'activate_controller_selection') VALUES (2, 1, 'Single MCP - Switch', '^S%nnn', '^S%nnn', 0);",
+                "'activate_controller_selection', 'shown_in_command_list') VALUES (2, 1, 'Single MCP - Switch', '^S%nnn', '^S%nnn', 0, 1);",
                 type.getDefaultDataStatements()[1]);
     }
 
@@ -60,7 +60,7 @@ public class CommandTypeTest extends DatabaseTableTest {
         assertEquals("create table if not exists command_type (_id integer primary key " +
                 "autoincrement, name varchar(255) not null, base_serial_on_code varchar(255) not " +
                 "null, base_serial_off_code varchar(255) not null, system_type_id integer not null, " +
-                "activate_controller_selection integer not null);", type.getCreateStatement());
+                "activate_controller_selection integer not null, shown_in_command_list integer not null);", type.getCreateStatement());
     }
 
     @Test
@@ -74,6 +74,7 @@ public class CommandTypeTest extends DatabaseTableTest {
         assertColumnFilled(type.getBaseSerialOffCode());
         assertColumnFilled(type.getSystemTypeId());
         assertColumnFilled(type.isActivateControllerSelection());
+        assertColumnFilled(type.isShownInCommandList());
     }
 
     @Override
