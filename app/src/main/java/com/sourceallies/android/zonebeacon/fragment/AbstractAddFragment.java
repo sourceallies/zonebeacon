@@ -17,6 +17,7 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -49,7 +50,6 @@ public abstract class AbstractAddFragment<T> extends AbstractSetupFragment {
     private TextInputLayout name;
     @Getter
     private ListView list;
-    @Getter
     private List<T> allItems;
 
     @Override
@@ -142,7 +142,8 @@ public abstract class AbstractAddFragment<T> extends AbstractSetupFragment {
 
     public abstract void insertItems(DataSource dataSource, String name, List<T> items);
 
-    private List<T> getCheckedItems() {
+    @VisibleForTesting
+    protected List<T> getCheckedItems() {
         SparseBooleanArray checked = list.getCheckedItemPositions();
         List<T> checkedItems = new ArrayList<T>();
         for (int i = 0; i < checked.size(); i++) {
@@ -154,11 +155,13 @@ public abstract class AbstractAddFragment<T> extends AbstractSetupFragment {
         return checkedItems;
     }
 
-    private String getText(TextInputLayout input) {
+    @VisibleForTesting
+    protected String getText(TextInputLayout input) {
         return input.getEditText().getText().toString();
     }
 
-    private void populateCommandList() {
+    @VisibleForTesting
+    protected void populateCommandList() {
         Gateway currentGateway = getCurrentGateway();
 
         DataSource source = DataSource.getInstance(getActivity());
@@ -166,7 +169,6 @@ public abstract class AbstractAddFragment<T> extends AbstractSetupFragment {
         allItems = findItems(source, currentGateway);
         source.close();
 
-        ListView commandList = getList();
         //create list of buttons
         String[] commandNames = new String[allItems.size()];
 
@@ -178,8 +180,8 @@ public abstract class AbstractAddFragment<T> extends AbstractSetupFragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_multiple_choice, commandNames);
         //Configure the list
-        commandList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        commandList.setAdapter(adapter);
+        list.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        list.setAdapter(adapter);
     }
 
     /**
