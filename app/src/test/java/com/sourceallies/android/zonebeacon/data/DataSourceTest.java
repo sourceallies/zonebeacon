@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 Source Allies, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.sourceallies.android.zonebeacon.data;
 
 import android.content.ContentValues;
@@ -103,6 +119,40 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     public void test_deleteGateway() {
         source.deleteGateway(1);
         verify(database).delete(Gateway.TABLE_GATEWAY, "_id = 1", null);
+    }
+
+    @Test
+    public void test_getGateway() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "ip_address", "port_number", "system_type_id"
+        });
+
+        cursor.addRow(new String[] {"1", "gateway 1", "192.168.1.100", "11000", "1"});
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        Gateway gateway = source.findGateway(1L);
+
+        assertEquals("gateway 1", gateway.getName());
+    }
+
+    @Test
+    public void test_getGateway_noRows() {
+        MatrixCursor cursor = new MatrixCursor(new String[] {
+                "_id", "name", "ip_address", "port_number", "system_type_id"
+        });
+
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(cursor);
+        Gateway gateway = source.findGateway(1L);
+
+        assertNull(gateway.getName());
+    }
+
+    @Test
+    public void test_getGateway_nullCursor() {
+        when(database.rawQuery(anyString(), any(String[].class))).thenReturn(null);
+        Gateway gateway = source.findGateway(1L);
+
+        assertNull(gateway);
     }
 
     @Test

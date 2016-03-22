@@ -1,13 +1,11 @@
-package com.sourceallies.android.zonebeacon.activity;
-
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2016 Source Allies, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,6 +13,8 @@ package com.sourceallies.android.zonebeacon.activity;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.sourceallies.android.zonebeacon.activity;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -161,6 +161,7 @@ public class RoboAppCompatActivity extends RoboFragmentActivity implements AppCo
         return item.getItemId() == android.R.id.home && ab != null &&
                 (ab.getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP) != 0;
     }
+
     @Override
     public final boolean onMenuItemSelected(int featureId, android.view.MenuItem item) {
         if (superOnMenuItemSelected(featureId, item)) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Source Allies
+ * Copyright (C) 2016 Source Allies, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,11 +54,14 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Mock
     private SharedPreferences sharedPrefs;
+    @Mock
+    private Gateway gateway;
 
     @Mock
     private RecyclerView recycler;
@@ -146,11 +149,38 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_expandFab() {
+    public void test_expandFab_clickZone() {
+        test_spinnerSelection();
+        activity = spy(activity);
+
         activity.getFabMenu().expand();
         assertTrue(activity.getFabMenu().isExpanded());
 
         activity.getAddZone().performClick();
+        assertFalse(activity.getFabMenu().isExpanded());
+    }
+
+    @Test
+    public void test_expandFab_clickButton() {
+        test_spinnerSelection();
+        activity = spy(activity);
+
+        activity.getFabMenu().expand();
+        assertTrue(activity.getFabMenu().isExpanded());
+
+        activity.getAddButton().performClick();
+        assertFalse(activity.getFabMenu().isExpanded());
+    }
+
+    @Test
+    public void test_expandFab_clickCommand() {
+        test_spinnerSelection();
+        activity = spy(activity);
+
+        activity.getFabMenu().expand();
+        assertTrue(activity.getFabMenu().isExpanded());
+
+        activity.getAddCommand().performClick();
         assertFalse(activity.getFabMenu().isExpanded());
     }
 

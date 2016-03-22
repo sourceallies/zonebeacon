@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Source Allies
+ * Copyright (C) 2016 Source Allies, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -104,8 +104,8 @@ public class RoboAppCompatActivityTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_setContentView_withLayout() {
         activity.setDelegate(delegate);
-        activity.setContentView(R.layout.activity_send_tcp);
-        verify(delegate).setContentView(R.layout.activity_send_tcp);
+        activity.setContentView(R.layout.fragment_add);
+        verify(delegate).setContentView(R.layout.fragment_add);
     }
 
     @Test
