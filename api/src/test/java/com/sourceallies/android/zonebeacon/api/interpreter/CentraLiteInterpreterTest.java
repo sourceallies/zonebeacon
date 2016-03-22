@@ -43,8 +43,8 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
     public void setUp() {
         interpreter = new CentraLiteInterpreter();
 
-        when(commandType.getBaseSerialOnCode()).thenReturn("^A");
-        when(commandType.getBaseSerialOffCode()).thenReturn("^B");
+        when(commandType.getBaseSerialOnCode()).thenReturn("^A%nnn");
+        when(commandType.getBaseSerialOffCode()).thenReturn("^B%nnn");
         when(command.getCommandType()).thenReturn(commandType);
     }
 
@@ -79,15 +79,34 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_getExecutable_controller() {
+        when(commandType.getBaseSerialOnCode()).thenReturn("^a%s%nnn");
+        when(commandType.getBaseSerialOffCode()).thenReturn("^b%s%nnn");
+
         when(command.getNumber()).thenReturn(5);
         when(command.getControllerNumber()).thenReturn(1);
-        assertEquals("^A1005", interpreter.getExecutable(command, Executor.LoadStatus.OFF));
-        assertEquals("^B1005", interpreter.getExecutable(command, Executor.LoadStatus.ON));
+        assertEquals("^a1005", interpreter.getExecutable(command, Executor.LoadStatus.OFF));
+        assertEquals("^b1005", interpreter.getExecutable(command, Executor.LoadStatus.ON));
+    }
+
+    @Test
+    public void test_getExecutable_brightness() {
+        when(commandType.getBaseSerialOnCode()).thenReturn("^E%nnn%ll00");
+        when(commandType.getBaseSerialOffCode()).thenReturn("^E%nnn%ll00");
+
+        when(command.getNumber()).thenReturn(5);
+        assertEquals("^E0058000", interpreter.getExecutable(command, 80, Executor.LoadStatus.OFF));
+        assertEquals("^E0058000", interpreter.getExecutable(command, 80, Executor.LoadStatus.ON));
     }
 
     @Test
     public void test_processResponse() {
         assertEquals("12345", interpreter.processResponse("12345"));
+    }
+
+    @Test
+    public void test_addZeros() {
+        assertEquals("001", interpreter.addZeros("1", 3));
+        assertEquals("1", interpreter.addZeros("1", 1));
     }
 
 }

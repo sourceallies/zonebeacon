@@ -45,13 +45,13 @@ public class CommandTypeTest extends DatabaseTableTest {
 
     @Test
     public void test_defaults() {
-        assertEquals(6, type.getDefaultDataStatements().length);
+        assertEquals(8, type.getDefaultDataStatements().length);
 
         assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_on_code', 'base_serial_off_code', " +
-                "'activate_controller_selection') VALUES (1, 1, 'Single MCP - Load/Relay', '^A', '^B', 0);",
+                "'activate_controller_selection') VALUES (1, 1, 'Single MCP - Load/Relay', '^A%nnn', '^B%nnn', 0);",
                 type.getDefaultDataStatements()[0]);
         assertEquals("INSERT INTO 'command_type' ('_id', 'system_type_id', 'name', 'base_serial_on_code', 'base_serial_off_code', " +
-                "'activate_controller_selection') VALUES (2, 1, 'Single MCP - Switch', '^S', '^S', 0);",
+                "'activate_controller_selection') VALUES (2, 1, 'Single MCP - Switch', '^S%nnn', '^S%nnn', 0);",
                 type.getDefaultDataStatements()[1]);
     }
 
