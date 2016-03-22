@@ -198,7 +198,20 @@ public class DataSource {
      * @return the number of items deleted with the statement.
      */
     public int deleteGateway(long gatewayId) {
-        // TODO delete all of the zones, buttons and commands associated with the gateway
+        List<Zone> zones = findZones(gatewayId);
+
+        for (Zone zone : zones) {
+            for (Button button : zone.getButtons()) {
+                for (Command command : button.getCommands()) {
+                    database.delete(Command.TABLE_COMMAND, Command.COLUMN_ID + " = " + command.getId(), null);
+                }
+
+                database.delete(Button.TABLE_BUTTON, Button.COLUMN_ID + " = " + button.getId(), null);
+            }
+
+            database.delete(Zone.TABLE_ZONE, Zone.COLUMN_ID + " = " + zone.getId(), null);
+        }
+
         return database.delete(Gateway.TABLE_GATEWAY, Gateway.COLUMN_ID + " = " + gatewayId, null);
     }
 
