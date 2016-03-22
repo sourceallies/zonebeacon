@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 Source Allies, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.sourceallies.android.zonebeacon.data;
 
 import android.content.ContentValues;
@@ -212,6 +228,12 @@ public class DataSource {
         return gateways;
     }
 
+    /**
+     * Gets the instance of the gateway based on an id.
+     *
+     * @param id the id of the gateway.
+     * @return the gateway.
+     */
     public Gateway findGateway(long id) {
         Cursor cursor = rawQuery("SELECT * from gateway where _id = " + id);
         Gateway gateway = new Gateway();
@@ -621,7 +643,7 @@ public class DataSource {
     }
 
     // You could call this sometime on the system to insert some dummy data for the UI.
-    /*public void insertFakeButtonsAndZones(int gatewayId) {
+    /*public void insertFakeButtonsAndZones(long gatewayId) {
         insertNewCommand("Light 1", gatewayId, 1, 1, null);
         insertNewCommand("Light 2", gatewayId, 2, 1, null);
         insertNewCommand("Light 3", gatewayId, 3, 1, null);

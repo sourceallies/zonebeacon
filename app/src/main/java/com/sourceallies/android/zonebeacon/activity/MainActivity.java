@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Source Allies
+ * Copyright (C) 2016 Source Allies, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,10 @@
 
 package com.sourceallies.android.zonebeacon.activity;
 
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+//import android.app.FragmentManager;
+//import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -29,6 +33,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -138,7 +143,8 @@ public class MainActivity extends RoboAppCompatActivity {
         setFabTitle(addCommand);
 
         fabMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
-            @Override public void onMenuCollapsed() {
+            @Override
+            public void onMenuCollapsed() {
                 dim.setVisibility(View.GONE);
             }
 
@@ -169,10 +175,19 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     private void setFabTitle(final FloatingActionButton fab) {
         fab.setTitle(fab.getTitle().replace("%s", getGatewayName()));
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 collapseFab();
+
+                if (fab == addZone){
+                    addZone();
+                } else if (fab == addButton) {
+                    addButton();
+                } else if (fab == addCommand) {
+                    addCommand();
+                }
             }
         });
     }
@@ -289,6 +304,32 @@ public class MainActivity extends RoboAppCompatActivity {
         CreationActivity.startCreation(this, CreationActivity.TYPE_GATEWAY);
     }
 
+
+    /**
+     * Use the creation activity to add a zone.
+     */
+    public void addZone() {
+        startCreationActivity(CreationActivity.TYPE_ZONE);
+    }
+
+    /**
+     * Use the creation activity to add a button.
+     */
+    public void addButton() {
+        startCreationActivity(CreationActivity.TYPE_BUTTON);
+    }
+
+    /**
+     * Use the creation activity to add a command.
+     */
+    public void addCommand() {
+        startCreationActivity(CreationActivity.TYPE_COMMAND);
+    }
+
+    private void startCreationActivity(int type) {
+        CreationActivity.startCreation(this, type, getCurrentGatewayId());
+    }
+
     /**
      * Get the name of whatever gateway the user has currently selected
      *
@@ -296,6 +337,19 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     private String getGatewayName() {
         return spinnerAdapter.getTitle(getCurrentSpinnerSelection());
+    }
+
+    /**
+     * Get the name of whatever gateway the user has currently selected
+     *
+     * @return String of the gateway name
+     */
+    private Gateway getCurrentGateway() {
+        return spinnerAdapter.getItem(getCurrentSpinnerSelection());
+    }
+
+    protected long getCurrentGatewayId() {
+        return getCurrentGateway().getId();
     }
 
     /**

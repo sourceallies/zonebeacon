@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 Source Allies, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.sourceallies.android.zonebeacon.activity;
 
 
@@ -5,6 +21,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 
+import com.sourceallies.android.zonebeacon.fragment.AddButtonFragment;
+import com.sourceallies.android.zonebeacon.fragment.AddZoneFragment;
 import com.sourceallies.android.zonebeacon.fragment.GatewaySetupFragment;
 
 /**
@@ -23,7 +41,7 @@ public class CreationActivity extends IntroActivity {
      * @param setupType TYPE_GATEWAY, TYPE_ZONE, TYPE_BUTTON, or TYPE_COMMAND
      */
     public static void startCreation(Activity activity, int setupType) {
-        startCreation(activity, setupType, -1l);
+        startCreation(activity, setupType, -1L);
     }
 
     /**
@@ -71,12 +89,18 @@ public class CreationActivity extends IntroActivity {
     @Override
     public void addSlides() {
         switch (getFragmentType()) {
-            // TODO: break these apart when more fragments are created.
             case TYPE_ZONE:
+                setupFragment = AddZoneFragment.
+                        getInstance(new AddZoneFragment(), getGatewayId());
+                break;
             case TYPE_BUTTON:
+                setupFragment = AddButtonFragment.
+                        getInstance(new AddButtonFragment(), getGatewayId());
+                break;
             case TYPE_COMMAND:
             case TYPE_GATEWAY:
-                setupFragment = GatewaySetupFragment.getInstance(new GatewaySetupFragment(), getGatewayId());
+                setupFragment = GatewaySetupFragment.
+                        getInstance(new GatewaySetupFragment(), getGatewayId());
                 break;
         }
 
