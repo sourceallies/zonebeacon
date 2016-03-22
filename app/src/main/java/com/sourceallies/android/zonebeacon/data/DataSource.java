@@ -287,7 +287,7 @@ public class DataSource {
      * @param gateway the gateway to find command types for.
      * @return a list of command types.
      */
-    public List<CommandType> findCommandTypesShownInCommandList(Gateway gateway) {
+    public List<CommandType> findCommandTypesShownInUI(Gateway gateway) {
         return findCommandTypes(gateway.getSystemTypeId(), true);
     }
 
@@ -298,7 +298,7 @@ public class DataSource {
      * @param gateway the gateway to find command types for.
      * @return a list of command types.
      */
-    public List<CommandType> findCommandTypesNotShownInCommandList(Gateway gateway) {
+    public List<CommandType> findCommandTypesNotShownInUI(Gateway gateway) {
         return findCommandTypes(gateway.getSystemTypeId(), false);
     }
 
