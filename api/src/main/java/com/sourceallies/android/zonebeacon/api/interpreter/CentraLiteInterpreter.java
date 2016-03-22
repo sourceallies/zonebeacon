@@ -26,17 +26,22 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
 public class CentraLiteInterpreter implements Interpreter {
 
     @Override
-    public String getExecutable(Command command, Executor.LoadStatus loadStatus) {
+    public String getExecutable(Command command, Executor.LoadStatus status) {
+        return getExecutable(command, null, status);
+    }
+
+    @Override
+    public String getExecutable(Command command, Integer brightnessLevel, Executor.LoadStatus status) {
         String base;
-        if (loadStatus == Executor.LoadStatus.OFF) { // we want to turn the light on
+        if (status == Executor.LoadStatus.OFF) { // we want to turn the light on
             base = command.getCommandType().getBaseSerialOnCode();
         } else { // we want to turn the lights off
             base = command.getCommandType().getBaseSerialOffCode();
         }
 
         return base.replace("%nnn", addZeros(command.getNumber() + "", 3))
-                   .replace("%s", addZeros(command.getControllerNumber() + "", 1))
-                   .replace("%ll", "00"); // TODO: apply brightness level here
+                .replace("%s", addZeros(command.getControllerNumber() + "", 1))
+                .replace("%ll", brightnessLevel + ""); // TODO: apply brightness level here
     }
 
     @Override

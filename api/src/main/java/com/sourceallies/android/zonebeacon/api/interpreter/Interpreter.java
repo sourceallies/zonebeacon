@@ -32,9 +32,21 @@ public interface Interpreter {
      * that can be sent to the gateway/control unit.
      *
      * @param command the command to execute.
+     * @param status ON or OFF, representing the current state of the light
      * @return a string representing the command for the control unit.
      */
     String getExecutable(Command command, Executor.LoadStatus status);
+
+    /**
+     * Receives a command that is stored in the database and turns it into an executable string
+     * that can be sent to the gateway/control unit.
+     *
+     * @param command the command to execute
+     * @param brightnessLevel brightness percent (1-99)
+     * @param status ON or OFF, representing the current state of the light
+     * @return a string representing the command for the control unit.
+     */
+    String getExecutable(Command command, Integer brightnessLevel, Executor.LoadStatus status);
 
     /**
      * Processes the response provided by the control unit and hands it off back to the app.
