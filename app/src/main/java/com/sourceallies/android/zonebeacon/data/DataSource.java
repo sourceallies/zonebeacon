@@ -275,15 +275,41 @@ public class DataSource {
         return findCommandTypes(gateway.getSystemTypeId());
     }
 
+    private List<CommandType> findCommandTypes(long systemTypeId) {
+        return findCommandTypes("SELECT * from command_type where system_type_id = "
+                + systemTypeId);
+    }
+
     /**
-     * Gets a list of all of the command types in the database for the given system type id.
+     * Gets a list of command types that should be shown in the UI when a user is inserting a
+     * new command.
      *
-     * @param systemTypeId the system type id.
+     * @param gateway the gateway to find command types for.
      * @return a list of command types.
      */
-    private List<CommandType> findCommandTypes(long systemTypeId) {
-        Cursor cursor = rawQuery("SELECT * from command_type where system_type_id = "
-                + systemTypeId);
+    public List<CommandType> findCommandTypesShownInCommandList(Gateway gateway) {
+        return findCommandTypes(gateway.getSystemTypeId(), true);
+    }
+
+    /**
+     * Gets a list of command types that should NOT be shown in the UI when a user is inserting a
+     * new command (eg. brightness controls).
+     *
+     * @param gateway the gateway to find command types for.
+     * @return a list of command types.
+     */
+    public List<CommandType> findCommandTypesNotShownInCommandList(Gateway gateway) {
+        return findCommandTypes(gateway.getSystemTypeId(), false);
+    }
+
+    private List<CommandType> findCommandTypes(long systemTypeId, boolean shownInList) {
+        return findCommandTypes("SELECT * from command_type where system_type_id = "
+                + systemTypeId + " AND shown_in_command_list = " + (shownInList ? "1" : "0"));
+
+    }
+
+    private List<CommandType> findCommandTypes(String sqlQuery) {
+        Cursor cursor = rawQuery(sqlQuery);
         List<CommandType> types = new ArrayList<>();
 
         if (cursor == null) {
