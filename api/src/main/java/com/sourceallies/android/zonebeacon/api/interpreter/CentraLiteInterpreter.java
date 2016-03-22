@@ -27,16 +27,6 @@ public class CentraLiteInterpreter implements Interpreter {
 
     @Override
     public String getExecutable(Command command, Executor.LoadStatus loadStatus) {
-        String zeros = "";
-
-        if (command.getNumber() < 100) {
-            zeros += "0";
-        }
-
-        if (command.getNumber() < 10) {
-            zeros += "0";
-        }
-
         String base;
         if (loadStatus == Executor.LoadStatus.OFF) { // we want to turn the light on
             base = command.getCommandType().getBaseSerialOnCode();
@@ -44,14 +34,9 @@ public class CentraLiteInterpreter implements Interpreter {
             base = command.getCommandType().getBaseSerialOffCode();
         }
 
-        String commandString;
-        if (command.getControllerNumber() != null) {
-            commandString = base + command.getControllerNumber() + zeros + command.getNumber();
-        } else {
-            commandString =  base + zeros + command.getNumber();
-        }
-
-        return commandString;
+        return base.replace("%nnn", addZeros(command.getNumber() + "", 3))
+                   .replace("%s", addZeros(command.getControllerNumber() + "", 1))
+                   .replace("%ll", "00"); // TODO: apply brightness level here
     }
 
     @Override
@@ -60,4 +45,11 @@ public class CentraLiteInterpreter implements Interpreter {
         return response;
     }
 
+    protected String addZeros(String val, int numDigits) {
+        while (val.length() < numDigits) {
+            val = "0" + val;
+        }
+
+        return val;
+    }
 }
