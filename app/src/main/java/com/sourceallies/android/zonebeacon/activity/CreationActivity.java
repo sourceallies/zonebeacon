@@ -21,8 +21,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 
+import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.fragment.AddButtonFragment;
 import com.sourceallies.android.zonebeacon.fragment.AddZoneFragment;
+import com.sourceallies.android.zonebeacon.fragment.CommandSetupFragment;
 import com.sourceallies.android.zonebeacon.fragment.GatewaySetupFragment;
 
 /**
@@ -98,6 +100,8 @@ public class CreationActivity extends IntroActivity {
                         getInstance(new AddButtonFragment(), getGatewayId());
                 break;
             case TYPE_COMMAND:
+                setupFragment = CommandSetupFragment.
+                        getInstance(new CommandSetupFragment(), getGatewayId());
             case TYPE_GATEWAY:
                 setupFragment = GatewaySetupFragment.
                         getInstance(new GatewaySetupFragment(), getGatewayId());
