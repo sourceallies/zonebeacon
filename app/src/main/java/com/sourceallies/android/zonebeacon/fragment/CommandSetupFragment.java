@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -19,8 +20,13 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.activity.MainActivity;
+import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import lombok.Getter;
 
@@ -38,17 +44,27 @@ public class CommandSetupFragment extends AbstractSetupFragment {
     private Spinner commandType;
 
     @Getter
-    private Spinner controllerNumber;
+    private Spinner systemType;
 
-    // private String[]
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_create_command, container, false);
 
         name = (TextInputLayout) root.findViewById(R.id.name);
         loadNumber = (TextInputLayout)root.findViewById(R.id.load_number);
+        systemType = (Spinner) root.findViewById(R.id.system_type);
         commandType = (Spinner) root.findViewById(R.id.command_type);
-        controllerNumber = (Spinner) root.findViewById(R.id.controller_number);
+
+        DataSource source = DataSource.getInstance(getActivity());
+        source.open();
+        List<CommandType> commandTypeArray = source.findCommandTypesShownInUI(getCurrentGateway());
+        source.close();
+
+        //HERE IS MY PROBLEM
+        ArrayAdapter<CommandType> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, commandTypeArray);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        commandType.setAdapter(adapter);
 
         return root;
     }
@@ -94,7 +110,7 @@ public class CommandSetupFragment extends AbstractSetupFragment {
 
         DataSource source = DataSource.getInstance(getActivity());
         source.open();
-        source.insertNewCommand(name, gatewayId, loadNumber , command, controllerNum);
+        //source.insertNewCommand(name, getCurrentGateway(), loadNumber , command, controllerNum);
         source.close();
     }
 
