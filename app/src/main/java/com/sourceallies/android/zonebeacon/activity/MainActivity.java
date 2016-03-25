@@ -77,6 +77,8 @@ public class MainActivity extends RoboAppCompatActivity {
     private FloatingActionsMenu fabMenu;
 
     @Getter
+    private FloatingActionButton getHelp;
+    @Getter
     private FloatingActionButton addZone;
     @Getter
     private FloatingActionButton addButton;
@@ -107,6 +109,7 @@ public class MainActivity extends RoboAppCompatActivity {
         dim = findViewById(R.id.dim);
         fabMenu = (FloatingActionsMenu) findViewById(R.id.fab_menu);
 
+        getHelp = (FloatingActionButton) findViewById(R.id.get_help);
         addZone = (FloatingActionButton) findViewById(R.id.add_zone);
         addButton = (FloatingActionButton) findViewById(R.id.add_button);
         addCommand = (FloatingActionButton) findViewById(R.id.add_command);
@@ -155,6 +158,19 @@ public class MainActivity extends RoboAppCompatActivity {
         });
 
         dim.setOnTouchListener(getDimListener());
+
+        getHelp.setOnClickListener(getHelpListener());
+    }
+
+    @VisibleForTesting
+    protected View.OnClickListener getHelpListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                collapseFab();
+                openOption(GetHelpActivity.class);
+            }
+        };
     }
 
     @VisibleForTesting
@@ -414,9 +430,6 @@ public class MainActivity extends RoboAppCompatActivity {
                 return true;
             case R.id.diagnosis:
                 openOption(null);
-                return true;
-            case R.id.get_help:
-                openOption(GetHelpActivity.class);
                 return true;
             case R.id.transfer_settings:
                 openOption(null);

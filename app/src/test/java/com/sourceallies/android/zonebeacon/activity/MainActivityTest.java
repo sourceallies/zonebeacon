@@ -25,6 +25,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
@@ -121,6 +122,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(activity.getRootLayout());
         assertNotNull(activity.getToolbar());
         assertNotNull(activity.getFabMenu());
+        assertNotNull(activity.getGetHelp());
         assertNotNull(activity.getAddZone());
         assertNotNull(activity.getAddButton());
         assertNotNull(activity.getAddCommand());
@@ -248,11 +250,9 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_option_getHelp() {
-        MenuItem item = Mockito.mock(MenuItem.class);
-
-        when(item.getItemId()).thenReturn(R.id.get_help);
-        activity.onOptionsItemSelected(item);
+    public void test_getHelp() {
+        activity.getHelpListener().onClick(null);
+        verify(activity).collapseFab();
         verify(activity).openOption(null);
     }
 
