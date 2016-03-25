@@ -83,6 +83,16 @@
             android:layout_marginEnd="16dp">
 
             <com.getbase.floatingactionbutton.FloatingActionButton
+                android:id="@+id/get_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                fab:fab_colorNormal="@color/white"
+                fab:fab_size="mini"
+                fab:fab_title="@string/get_help"
+                fab:fab_colorPressed="@color/white_pressed"
+                fab:fab_icon="@drawable/ic_help"/>
+
+            <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_zone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
