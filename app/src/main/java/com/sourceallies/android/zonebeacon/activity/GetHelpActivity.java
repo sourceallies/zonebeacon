@@ -47,7 +47,7 @@ public class GetHelpActivity extends RoboAppCompatActivity{
 
         // make the text view clickable with the LinkBuilder library
         LinkBuilder
-                .on((TextView) findViewById(R.id.description))
+                .on((TextView) findViewById(R.id.gateway_description))
                 .addLink(videoLink)
                 .build();
     }
