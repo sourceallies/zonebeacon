@@ -416,7 +416,7 @@ public class MainActivity extends RoboAppCompatActivity {
                 openOption(null);
                 return true;
             case R.id.get_help:
-                openOption(null);
+                openOption(GetHelpActivity.class);
                 return true;
             case R.id.transfer_settings:
                 openOption(null);
