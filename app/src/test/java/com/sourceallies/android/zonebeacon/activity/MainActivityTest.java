@@ -253,7 +253,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     public void test_getHelp() {
         activity.getHelpListener().onClick(null);
         verify(activity).collapseFab();
-        verify(activity).openOption(null);
+        verify(activity).openOption(GetHelpActivity.class);
     }
 
     @Test
