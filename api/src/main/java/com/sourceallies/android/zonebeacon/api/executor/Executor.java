@@ -144,6 +144,10 @@ public abstract class Executor {
         commands.add(new OnOffCommand(command, status));
     }
 
+    public void addBrightnessCommand(Command, Integer){
+
+    }
+
     /**
      * Gets a list of the currently added commands.
      *

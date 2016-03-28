@@ -250,7 +250,6 @@ public class MainActivity extends RoboAppCompatActivity {
         } else {
             mainAdapter = null;
         }
-
         source.close();
     }
 
@@ -286,7 +285,6 @@ public class MainActivity extends RoboAppCompatActivity {
     protected void setSpinnerAdapter() {
         DataSource dataSource = DataSource.getInstance(this);
         dataSource.open();
-
         spinnerAdapter = createSpinnerAdapter(dataSource);
         spinner.setAdapter(spinnerAdapter);
 

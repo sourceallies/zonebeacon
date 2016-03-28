@@ -748,8 +748,9 @@ public class DataSource {
         return new ArrayList<>(zones.values());
     }
 
+    /*
     // You could call this sometime on the system to insert some dummy data for the UI.
-    /*public void insertFakeButtonsAndZones(long gatewayId) {
+    public void insertFakeButtonsAndZones(long gatewayId) {
         insertNewCommand("Light 1", gatewayId, 1, 1, null);
         insertNewCommand("Light 2", gatewayId, 2, 1, null);
         insertNewCommand("Light 3", gatewayId, 3, 1, null);
