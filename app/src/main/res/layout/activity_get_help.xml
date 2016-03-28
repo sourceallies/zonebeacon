@@ -125,6 +125,7 @@
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
             android:paddingRight="16dp"
+            android:paddingBottom="16dp"
             android:paddingEnd="16dp"
             android:textColor="@android:color/black"
             android:textSize="14sp"
