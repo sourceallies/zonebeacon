@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -30,10 +31,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.activity.MainActivity;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 
 import java.util.List;
 
@@ -147,12 +150,13 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
                                 int section, int relativePosition) {
         if (root != null && buttonSwitch != null) { // Null for the header
             root.setOnClickListener(getClickListener(buttonSwitch, section, relativePosition));
+            root.setOnLongClickListener(getLongClickListener(buttonSwitch, section, relativePosition));
         }
     }
 
     @VisibleForTesting
-    protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch,
-                                                    final int section, final int relativePosition) {
+     protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch,
+                                                     final int section, final int relativePosition) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,6 +171,18 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
                 executor.execute(gateway);
 
                 buttonSwitch.setChecked(!buttonSwitch.isChecked());
+            }
+        };
+    }
+
+    @VisibleForTesting
+    protected View.OnLongClickListener getLongClickListener(final SwitchCompat buttonSwitch,
+                                                    final int section, final int relativePosition) {
+        return new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                ((MainActivity) context).showBrightnessDialog();
+                return false;
             }
         };
     }
