@@ -168,7 +168,7 @@ public class MainActivity extends RoboAppCompatActivity {
             @Override
             public void onClick(View v) {
                 collapseFab();
-                openOption(null);
+                openOption(GetHelpActivity.class);
             }
         };
     }
