@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -12,19 +13,21 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         tools:ignore="Overdraw">
-
-        <TextView
-            android:layout_width="wrap_content"
+        
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textColor="?attr/primary_text_color"
-            android:layout_marginTop="24dp"
-            android:textSize="28sp"
-            android:text="@string/app_helper"/>
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+        </android.support.design.widget.AppBarLayout>
+        
         <TextView
-            android:layout_marginTop="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
@@ -46,6 +49,7 @@
             android:paddingRight="16dp"
             android:paddingEnd="16dp"
             android:textSize="14sp"
+            android:id="@+id/gateway_description"
             android:text="@string/gateways_info"/>
 
         <TextView

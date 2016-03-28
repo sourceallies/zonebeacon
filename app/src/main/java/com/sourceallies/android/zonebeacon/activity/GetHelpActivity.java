@@ -1,10 +1,14 @@
 package com.sourceallies.android.zonebeacon.activity;
 
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,7 +29,27 @@ public class GetHelpActivity extends RoboAppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        
         buildLinkToSetupVideo();
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**
