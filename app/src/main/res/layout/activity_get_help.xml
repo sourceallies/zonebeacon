@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/primary_text_color"
             android:layout_marginTop="24dp"
             android:textSize="28sp"
             android:text="@string/app_helper"/>
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/primary_text_color"
             android:paddingStart="16dp"
             android:paddingLeft="16dp"
             android:paddingEnd="16dp"
@@ -38,11 +38,9 @@
 
         <TextView
             android:layout_marginTop="12dp"
-            android:id="@+id/gateway_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:alpha=".8"
+            android:textColor="?attr/secondary_text_color"
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
             android:paddingRight="16dp"
@@ -55,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/primary_text_color"
             android:paddingStart="16dp"
             android:paddingLeft="16dp"
             android:paddingEnd="16dp"
@@ -65,15 +63,13 @@
 
         <TextView
             android:layout_marginTop="12dp"
-            android:id="@+id/button_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
             android:paddingRight="16dp"
             android:paddingEnd="16dp"
-            android:alpha=".8"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/secondary_text_color"
             android:textSize="14sp"
             android:text="@string/commands_info"/>
 
@@ -81,9 +77,8 @@
             android:layout_marginTop="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:alpha=".8"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/primary_text_color"
             android:paddingStart="16dp"
             android:paddingLeft="16dp"
             android:paddingEnd="16dp"
@@ -93,15 +88,13 @@
 
         <TextView
             android:layout_marginTop="12dp"
-            android:id="@+id/command_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="16dp"
             android:paddingStart="16dp"
             android:paddingRight="16dp"
             android:paddingEnd="16dp"
-            android:alpha=".8"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/secondary_text_color"
             android:textSize="14sp"
             android:text="@string/buttons_info"/>
 
@@ -110,7 +103,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/primary_text_color"
             android:paddingStart="16dp"
             android:paddingLeft="16dp"
             android:paddingEnd="16dp"
@@ -127,7 +120,7 @@
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
             android:paddingEnd="16dp"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/secondary_text_color"
             android:textSize="14sp"
             android:text="@string/zones_info"/>
 

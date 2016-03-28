@@ -19,4 +19,6 @@
     <attr name="dim" format="color"/>
     <attr name="list_item_background" format="color"/>
     <attr name="list_item_divider" format="color"/>
+    <attr name="primary_text_color" format="integer"/>
+    <attr name="secondary_text_color" format="integer"/>
 </resources>
