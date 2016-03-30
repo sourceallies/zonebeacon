@@ -1,31 +1,22 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
-import android.widget.TextView;
 
-import com.klinker.android.link_builder.Link;
-import com.klinker.android.link_builder.LinkBuilder;
 import com.sourceallies.android.zonebeacon.R;
-import com.sourceallies.android.zonebeacon.activity.MainActivity;
-import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
+import com.sourceallies.android.zonebeacon.adapter.CommandSpinnerAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -41,10 +32,16 @@ public class CommandSetupFragment extends AbstractSetupFragment {
     private TextInputLayout loadNumber;
 
     @Getter
-    private Spinner commandType;
+    private TextInputLayout controllerNumber;
 
     @Getter
-    private Spinner systemType;
+    private Spinner commandTypeSpinner;
+
+    @Getter
+    private int currentSpinnerSelection = 0;
+
+    @Getter
+    private  CommandSpinnerAdapter commandSpinnerAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -52,19 +49,10 @@ public class CommandSetupFragment extends AbstractSetupFragment {
 
         name = (TextInputLayout) root.findViewById(R.id.name);
         loadNumber = (TextInputLayout)root.findViewById(R.id.load_number);
-        systemType = (Spinner) root.findViewById(R.id.system_type);
-        commandType = (Spinner) root.findViewById(R.id.command_type);
+        commandTypeSpinner = (Spinner) root.findViewById(R.id.command_type);
+        controllerNumber = (TextInputLayout)root.findViewById(R.id.controller_number);
 
-        DataSource source = DataSource.getInstance(getActivity());
-        source.open();
-        List<CommandType> commandTypeArray = source.findCommandTypesShownInUI(getCurrentGateway());
-        source.close();
-
-        //HERE IS MY PROBLEM
-        ArrayAdapter<CommandType> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, commandTypeArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        commandType.setAdapter(adapter);
+        SetCommandSpinnerAdapter();
 
         return root;
     }
@@ -105,16 +93,43 @@ public class CommandSetupFragment extends AbstractSetupFragment {
     @Override
     public void save() {
         String name = getText(this.name);
-        //int gatewayId = Integer.parseInt(getText(this.gatewayID));
-        int loadNum = Integer.parseInt((getText(this.loadNumber)));
+        int loadNumber = Integer.parseInt((getText(this.loadNumber)));
+        CommandType currentCommandType = commandSpinnerAdapter.getItem(getCurrentSpinnerSelection());
+        Integer controllerNum = Integer.parseInt((getText(this.controllerNumber)));
 
         DataSource source = DataSource.getInstance(getActivity());
         source.open();
-        //source.insertNewCommand(name, getCurrentGateway(), loadNumber , command, controllerNum);
+        source.insertNewCommand(name, getCurrentGateway().getId(), loadNumber, currentCommandType.getId(), controllerNum);
         source.close();
     }
 
     private String getText(TextInputLayout input) {
         return input.getEditText().getText().toString();
+    }
+
+    private void SetCommandSpinnerAdapter()
+    {
+        DataSource source = DataSource.getInstance(getActivity());
+        source.open();
+        List<CommandType> commandTypes = source.findCommandTypesShownInUI(getCurrentGateway());
+        source.close();
+
+        CommandSpinnerAdapter commandSpinnerAdapter = new CommandSpinnerAdapter(getActivity(),commandTypes);
+        commandTypeSpinner.setAdapter(commandSpinnerAdapter);
+
+        commandTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == commandTypeSpinner.getCount() - 1 && commandTypeSpinner.getCount() > 1) {
+                    commandTypeSpinner.setSelection(currentSpinnerSelection);
+                } else {
+                    currentSpinnerSelection = position;
+                }
+            }
+        });
     }
 }

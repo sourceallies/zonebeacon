@@ -45,5 +45,6 @@
     <string name="add_zone_title">Add a Zone</string>
     <string name="zone_name_hint">Zone Name</string>
     <string name="include_buttons_title">Include Buttons:</string>
+    <string name="create_command">Create New Command</string>
 
 </resources>

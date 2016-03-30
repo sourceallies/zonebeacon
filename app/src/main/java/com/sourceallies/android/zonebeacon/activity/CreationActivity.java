@@ -102,6 +102,7 @@ public class CreationActivity extends IntroActivity {
             case TYPE_COMMAND:
                 setupFragment = CommandSetupFragment.
                         getInstance(new CommandSetupFragment(), getGatewayId());
+                break;
             case TYPE_GATEWAY:
                 setupFragment = GatewaySetupFragment.
                         getInstance(new GatewaySetupFragment(), getGatewayId());
