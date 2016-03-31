@@ -17,6 +17,7 @@
 package com.sourceallies.android.zonebeacon.api.executor;
 
 import com.sourceallies.android.zonebeacon.api.CommandCallback;
+import com.sourceallies.android.zonebeacon.api.QueryLoadsCallback;
 import com.sourceallies.android.zonebeacon.api.interpreter.CentraLiteInterpreter;
 import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
 import com.sourceallies.android.zonebeacon.data.model.Command;
@@ -160,6 +161,27 @@ public abstract class Executor {
      */
     protected Interpreter getInterpreter() {
         return interpreter;
+    }
+
+
+    /**
+     * Get a list of the currently active loads (by load number).
+     * </p>
+     * This list of commands can be used to determine what buttons and zones are activated.
+     *
+     * @return List of loads that are currently turned on, by load number.
+     */
+    public void queryActiveLoads(Gateway gateway, final QueryLoadsCallback callback) {
+        addCommand(interpreter.buildQueryActiveLoadsCommand(), LoadStatus.OFF);
+        setCommandCallback(new CommandCallback() {
+            @Override
+            public void onResponse(Command command, String text) {
+                List<Integer> activeLoads = interpreter.processActiveLoadsResponse(text);
+                callback.onResponse(activeLoads);
+            }
+        });
+
+        execute(gateway);
     }
 
     /**
