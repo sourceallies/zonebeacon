@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
 
-public class InitialGatewaySetupTest extends ZoneBeaconRobolectricSuite {
+public class GatewaySetupFragmentTest extends ZoneBeaconRobolectricSuite {
 
     @Mock
     FragmentActivity activity;

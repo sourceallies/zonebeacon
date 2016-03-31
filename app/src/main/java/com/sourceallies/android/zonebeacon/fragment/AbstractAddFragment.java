@@ -125,11 +125,6 @@ public abstract class AbstractAddFragment<T> extends AbstractSetupFragment {
     }
 
     @VisibleForTesting
-    protected String getText(TextInputLayout input) {
-        return input.getEditText().getText().toString();
-    }
-
-    @VisibleForTesting
     protected void populateCommandList() {
         Gateway currentGateway = getCurrentGateway();
 

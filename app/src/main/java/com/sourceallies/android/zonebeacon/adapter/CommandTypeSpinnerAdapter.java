@@ -31,7 +31,7 @@ import java.util.List;
 /**
  * Adapter that holds the information about the gateways in the database
  */
-public class CommandSpinnerAdapter extends BaseAdapter {
+public class CommandTypeSpinnerAdapter extends BaseAdapter {
     private Activity activity;
     private List<CommandType> commandTypes = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class CommandSpinnerAdapter extends BaseAdapter {
      * @param activity The current context
      * @param commandTypes A list of the gateways that are in the database.
      */
-    public CommandSpinnerAdapter(Activity activity, List<CommandType> commandTypes) {
+    public CommandTypeSpinnerAdapter(Activity activity, List<CommandType> commandTypes) {
         this.activity = activity;
         this.commandTypes = commandTypes;
     }
