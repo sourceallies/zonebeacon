@@ -34,7 +34,9 @@
     <string name="transfer_settings">Transfer Settings</string>
     <string name="create_gateway">Create New Gateway</string>
     <string name="zones">Zones</string>
+    <string name="zones_info">Zones allow you to group together buttons and execute them together. These can be used to control several areas of the system at once.\n\nEx: Living Room, Basement Area, Patio</string>
     <string name="buttons">Buttons</string>
+    <string name="buttons_info">Buttons allow you to group together commands and execute all of them at the same time. Several commands (lights) can be attached to a single button.\n\nEx: Bar Counter, Hidden Table, Driveway Light</string>
     <string name="light_dimmer">Light Dimmer</string>
     <string name="full_percent">100%</string>
     <string name="full_brightness">Full Brightness</string>
@@ -46,5 +48,11 @@
     <string name="zone_name_hint">Zone Name</string>
     <string name="include_buttons_title">Include Buttons:</string>
     <string name="create_command">Create New Command</string>
-
+    <string name="app_helper">Zone Beacon Help</string>
+    <string name="get_help_additional_info">Check this YouTube channel for more info on setting up your system.</string>
+    <string name="gateways">Gateways</string>
+    <string name="gateways_info">Name, IP address, and port number describe and provide access to your lighting system.\n\nFor help setting up your system, check this YouTube channel.</string>
+    <string name="commands">Commands</string>
+    <string name="commands_info">Commands store information and settings for individual lights.</string>
+    
 </resources>
