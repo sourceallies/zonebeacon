@@ -19,6 +19,7 @@ package com.sourceallies.android.zonebeacon.activity;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.fragment.AddButtonFragment;
 import com.sourceallies.android.zonebeacon.fragment.AddZoneFragment;
+import com.sourceallies.android.zonebeacon.fragment.CommandSetupFragment;
 import com.sourceallies.android.zonebeacon.fragment.GatewaySetupFragment;
 
 import org.junit.Before;
@@ -61,9 +62,8 @@ public class CreationActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Test
     public void test_addCommand() {
-        // TODO: change the instance of after new fragments are added
         Mockito.doReturn(CreationActivity.TYPE_COMMAND).when(activity).getFragmentType();
         activity.addSlides();
-        assertTrue(activity.getSetupFragment() instanceof GatewaySetupFragment);
+        assertTrue(activity.getSetupFragment() instanceof CommandSetupFragment);
     }
 }
