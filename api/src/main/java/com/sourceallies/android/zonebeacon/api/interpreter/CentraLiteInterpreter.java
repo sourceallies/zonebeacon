@@ -19,6 +19,7 @@ package com.sourceallies.android.zonebeacon.api.interpreter;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -59,8 +60,7 @@ public class CentraLiteInterpreter extends Interpreter {
 
     @Override
     public List<Integer> processActiveLoadsResponse(String systemResponse) {
-        // TODO
-        return null;
+        return new ArrayList();
     }
 
     protected String addZeros(String val, int numDigits) {

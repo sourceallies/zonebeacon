@@ -102,6 +102,6 @@ public abstract class Interpreter {
 
         command.setCommandType(type);
 
-        return null;
+        return command;
     }
 }

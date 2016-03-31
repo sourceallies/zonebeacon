@@ -173,15 +173,19 @@ public abstract class Executor {
      */
     public void queryActiveLoads(Gateway gateway, final QueryLoadsCallback callback) {
         addCommand(interpreter.buildQueryActiveLoadsCommand(), LoadStatus.OFF);
-        setCommandCallback(new CommandCallback() {
+        setCommandCallback(getCommandCallbackForQueryingLoads(interpreter, callback));
+
+        execute(gateway);
+    }
+
+    protected CommandCallback getCommandCallbackForQueryingLoads(final Interpreter interpreter, final QueryLoadsCallback callback) {
+        return new CommandCallback() {
             @Override
             public void onResponse(Command command, String text) {
                 List<Integer> activeLoads = interpreter.processActiveLoadsResponse(text);
                 callback.onResponse(activeLoads);
             }
-        });
-
-        execute(gateway);
+        };
     }
 
     /**
