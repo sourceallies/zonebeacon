@@ -109,4 +109,23 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
         assertEquals("1", interpreter.addZeros("1", 1));
     }
 
+    @Test
+    public void test_buildQueryCommand() {
+        Command command = interpreter.buildQueryActiveLoadsCommand();
+        assertEquals("Query Active Loads", command.getName());
+        assertEquals(0, (int) command.getControllerNumber());
+        assertEquals(0, command.getNumber());
+        assertEquals(-1, command.getId());
+        assertEquals(-1, command.getGatewayId());
+    }
+
+    @Test
+    public void test_queryActiveLoadsCommandString() {
+        assertEquals("^G", interpreter.getQueryActiveLoadsCommandString());
+    }
+
+    @Test
+    public void test_processActiveLoads() {
+        assertEquals(0, interpreter.processActiveLoadsResponse("test text").size());
+    }
 }

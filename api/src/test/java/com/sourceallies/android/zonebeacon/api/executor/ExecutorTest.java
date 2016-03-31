@@ -17,10 +17,17 @@
 package com.sourceallies.android.zonebeacon.api.executor;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
+import com.sourceallies.android.zonebeacon.api.QueryLoadsCallback;
 import com.sourceallies.android.zonebeacon.api.interpreter.CentraLiteInterpreter;
+import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
+import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -38,6 +45,36 @@ public class ExecutorTest extends ZoneBeaconSuite {
         Executor e = Executor.createForGateway(getGatewayForSystem(-1));
         assertTrue(e instanceof SerialExecutor);
         assertTrue(e.getInterpreter() instanceof CentraLiteInterpreter);
+    }
+
+    @Test
+    public void test_queryActiveLoads() {
+        Gateway gateway = getGatewayForSystem(1);
+        Executor e = Mockito.spy(Executor.createForGateway(gateway));
+        Mockito.doNothing().when(e).execute(gateway);
+
+        QueryLoadsCallback callback = Mockito.mock(QueryLoadsCallback.class);
+        e.queryActiveLoads(gateway, callback);
+
+        Mockito.verify(e).addCommand(Mockito.any(Command.class), Mockito.eq(Executor.LoadStatus.OFF));
+        Mockito.verify(e).execute(gateway);
+    }
+
+    @Test
+    public void test_queryCommandCallback() {
+        QueryLoadsCallback callback = Mockito.mock(QueryLoadsCallback.class);
+        Interpreter interpreter = Mockito.mock(Interpreter.class);
+
+        Mockito.when(interpreter.processActiveLoadsResponse(Mockito.anyString()))
+                .thenReturn(new ArrayList<Integer>());
+
+        Gateway gateway = getGatewayForSystem(1);
+        Executor e = Mockito.spy(Executor.createForGateway(gateway));
+
+        e.getCommandCallbackForQueryingLoads(interpreter, callback)
+                .onResponse(null, "test text");
+
+        Mockito.verify(callback).onResponse(Mockito.anyList());
     }
 
     private Gateway getGatewayForSystem(int systemTypeId) {
