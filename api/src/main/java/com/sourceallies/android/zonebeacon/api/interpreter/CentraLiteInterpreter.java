@@ -19,11 +19,13 @@ package com.sourceallies.android.zonebeacon.api.interpreter;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 
+import java.util.List;
+
 /**
  * Interpreter for handling creating commands for a CentraLite control unit and receiving and
  * processing the results.
  */
-public class CentraLiteInterpreter implements Interpreter {
+public class CentraLiteInterpreter extends Interpreter {
 
     @Override
     public String getExecutable(Command command, Executor.LoadStatus status) {
@@ -48,6 +50,17 @@ public class CentraLiteInterpreter implements Interpreter {
     public String processResponse(String response) {
         // TODO
         return response;
+    }
+
+    @Override
+    public String getQueryActiveLoadsCommandString() {
+        return "^G";
+    }
+
+    @Override
+    public List<Integer> processActiveLoadsResponse(String systemResponse) {
+        // TODO
+        return null;
     }
 
     protected String addZeros(String val, int numDigits) {
