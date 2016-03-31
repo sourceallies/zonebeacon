@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -66,7 +67,7 @@ public class ExecutorTest extends ZoneBeaconSuite {
         Interpreter interpreter = Mockito.mock(Interpreter.class);
 
         Mockito.when(interpreter.processActiveLoadsResponse(Mockito.anyString()))
-                .thenReturn(new ArrayList<Integer>());
+                .thenReturn(new HashMap<Integer, Executor.LoadStatus>());
 
         Gateway gateway = getGatewayForSystem(1);
         Executor e = Mockito.spy(Executor.createForGateway(gateway));
@@ -74,7 +75,7 @@ public class ExecutorTest extends ZoneBeaconSuite {
         e.getCommandCallbackForQueryingLoads(interpreter, callback)
                 .onResponse(null, "test text");
 
-        Mockito.verify(callback).onResponse(Mockito.anyList());
+        Mockito.verify(callback).onResponse(Mockito.anyMap());
     }
 
     private Gateway getGatewayForSystem(int systemTypeId) {
