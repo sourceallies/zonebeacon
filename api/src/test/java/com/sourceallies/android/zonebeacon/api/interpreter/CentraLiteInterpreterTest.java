@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.List;
+
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -125,7 +127,54 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
     }
 
     @Test
-    public void test_processActiveLoads() {
+    public void test_processActiveLoads_dummyText() {
         assertEquals(0, interpreter.processActiveLoadsResponse("test text").size());
+        assertEquals(0, interpreter.processActiveLoadsResponse("").size());
+    }
+
+    @Test
+    public void test_processActiveLoads_allByScene() {
+        // all lights by ^C001
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+        ), -1);
+
+        // all except load 1 (^C001^B001)
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+        ), -1);
+    }
+
+    @Test
+    public void test_processActiveLoads() {
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "010000000000000000000000000000000000000000000000"
+        ), 1);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "050000000000000000000000000000000000000000000000"
+        ), 1, 3);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "0D0000000000000000000000000000000000000000000000"
+        ), 1, 3, 4);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "6D0000000000000000000000000000000000000000000000"
+        ), 1, 3, 4, 6, 7);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FF3000000000000000000000000000000000000000000000"
+        ), 1, 2, 3, 4, 5, 6, 7, 8, 13, 14);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FF7000000000000000000000000000000000000000000000"
+        ), 1, 2, 3, 4, 5, 6, 7, 8, 13, 14, 15);
+    }
+
+    private void testLoadsActive(List<Integer> activeList, Integer... expected) {
+        for (Integer i : expected) {
+            assertTrue(activeList.contains(i));
+        }
     }
 }
