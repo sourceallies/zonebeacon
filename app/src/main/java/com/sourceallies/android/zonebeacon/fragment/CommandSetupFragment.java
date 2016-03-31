@@ -57,35 +57,13 @@ public class CommandSetupFragment extends AbstractSetupFragment {
         return root;
     }
 
-    public boolean isEmpty(final TextInputLayout input) {
-        if (TextUtils.isEmpty(input.getEditText().getText())) {
-            // display an error message on the edit text
-            input.setError(getString(R.string.fill_field));
-
-            // used to clear the error message on the edit text
-            input.getEditText().addTextChangedListener(new TextWatcher() {
-                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-                @Override public void afterTextChanged(Editable editable) { }
-
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    input.setError("");
-                }
-            });
-            return true;
-        } else {
-            input.setError("");
-        }
-
-        return false;
-    }
-
     @Override
     public boolean isComplete() {
         boolean complete = true;
 
-        if (isEmpty(name))             complete = false;
-        if (isEmpty(loadNumber))       complete = false;
+        if (isEmpty(name)) complete = false;
+        if (isEmpty(loadNumber)) complete = false;
+        if (isEmpty(controllerNumber)) complete = false;
 
         return complete;
     }
@@ -95,7 +73,11 @@ public class CommandSetupFragment extends AbstractSetupFragment {
         String name = getText(this.name);
         int loadNumber = Integer.parseInt((getText(this.loadNumber)));
         CommandType currentCommandType = commandSpinnerAdapter.getItem(getCurrentSpinnerSelection());
-        Integer controllerNum = Integer.parseInt((getText(this.controllerNumber)));
+        Integer controllerNum = null;
+
+        if (controllerNumber.getVisibility() == View.VISIBLE) {
+            controllerNum = Integer.parseInt((getText(this.controllerNumber)));
+        }
 
         DataSource source = DataSource.getInstance(getActivity());
         source.open();
@@ -121,10 +103,12 @@ public class CommandSetupFragment extends AbstractSetupFragment {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == commandTypeSpinner.getCount() - 1 && commandTypeSpinner.getCount() > 1) {
-                    commandTypeSpinner.setSelection(currentSpinnerSelection);
+                currentSpinnerSelection = position;
+
+                if (commandSpinnerAdapter.getItem(position).isActivateControllerSelection()) {
+                    controllerNumber.setVisibility(View.VISIBLE);
                 } else {
-                    currentSpinnerSelection = position;
+                    controllerNumber.setVisibility(View.INVISIBLE);
                 }
             }
         });

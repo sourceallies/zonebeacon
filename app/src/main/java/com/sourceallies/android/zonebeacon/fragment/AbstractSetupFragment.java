@@ -17,9 +17,15 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 
+import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.activity.CreationActivity;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
@@ -63,6 +69,38 @@ public abstract class AbstractSetupFragment extends Fragment {
         source.close();
 
         return gateway;
+    }
+
+    /**
+     * Check whether or not the text input layout is empty or not. If it is, set an error and
+     * set up a TextWatcher to clear that error.
+     *
+     * @param input TextInputLayout that is either empty or filled
+     * @return true if the layout is empty, false otherwise
+     */
+    public boolean isEmpty(final TextInputLayout input) {
+        if (input.getVisibility() == View.VISIBLE &&
+                TextUtils.isEmpty(input.getEditText().getText())) {
+            // display an error message on the edit text
+            input.setError(getString(R.string.fill_field));
+
+            // used to clear the error message on the edit text
+            input.getEditText().addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+                @Override public void afterTextChanged(Editable editable) { }
+
+                @Override
+                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    input.setError("");
+                }
+            });
+            return true;
+        } else {
+            // clear the error
+            input.setError("");
+        }
+
+        return false;
     }
 
     /**
