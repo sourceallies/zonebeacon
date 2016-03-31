@@ -23,9 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
-import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
-import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,39 +33,38 @@ import java.util.List;
  */
 public class CommandSpinnerAdapter extends BaseAdapter {
     private Activity activity;
-    private List<CommandType> commands  = new ArrayList<>();
+    private List<CommandType> commandTypes = new ArrayList<>();
 
     /**
      * Constructor.
      *
      * @param activity The current context
-     * @param commands A list of the gateways that are in the database.
+     * @param commandTypes A list of the gateways that are in the database.
      */
-    public CommandSpinnerAdapter(Activity activity, List<CommandType> commands) {
+    public CommandSpinnerAdapter(Activity activity, List<CommandType> commandTypes) {
         this.activity = activity;
-        this.commands = commands;
+        this.commandTypes = commandTypes;
     }
 
     /**
-     * Get the number of gateways in the database
-     * + 1 for an item to "Create New Gateway"
+     * Get the number of command types in the database
      *
      * @return number of items in the spinnerAdapter
      */
     @Override
     public int getCount() {
-        return commands.size() + 1;
+        return commandTypes.size();
     }
 
     /**
      * Get the command at the selected position
      *
      * @param position Index of the gateway you want to find
-     * @return Command from the database list or null for the "Create New Command" item
+     * @return Command from the database list
      */
     @Override
     public CommandType getItem(int position) {
-        return position == commands.size() ? null : commands.get(position);
+        return commandTypes.get(position);
     }
 
     /**
@@ -118,7 +115,7 @@ public class CommandSpinnerAdapter extends BaseAdapter {
         if (view == null || view.getTag() == null || !view.getTag().toString().equals("NON_DROPDOWN")) {
             // if the view can't be recycled, create a new one
             view = activity.getLayoutInflater()
-                    .inflate(R.layout.toolbar_spinner_item_actionbar, parent, false);
+                    .inflate(R.layout.spinner_item_non_dropdown, parent, false);
             view.setTag("NON_DROPDOWN");
         }
 
@@ -136,10 +133,6 @@ public class CommandSpinnerAdapter extends BaseAdapter {
      * @return Command name or "Create New Command"
      */
     public String getTitle(int position) {
-        if (commands.size() != position) {
-            return getItem(position).getName();
-        } else {
-            return activity.getString(R.string.create_command);
-        }
+        return getItem(position).getName();
     }
 }

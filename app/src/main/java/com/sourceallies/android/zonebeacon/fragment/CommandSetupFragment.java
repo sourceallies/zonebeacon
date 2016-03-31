@@ -52,7 +52,7 @@ public class CommandSetupFragment extends AbstractSetupFragment {
         commandTypeSpinner = (Spinner) root.findViewById(R.id.command_type);
         controllerNumber = (TextInputLayout)root.findViewById(R.id.controller_number);
 
-        SetCommandSpinnerAdapter();
+        setCommandSpinnerAdapter();
 
         return root;
     }
@@ -107,20 +107,17 @@ public class CommandSetupFragment extends AbstractSetupFragment {
         return input.getEditText().getText().toString();
     }
 
-    private void SetCommandSpinnerAdapter()
-    {
+    private void setCommandSpinnerAdapter() {
         DataSource source = DataSource.getInstance(getActivity());
         source.open();
         List<CommandType> commandTypes = source.findCommandTypesShownInUI(getCurrentGateway());
         source.close();
 
-        CommandSpinnerAdapter commandSpinnerAdapter = new CommandSpinnerAdapter(getActivity(),commandTypes);
+        commandSpinnerAdapter = new CommandSpinnerAdapter(getActivity(),commandTypes);
         commandTypeSpinner.setAdapter(commandSpinnerAdapter);
 
         commandTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            @Override public void onNothingSelected(AdapterView<?> parent) { }
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
