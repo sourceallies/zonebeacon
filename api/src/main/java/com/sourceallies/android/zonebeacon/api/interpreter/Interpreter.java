@@ -21,6 +21,7 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adheres to the strategy pattern. This interface can be implemented in various different ways.
@@ -71,11 +72,11 @@ public abstract class Interpreter {
     /**
      * Decode the response from the system and return a list of what loads are currently active.
      *
-     * @param systemResponse the response from the system when it is sent the
+     * @param statusString the response from the system when it is sent the
      *                       Interpreter#queryActiveLoadsCommand;
      * @return List of loads that are currently active.
      */
-    public abstract List<Integer> processActiveLoadsResponse(String systemResponse);
+    public abstract Map<Integer, Executor.LoadStatus> processActiveLoadsResponse(String statusString);
 
     /**
      * Get the command string that will be sent to the system to query the active loads.

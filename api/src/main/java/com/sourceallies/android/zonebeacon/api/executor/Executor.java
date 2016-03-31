@@ -26,6 +26,7 @@ import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adhere's to the strategy pattern. This interface will be implemented in various different ways.
@@ -182,7 +183,7 @@ public abstract class Executor {
         return new CommandCallback() {
             @Override
             public void onResponse(Command command, String text) {
-                List<Integer> activeLoads = interpreter.processActiveLoadsResponse(text);
+                Map<Integer, LoadStatus> activeLoads = interpreter.processActiveLoadsResponse(text);
                 callback.onResponse(activeLoads);
             }
         };
