@@ -38,7 +38,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class CommandSpinnerAdapterTest extends ZoneBeaconSuite {
+public class CommandTypeSpinnerAdapterTest extends ZoneBeaconSuite {
 
     @Mock
     Activity activity;
@@ -50,7 +50,7 @@ public class CommandSpinnerAdapterTest extends ZoneBeaconSuite {
     LayoutInflater layoutInflater;
 
     List<CommandType> types = new ArrayList<>();
-    CommandSpinnerAdapter adapter;
+    CommandTypeSpinnerAdapter adapter;
 
     @Before
     public void setUp() {
@@ -70,7 +70,7 @@ public class CommandSpinnerAdapterTest extends ZoneBeaconSuite {
         Mockito.when(layoutInflater.inflate(Mockito.anyInt(), Mockito.any(ViewGroup.class), Mockito.anyBoolean()))
                 .thenReturn(view);
 
-        adapter = new CommandSpinnerAdapter(activity, types);
+        adapter = new CommandTypeSpinnerAdapter(activity, types);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class CommandSpinnerAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_noItems() {
-        adapter = new CommandSpinnerAdapter(activity, new ArrayList<CommandType>());
+        adapter = new CommandTypeSpinnerAdapter(activity, new ArrayList<CommandType>());
         assertEquals(0, adapter.getCount());
     }
 

@@ -17,6 +17,7 @@
 package com.sourceallies.android.zonebeacon.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -69,6 +70,11 @@ public abstract class AbstractSetupFragment extends Fragment {
         source.close();
 
         return gateway;
+    }
+
+    @VisibleForTesting
+    protected String getText(TextInputLayout input) {
+        return input.getEditText().getText().toString();
     }
 
     /**

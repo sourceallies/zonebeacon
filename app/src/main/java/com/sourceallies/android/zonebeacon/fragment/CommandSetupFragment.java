@@ -2,6 +2,7 @@ package com.sourceallies.android.zonebeacon.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -13,7 +14,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 
 import com.sourceallies.android.zonebeacon.R;
-import com.sourceallies.android.zonebeacon.adapter.CommandSpinnerAdapter;
+import com.sourceallies.android.zonebeacon.adapter.CommandTypeSpinnerAdapter;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
 
@@ -37,11 +38,7 @@ public class CommandSetupFragment extends AbstractSetupFragment {
     @Getter
     private Spinner commandTypeSpinner;
 
-    @Getter
-    private int currentSpinnerSelection = 0;
-
-    @Getter
-    private  CommandSpinnerAdapter commandSpinnerAdapter;
+    private CommandTypeSpinnerAdapter commandTypeSpinnerAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,49 +65,61 @@ public class CommandSetupFragment extends AbstractSetupFragment {
         return complete;
     }
 
+    @VisibleForTesting
+    protected void insertNewCommand(DataSource source, String name, Long gatewayId, Integer loadNumber, Long commandTypeId, Integer controllerNumber) {
+        source.open();
+        source.insertNewCommand(name, gatewayId, loadNumber, commandTypeId, controllerNumber);
+        source.close();
+    }
+
     @Override
     public void save() {
         String name = getText(this.name);
         int loadNumber = Integer.parseInt((getText(this.loadNumber)));
-        CommandType currentCommandType = commandSpinnerAdapter.getItem(getCurrentSpinnerSelection());
+        CommandType currentCommandType = commandTypeSpinnerAdapter.getItem(commandTypeSpinner.getSelectedItemPosition());
         Integer controllerNum = null;
 
         if (controllerNumber.getVisibility() == View.VISIBLE) {
             controllerNum = Integer.parseInt((getText(this.controllerNumber)));
         }
 
-        DataSource source = DataSource.getInstance(getActivity());
-        source.open();
-        source.insertNewCommand(name, getCurrentGateway().getId(), loadNumber, currentCommandType.getId(), controllerNum);
-        source.close();
+        insertNewCommand(getDataSource(), name, getCurrentGateway().getId(), loadNumber, currentCommandType.getId(), controllerNum);
     }
 
-    private String getText(TextInputLayout input) {
-        return input.getEditText().getText().toString();
-    }
-
-    private void setCommandSpinnerAdapter() {
-        DataSource source = DataSource.getInstance(getActivity());
+    @VisibleForTesting
+    protected List<CommandType> findCommandTypes(DataSource source) {
         source.open();
         List<CommandType> commandTypes = source.findCommandTypesShownInUI(getCurrentGateway());
         source.close();
 
-        commandSpinnerAdapter = new CommandSpinnerAdapter(getActivity(),commandTypes);
-        commandTypeSpinner.setAdapter(commandSpinnerAdapter);
+        return commandTypes;
+    }
 
-        commandTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+    @VisibleForTesting
+    protected DataSource getDataSource() {
+        return DataSource.getInstance(getActivity());
+    }
+
+    private void setCommandSpinnerAdapter() {
+        commandTypeSpinnerAdapter = new CommandTypeSpinnerAdapter(getActivity(), findCommandTypes(getDataSource()));
+        commandTypeSpinner.setAdapter(commandTypeSpinnerAdapter);
+
+        commandTypeSpinner.setOnItemSelectedListener(getItemSelectedListener());
+    }
+
+    @VisibleForTesting
+    protected AdapterView.OnItemSelectedListener getItemSelectedListener() {
+        return new AdapterView.OnItemSelectedListener() {
             @Override public void onNothingSelected(AdapterView<?> parent) { }
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                currentSpinnerSelection = position;
-
-                if (commandSpinnerAdapter.getItem(position).isActivateControllerSelection()) {
+                if (commandTypeSpinnerAdapter.getItem(position).isActivateControllerSelection()) {
                     controllerNumber.setVisibility(View.VISIBLE);
                 } else {
                     controllerNumber.setVisibility(View.INVISIBLE);
                 }
             }
-        });
+        };
     }
 }

@@ -118,8 +118,4 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
         source.insertNewGateway(name, ipAddress, port);
         source.close();
     }
-
-    private String getText(TextInputLayout input) {
-        return input.getEditText().getText().toString();
-    }
 }
