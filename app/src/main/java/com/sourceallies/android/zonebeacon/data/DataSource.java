@@ -749,33 +749,47 @@ public class DataSource {
     }
 
     // You could call this sometime on the system to insert some dummy data for the UI.
-    /*public void insertFakeButtonsAndZones(long gatewayId) {
-        insertNewCommand("Light 1", gatewayId, 1, 1, null);
-        insertNewCommand("Light 2", gatewayId, 2, 1, null);
-        insertNewCommand("Light 3", gatewayId, 3, 1, null);
-        insertNewCommand("Light 4", gatewayId, 4, 1, null);
-        insertNewCommand("Light 5", gatewayId, 5, 1, null);
+    // it will insert the data onto gateway 1, which is changed to the ip address of our
+    // home server.
+    /*public void insertFakeButtonsAndZones() {
+        execSql("UPDATE gateway SET ip_address = '173.29.143.178' WHERE _id = " + 1);
+
+        insertFakeCommand("Great Room Left", 1);
+        insertFakeCommand("Great Room Right", 2);
+        insertFakeCommand("Living Room", 3);
+        insertFakeCommand("Front Entrance", 4);
+        insertFakeCommand("Garage", 5);
+        insertFakeCommand("Kitchen Table", 6);
+        insertFakeCommand("Dining Room", 7);
+        insertFakeCommand("Kitchen", 8);
+        insertFakeCommand("Master Bedroom", 13);
+        insertFakeCommand("Master Bathroom", 14);
+        insertFakeCommand("Kid's Bedroom", 15);
 
         List<Command> commands = new ArrayList<>();
-        commands.addAll(findCommands(gatewayId));
+        commands.addAll(findCommands(1));
 
-        insertNewButton("Living Room", commands.subList(0, 2));
-        insertNewButton("Bedroom 1", commands.subList(1, 3));
-        insertNewButton("Master Bathroom", commands.subList(3, 4));
-        insertNewButton("Stove Light", commands.subList(0, 1));
-        insertNewButton("Porch Light", commands.subList(2, 4));
+        insertNewButton("Great Room", commands.subList(0, 2));
+        insertNewButton("Living Room", commands.subList(2, 3));
+        insertNewButton("Front Entrance", commands.subList(3, 4));
+        insertNewButton("Garage", commands.subList(4, 5));
+        insertNewButton("Kitchen Table", commands.subList(5, 6));
+        insertNewButton("Kitchen", commands.subList(7, 8));
+        insertNewButton("Dining Room", commands.subList(6, 7));
+        insertNewButton("Master Bedroom", commands.subList(8, 9));
+        insertNewButton("Master Bathroom", commands.subList(9, 10));
+        insertNewButton("Kid's Bedroom", commands.subList(10, 11));
 
         List<Button> buttons = new ArrayList<>();
-        buttons.addAll(findButtons(gatewayId));
+        buttons.addAll(findButtons(1));
 
         insertNewZone("Whole House", buttons);
-        insertNewZone("Basement", buttons.subList(0, 4));
-        insertNewZone("Main Floor", buttons.subList(1, 2));
-        insertNewZone("Upper Floor", buttons.subList(3, 4));
-    }*/
+        insertNewZone("Main Floor", buttons.subList(0, 3));
+        insertNewZone("Kitchen", buttons.subList(4, 6));
+        insertNewZone("Master Suite", buttons.subList(7, 9));
+    }
 
-    // you can call this to make the gateway point to our test box
-    /*public void changeGatewayIp(long gatewayId) {
-        execSql("UPDATE gateway SET ip_address = '173.29.143.178' WHERE _id = " + gatewayId);
+    private long insertFakeCommand(String name, int number) {
+        return insertNewCommand(name, 1, number, 1, null);
     }*/
 }

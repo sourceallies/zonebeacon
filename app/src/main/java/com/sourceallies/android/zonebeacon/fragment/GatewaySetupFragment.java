@@ -116,6 +116,7 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
         DataSource source = DataSource.getInstance(getActivity());
         source.open();
         source.insertNewGateway(name, ipAddress, port);
+        //source.insertFakeButtonsAndZones();
         source.close();
     }
 }
