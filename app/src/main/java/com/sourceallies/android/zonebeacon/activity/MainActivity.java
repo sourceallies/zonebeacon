@@ -51,6 +51,8 @@ import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 
+import java.util.HashMap;
+
 import lombok.Getter;
 import lombok.Setter;
 import roboguice.inject.ContentView;
@@ -241,7 +243,13 @@ public class MainActivity extends RoboAppCompatActivity {
         Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
 
         if (currentGateway != null) {
-            mainAdapter = new MainAdapter(this, currentGateway, source.findZones(currentGateway), source.findButtons(currentGateway));
+            mainAdapter = new MainAdapter(
+                    this,
+                    currentGateway,
+                    source.findZones(currentGateway),
+                    source.findButtons(currentGateway),
+                    new HashMap()
+            );
 
             GridLayoutManager manager = getLayoutManager();
             recycler.setLayoutManager(manager);

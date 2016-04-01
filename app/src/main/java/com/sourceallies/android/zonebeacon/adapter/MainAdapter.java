@@ -31,11 +31,15 @@ import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.data.OnOffButton;
+import com.sourceallies.android.zonebeacon.data.OnOffZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Setter;
 
@@ -53,8 +57,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     private String buttonsTitle;
 
     protected Gateway gateway;
-    protected List<Zone> zones;
-    protected List<Button> buttons;
+    protected List<OnOffZone> zones;
+    protected List<OnOffButton> buttons;
 
     /**
      * Constructor for the spinnerAdapter.
@@ -63,16 +67,18 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * @param buttons List of buttons in the current gateway
      */
     public MainAdapter(Activity context, @NonNull Gateway gateway,
-                       @NonNull List<Zone> zones, @NonNull List<Button> buttons) {
+                       @NonNull List<Zone> zones, @NonNull List<Button> buttons, @NonNull Map<Integer, Executor.LoadStatus> loadStatusMap) {
         this.context = context;
         this.executor = Executor.createForGateway(gateway);
 
         this.gateway = gateway;
-        this.zones = zones;
-        this.buttons = buttons;
 
         zonesTitle = context.getString(R.string.zones);
         buttonsTitle = context.getString(R.string.buttons);
+
+        OnOffStatusUtil statusUtil = new OnOffStatusUtil(buttons, zones, loadStatusMap);
+        this.zones = statusUtil.getZones();
+        this.buttons = statusUtil.getButtons();
     }
 
     /**
@@ -128,10 +134,17 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int section, int relativePosition, int absolutePosition) {
-        if (isZone(section))
-            holder.title.setText(zones.get(relativePosition).getName());
-        else
-            holder.title.setText(buttons.get(relativePosition).getName());
+        if (isZone(section)) {
+            holder.title.setText(zones.get(relativePosition).getZone().getName());
+            holder.buttonSwitch.setChecked(
+                    zones.get(relativePosition).getLoadStatus() == Executor.LoadStatus.ON
+            );
+        } else {
+            holder.title.setText(buttons.get(relativePosition).getButton().getName());
+            holder.buttonSwitch.setChecked(
+                    buttons.get(relativePosition).getLoadStatus() == Executor.LoadStatus.ON
+            );
+        }
 
         setItemClick(holder.root, holder.buttonSwitch, section, relativePosition);
 
@@ -157,9 +170,9 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 if (!isZone(section)) {
-                    executor.addCommands(buttons.get(relativePosition).getCommands(), getStatus(buttonSwitch));
+                    executor.addCommands(buttons.get(relativePosition).getButton().getCommands(), getStatus(buttonSwitch));
                 } else {
-                    for (Button button : zones.get(relativePosition).getButtons()) {
+                    for (Button button : zones.get(relativePosition).getZone().getButtons()) {
                         executor.addCommands(button.getCommands(), getStatus(buttonSwitch));
                     }
                 }
