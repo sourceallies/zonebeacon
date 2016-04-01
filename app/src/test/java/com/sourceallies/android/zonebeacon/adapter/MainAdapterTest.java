@@ -37,7 +37,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -84,60 +86,115 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         Mockito.doNothing().when(executor).execute(Mockito.any(Gateway.class));
         Mockito.doNothing().when(title).setText(Mockito.anyString());
         viewHolder.title = title;
+        viewHolder.buttonSwitch = buttonSwitch;
         viewHolder.fabSpacer = fabSpacer;
     }
 
     @Test
     public void test_sections_two() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         assertEquals(2, adapter.getSectionCount());
     }
 
     @Test
     public void test_sections_one_zone() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(0));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(0),
+                getMap()
+        );
         assertEquals(1, adapter.getSectionCount());
     }
 
     @Test
     public void test_sections_one_button() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(0), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(0),
+                getButtonList(1),
+                getMap()
+        );
         assertEquals(1, adapter.getSectionCount());
     }
 
     @Test
     public void test_sections_zero() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(0), getButtonList(0));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(0),
+                getButtonList(0),
+                getMap()
+        );
         assertEquals(0, adapter.getSectionCount());
     }
 
     @Test
     public void test_items_sectionZero_zones() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(2), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(2),
+                getButtonList(1),
+                getMap()
+        );
         assertEquals(2, adapter.getItemCount(0));
     }
 
     @Test
     public void test_items_sectionZero_buttons() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(0), getButtonList(2));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(0),
+                getButtonList(2),
+                getMap()
+        );
         assertEquals(2, adapter.getItemCount(0));
     }
 
     @Test
     public void test_items_sectionOne() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         assertEquals(1, adapter.getItemCount(1));
     }
 
     @Test
     public void test_items_sectionOne_zeroButtons() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(0));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(0),
+                getMap()
+        );
         assertEquals(0, adapter.getItemCount(1));
     }
 
     @Test
     public void test_bindHeader_zone() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.onBindHeaderViewHolder(viewHolder, 0);
 
         Mockito.verify(title).setText(ZONES_TITLE);
@@ -145,7 +202,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_bindHeader_button() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.onBindHeaderViewHolder(viewHolder, 1);
 
         Mockito.verify(title).setText(BUTTONS_TITLE);
@@ -153,7 +216,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_bindView_zone() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.onBindViewHolder(viewHolder, 0, 0, -1);
 
         Mockito.verify(title).setText("Test Zone 0");
@@ -161,7 +230,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_bindView_button() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.onBindViewHolder(viewHolder, 1, 0, -1);
 
         Mockito.verify(title).setText("Test Button 0");
@@ -169,7 +244,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_create_header() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.onCreateViewHolder(parent, -2); // View type header
 
         Mockito.verify(inflater)
@@ -180,7 +261,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_create_view() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         MainAdapter.ViewHolder holder = adapter.onCreateViewHolder(parent, -1); // View type item
 
         Mockito.verify(inflater)
@@ -191,7 +278,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_getStatus() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
 
         Mockito.when(buttonSwitch.isChecked()).thenReturn(true);
         assertEquals(Executor.LoadStatus.ON, adapter.getStatus(buttonSwitch));
@@ -202,7 +295,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_clickListener() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.executor = executor;
 
         adapter.getClickListener(buttonSwitch, 0, 0).onClick(buttonSwitch);
@@ -215,7 +314,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_itemClick() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.setItemClick(view, buttonSwitch, 0, 0);
 
         Mockito.verify(view).setOnClickListener(Mockito.any(View.OnClickListener.class));
@@ -223,7 +328,13 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_itemClick_header() {
-        MainAdapter adapter = new MainAdapter(context, gateway, getZoneList(1), getButtonList(1));
+        MainAdapter adapter = new MainAdapter(
+                context,
+                gateway,
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
         adapter.setItemClick(view, null, 0, 0);
 
         Mockito.verifyZeroInteractions(view);
@@ -252,5 +363,9 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         }
 
         return buttons;
+    }
+
+    private Map<Integer, Executor.LoadStatus> getMap() {
+        return new HashMap();
     }
 }
