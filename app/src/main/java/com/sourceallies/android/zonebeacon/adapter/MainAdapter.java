@@ -77,8 +77,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         buttonsTitle = context.getString(R.string.buttons);
 
         OnOffStatusUtil statusUtil = new OnOffStatusUtil(buttons, zones, loadStatusMap);
-        this.zones = statusUtil.getZones();
-        this.buttons = statusUtil.getButtons();
+        this.zones = statusUtil.getOnOffZones();
+        this.buttons = statusUtil.getOnOffButtons();
     }
 
     /**
