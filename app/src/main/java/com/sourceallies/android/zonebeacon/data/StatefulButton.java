@@ -16,23 +16,29 @@
 
 package com.sourceallies.android.zonebeacon.data;
 
-import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 
-import org.junit.Test;
+import lombok.Getter;
+import lombok.Setter;
 
-import static org.junit.Assert.*;
+/**
+ * Button that also holds an associated load status state.
+ */
+public class StatefulButton {
 
-public class OnOffZoneTest extends ZoneBeaconSuite {
+    @Getter
+    @Setter
+    private Button button;
 
-    @Test
-    public void test_creation() {
-        Zone zone = new Zone();
-        Executor.LoadStatus status = Executor.LoadStatus.OFF;
+    @Getter
+    @Setter
+    private Executor.LoadStatus loadStatus;
 
-        OnOffZone onOffZone = new OnOffZone(zone, status);
-        assertEquals(status, onOffZone.getLoadStatus());
-        assertEquals(zone, onOffZone.getZone());
+    public StatefulButton(Button button, Executor.LoadStatus currentStatus) {
+        setButton(button);
+        setLoadStatus(currentStatus);
     }
+
 }

@@ -17,8 +17,8 @@
 package com.sourceallies.android.zonebeacon.util;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
-import com.sourceallies.android.zonebeacon.data.OnOffButton;
-import com.sourceallies.android.zonebeacon.data.OnOffZone;
+import com.sourceallies.android.zonebeacon.data.StatefulButton;
+import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
@@ -42,8 +42,8 @@ public class OnOffStatusUtil {
     private List<Zone> zones;
     private Map<Integer, Executor.LoadStatus> loadStatusMap;
 
-    protected List<OnOffButton> onOffButtons = null;
-    protected List<OnOffZone> onOffZones = null;
+    protected List<StatefulButton> statefulButtons = null;
+    protected List<StatefulZone> statefulZones = null;
 
     /**
      * Create an object that can get the on off status of the individual buttons and zones
@@ -59,12 +59,12 @@ public class OnOffStatusUtil {
     }
 
     /**
-     * Invalidate the list of buttons and zones so that it is re-queried when the OnOffStatusUtil#getOnOffButtons()
-     * and OnOffStatusUtil#getOnOffZones()
+     * Invalidate the list of buttons and zones so that it is re-queried when the OnOffStatusUtil#getStatefulButtons()
+     * and OnOffStatusUtil#getStatefulZones()
      */
     public void invalidate() {
-        this.onOffButtons = null;
-        this.onOffZones = null;
+        this.statefulButtons = null;
+        this.statefulZones = null;
     }
 
     /**
@@ -72,11 +72,11 @@ public class OnOffStatusUtil {
      *
      * @return list of buttons along with their current load statuses
      */
-    public List<OnOffButton> getOnOffButtons() {
-        if (onOffButtons != null) {
-            return onOffButtons;
+    public List<StatefulButton> getStatefulButtons() {
+        if (statefulButtons != null) {
+            return statefulButtons;
         } else {
-            onOffButtons = new ArrayList();
+            statefulButtons = new ArrayList();
 
             for (Button button : buttons) {
                 // store whether or not one of the loads corresponding to a button is turned off
@@ -91,14 +91,14 @@ public class OnOffStatusUtil {
                     }
                 }
 
-                onOffButtons.add(
-                        new OnOffButton(
+                statefulButtons.add(
+                        new StatefulButton(
                                 button,
                                 loadOff ? Executor.LoadStatus.OFF : Executor.LoadStatus.ON
                 ));
             }
 
-            return onOffButtons;
+            return statefulButtons;
         }
     }
 
@@ -107,11 +107,11 @@ public class OnOffStatusUtil {
      *
      * @return list of zones along with their current load statuses
      */
-    public List<OnOffZone> getOnOffZones() {
-        if (onOffZones != null) {
-            return onOffZones;
+    public List<StatefulZone> getStatefulZones() {
+        if (statefulZones != null) {
+            return statefulZones;
         } else {
-            onOffZones = new ArrayList();
+            statefulZones = new ArrayList();
 
             for (Zone zone : zones) {
                 // store whether or not one of the loads corresponding to a button is turned off
@@ -132,14 +132,14 @@ public class OnOffStatusUtil {
                     }
                 }
 
-                onOffZones.add(
-                        new OnOffZone(
+                statefulZones.add(
+                        new StatefulZone(
                                 zone,
                                 loadOff ? Executor.LoadStatus.OFF : Executor.LoadStatus.ON
                         ));
             }
 
-            return onOffZones;
+            return statefulZones;
         }
     }
 }

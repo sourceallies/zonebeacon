@@ -17,23 +17,27 @@
 package com.sourceallies.android.zonebeacon.data;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
-import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class OnOffButton {
+/**
+ * Zone that also holds an associated load status state.
+ */
+public class StatefulZone {
+
     @Getter
     @Setter
-    private Button button;
+    private Zone zone;
 
     @Getter
     @Setter
     private Executor.LoadStatus loadStatus;
 
-    public OnOffButton(Button button, Executor.LoadStatus currentStatus) {
-        setButton(button);
+    public StatefulZone(Zone zone, Executor.LoadStatus currentStatus) {
+        setZone(zone);
         setLoadStatus(currentStatus);
     }
+
 }

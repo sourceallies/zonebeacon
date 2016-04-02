@@ -21,9 +21,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +29,8 @@ import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
-import com.sourceallies.android.zonebeacon.data.OnOffButton;
-import com.sourceallies.android.zonebeacon.data.OnOffZone;
+import com.sourceallies.android.zonebeacon.data.StatefulButton;
+import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
@@ -40,8 +38,6 @@ import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
 
 import java.util.List;
 import java.util.Map;
-
-import lombok.Setter;
 
 /**
  * Adapter used on the MainActivity of the app to display the buttons and zones available.
@@ -57,8 +53,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     private String buttonsTitle;
 
     protected Gateway gateway;
-    protected List<OnOffZone> zones;
-    protected List<OnOffButton> buttons;
+    protected List<StatefulZone> zones;
+    protected List<StatefulButton> buttons;
 
     /**
      * Constructor for the spinnerAdapter.
@@ -85,8 +81,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      */
     public void loadOnOffStatuses(@NonNull List<Zone> zones, @NonNull List<Button> buttons, Map<Integer, Executor.LoadStatus> loadStatusMap) {
         OnOffStatusUtil statusUtil = getOnOffStatusUtil(zones, buttons, loadStatusMap);
-        this.zones = statusUtil.getOnOffZones();
-        this.buttons = statusUtil.getOnOffButtons();
+        this.zones = statusUtil.getStatefulZones();
+        this.buttons = statusUtil.getStatefulButtons();
     }
 
     /**

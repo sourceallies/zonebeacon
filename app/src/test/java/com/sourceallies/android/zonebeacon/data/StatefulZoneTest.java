@@ -16,6 +16,7 @@
 
 package com.sourceallies.android.zonebeacon.data;
 
+import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 
@@ -23,14 +24,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class OnOffButtonTest {
+public class StatefulZoneTest extends ZoneBeaconSuite {
+
     @Test
     public void test_creation() {
         Zone zone = new Zone();
         Executor.LoadStatus status = Executor.LoadStatus.OFF;
 
-        OnOffZone onOffZone = new OnOffZone(zone, status);
-        assertEquals(status, onOffZone.getLoadStatus());
-        assertEquals(zone, onOffZone.getZone());
+        StatefulZone statefulZone = new StatefulZone(zone, status);
+        assertEquals(status, statefulZone.getLoadStatus());
+        assertEquals(zone, statefulZone.getZone());
     }
 }

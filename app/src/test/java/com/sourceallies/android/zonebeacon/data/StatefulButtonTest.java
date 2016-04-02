@@ -19,21 +19,18 @@ package com.sourceallies.android.zonebeacon.data;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.junit.Test;
 
-public class OnOffZone {
+import static org.junit.Assert.*;
 
-    @Getter
-    @Setter
-    private Zone zone;
+public class StatefulButtonTest {
+    @Test
+    public void test_creation() {
+        Zone zone = new Zone();
+        Executor.LoadStatus status = Executor.LoadStatus.OFF;
 
-    @Getter
-    @Setter
-    private Executor.LoadStatus loadStatus;
-
-    public OnOffZone(Zone zone, Executor.LoadStatus currentStatus) {
-        setZone(zone);
-        setLoadStatus(currentStatus);
+        StatefulZone statefulZone = new StatefulZone(zone, status);
+        assertEquals(status, statefulZone.getLoadStatus());
+        assertEquals(zone, statefulZone.getZone());
     }
 }
