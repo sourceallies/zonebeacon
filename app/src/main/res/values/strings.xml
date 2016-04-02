@@ -57,5 +57,6 @@
     <string name="gateways_info">Name, IP address, and port number describe and provide access to your lighting system.\n\nFor help setting up your system, check this YouTube channel.</string>
     <string name="commands">Commands</string>
     <string name="commands_info">Commands store information and settings for individual lights.</string>
-    
+    <string name="gateway">Gateway</string>
+
 </resources>
