@@ -752,6 +752,7 @@ public class DataSource {
     // it will insert the data onto gateway 1, which is changed to the ip address of our
     // home server.
     /*public void insertFakeButtonsAndZones() {
+        open();
         execSql("UPDATE gateway SET ip_address = '173.29.143.178' WHERE _id = " + 1);
 
         insertFakeCommand("Great Room Left", 1);
@@ -787,6 +788,7 @@ public class DataSource {
         insertNewZone("Main Floor", buttons.subList(0, 3));
         insertNewZone("Kitchen", buttons.subList(4, 6));
         insertNewZone("Master Suite", buttons.subList(7, 9));
+        close();
     }
 
     private long insertFakeCommand(String name, int number) {
