@@ -24,11 +24,18 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.Getter;
-
+/**
+ * This class is used to convert the map of load statuses into lists of individual buttons
+ * and zones that should be turned on.
+ * </p>
+ * Buttons are turned on if all of the loads (commands) attached to them are turned on
+ * </p>
+ * Zones are turned on if all the buttons attached to them are turned on
+ */
 public class OnOffStatusUtil {
 
     private List<Button> buttons;
@@ -38,17 +45,33 @@ public class OnOffStatusUtil {
     protected List<OnOffButton> onOffButtons = null;
     protected List<OnOffZone> onOffZones = null;
 
+    /**
+     * Create an object that can get the on off status of the individual buttons and zones
+     *
+     * @param buttons list of buttons we are looking to get the load status of
+     * @param zones list of zones that we are looking to get the load status of
+     * @param loadStatusMap map that contains the load number as the key and its On Off status as the value
+     */
     public OnOffStatusUtil(List<Button> buttons, List<Zone> zones, Map<Integer, Executor.LoadStatus> loadStatusMap) {
         this.buttons = buttons;
         this.zones = zones;
-        this.loadStatusMap = loadStatusMap;
+        this.loadStatusMap = loadStatusMap == null ? new HashMap() : loadStatusMap;
     }
 
+    /**
+     * Invalidate the list of buttons and zones so that it is re-queried when the OnOffStatusUtil#getOnOffButtons()
+     * and OnOffStatusUtil#getOnOffZones()
+     */
     public void invalidate() {
         this.onOffButtons = null;
         this.onOffZones = null;
     }
 
+    /**
+     * Converts the list of buttons to a list that contains the buttons as well as their statuses
+     *
+     * @return list of buttons along with their current load statuses
+     */
     public List<OnOffButton> getOnOffButtons() {
         if (onOffButtons != null) {
             return onOffButtons;
@@ -79,14 +102,41 @@ public class OnOffStatusUtil {
         }
     }
 
+    /**
+     * Converts the list of zones to a list that contains the zones as well as their statuses
+     *
+     * @return list of zones along with their current load statuses
+     */
     public List<OnOffZone> getOnOffZones() {
         if (onOffZones != null) {
             return onOffZones;
         } else {
             onOffZones = new ArrayList();
 
-            for (Zone z : zones) {
-                onOffZones.add(new OnOffZone(z, Executor.LoadStatus.OFF));
+            for (Zone zone : zones) {
+                // store whether or not one of the loads corresponding to a button is turned off
+                // if even one load is turned off, then the button is turned off.
+
+                boolean loadOff = false;
+                for (Button button : zone.getButtons()) {
+                    for (Command command : button.getCommands()) {
+                        Executor.LoadStatus status = loadStatusMap.get(command.getNumber());
+                        if (status == null || status == Executor.LoadStatus.OFF) {
+                            loadOff = true;
+                            break;
+                        }
+                    }
+
+                    if (loadOff) {
+                        break;
+                    }
+                }
+
+                onOffZones.add(
+                        new OnOffZone(
+                                zone,
+                                loadOff ? Executor.LoadStatus.OFF : Executor.LoadStatus.ON
+                        ));
             }
 
             return onOffZones;

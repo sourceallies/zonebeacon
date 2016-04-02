@@ -27,9 +27,12 @@ import android.widget.TextView;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.data.OnOffButton;
+import com.sourceallies.android.zonebeacon.data.OnOffZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +70,11 @@ public class MainAdapterTest extends ZoneBeaconSuite {
     @Mock
     Gateway gateway;
     @Mock
+    OnOffStatusUtil onOffStatusUtil;
+    @Mock
     Executor executor;
+
+    MainAdapter adapter;
 
     @Before
     public void setUp() {
@@ -88,171 +95,200 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         viewHolder.title = title;
         viewHolder.buttonSwitch = buttonSwitch;
         viewHolder.fabSpacer = fabSpacer;
+
+        adapter = Mockito.spy(new MainAdapter(
+                context,
+                gateway
+        ));
+
+        Mockito.when(adapter.getOnOffStatusUtil(Mockito.anyList(), Mockito.anyList(), Mockito.anyMap()))
+                .thenReturn(onOffStatusUtil);
     }
 
     @Test
     public void test_sections_two() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
+
         assertEquals(2, adapter.getSectionCount());
     }
 
     @Test
     public void test_sections_one_zone() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(0),
                 getMap()
         );
+
         assertEquals(1, adapter.getSectionCount());
     }
 
     @Test
     public void test_sections_one_button() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(0),
                 getButtonList(1),
                 getMap()
         );
+
         assertEquals(1, adapter.getSectionCount());
     }
 
     @Test
     public void test_sections_zero() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(0),
                 getButtonList(0),
                 getMap()
         );
+
         assertEquals(0, adapter.getSectionCount());
     }
 
     @Test
     public void test_items_sectionZero_zones() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(2)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(2),
                 getButtonList(1),
                 getMap()
         );
+
         assertEquals(2, adapter.getItemCount(0));
     }
 
     @Test
     public void test_items_sectionZero_buttons() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(2)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(0),
                 getButtonList(2),
                 getMap()
         );
+
         assertEquals(2, adapter.getItemCount(0));
     }
 
     @Test
     public void test_items_sectionOne() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
+
         assertEquals(1, adapter.getItemCount(1));
     }
 
     @Test
     public void test_items_sectionOne_zeroButtons() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(0),
                 getMap()
         );
+
         assertEquals(0, adapter.getItemCount(1));
     }
 
     @Test
     public void test_bindHeader_zone() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        adapter.onBindHeaderViewHolder(viewHolder, 0);
 
+        adapter.onBindHeaderViewHolder(viewHolder, 0);
         Mockito.verify(title).setText(ZONES_TITLE);
     }
 
     @Test
     public void test_bindHeader_button() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        adapter.onBindHeaderViewHolder(viewHolder, 1);
 
+        adapter.onBindHeaderViewHolder(viewHolder, 1);
         Mockito.verify(title).setText(BUTTONS_TITLE);
     }
 
     @Test
     public void test_bindView_zone() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        adapter.onBindViewHolder(viewHolder, 0, 0, -1);
 
+        adapter.onBindViewHolder(viewHolder, 0, 0, -1);
         Mockito.verify(title).setText("Test Zone 0");
     }
 
     @Test
     public void test_bindView_button() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        adapter.onBindViewHolder(viewHolder, 1, 0, -1);
 
+        adapter.onBindViewHolder(viewHolder, 1, 0, -1);
         Mockito.verify(title).setText("Test Button 0");
     }
 
     @Test
     public void test_create_header() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        adapter.onCreateViewHolder(parent, -2); // View type header
 
+        adapter.onCreateViewHolder(parent, -2); // View type header
         Mockito.verify(inflater)
                 .inflate(Mockito.eq(R.layout.adapter_item_button_zone_header),
                         Mockito.any(ViewGroup.class),
@@ -261,15 +297,16 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_create_view() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        MainAdapter.ViewHolder holder = adapter.onCreateViewHolder(parent, -1); // View type item
 
+        MainAdapter.ViewHolder holder = adapter.onCreateViewHolder(parent, -1); // View type item
         Mockito.verify(inflater)
                 .inflate(Mockito.eq(R.layout.adapter_item_button_zone),
                         Mockito.any(ViewGroup.class),
@@ -278,9 +315,10 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_getStatus() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
@@ -295,13 +333,15 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_clickListener() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
+
         adapter.executor = executor;
 
         adapter.getClickListener(buttonSwitch, 0, 0).onClick(buttonSwitch);
@@ -314,29 +354,31 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_itemClick() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        adapter.setItemClick(view, buttonSwitch, 0, 0);
 
+        adapter.setItemClick(view, buttonSwitch, 0, 0);
         Mockito.verify(view).setOnClickListener(Mockito.any(View.OnClickListener.class));
     }
 
     @Test
     public void test_itemClick_header() {
-        MainAdapter adapter = new MainAdapter(
-                context,
-                gateway,
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+
+        adapter.loadOnOffStatuses(
                 getZoneList(1),
                 getButtonList(1),
                 getMap()
         );
-        adapter.setItemClick(view, null, 0, 0);
 
+        adapter.setItemClick(view, null, 0, 0);
         Mockito.verifyZeroInteractions(view);
     }
 
@@ -360,6 +402,31 @@ public class MainAdapterTest extends ZoneBeaconSuite {
             Button button = new Button();
             button.setName("Test Button " + i);
             buttons.add(button);
+        }
+
+        return buttons;
+    }
+
+    private List<OnOffZone> getOnOffZoneList(int count) {
+        List<OnOffZone> zones = new ArrayList();
+
+        for (int i = 0; i < count; i++) {
+            Zone zone = new Zone();
+            zone.setName("Test Zone " + i);
+            zone.setButtons(getButtonList(1));
+            zones.add(new OnOffZone(zone, Executor.LoadStatus.OFF));
+        }
+
+        return zones;
+    }
+
+    private List<OnOffButton> getOnOffButtonList(int count) {
+        List<OnOffButton> buttons = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            Button button = new Button();
+            button.setName("Test Button " + i);
+            buttons.add(new OnOffButton(button, Executor.LoadStatus.OFF));
         }
 
         return buttons;

@@ -162,6 +162,6 @@ public class OnOffStatusUtilTest {
         map.put(3, Executor.LoadStatus.ON);
         map.put(4, Executor.LoadStatus.ON);
 
-        return new HashMap();
+        return map;
     }
 }
