@@ -63,11 +63,10 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     /**
      * Constructor for the spinnerAdapter.
      *
-     * @param zones   List of zones in the current gateway
-     * @param buttons List of buttons in the current gateway
+     * @param context context for the activity
+     * @param gateway the current gateway for the adapter
      */
-    public MainAdapter(Activity context, @NonNull Gateway gateway,
-                       @NonNull List<Zone> zones, @NonNull List<Button> buttons, @NonNull Map<Integer, Executor.LoadStatus> loadStatusMap) {
+    public MainAdapter(@NonNull Activity context, @NonNull Gateway gateway) {
         this.context = context;
         this.executor = Executor.createForGateway(gateway);
 
@@ -75,10 +74,32 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
 
         zonesTitle = context.getString(R.string.zones);
         buttonsTitle = context.getString(R.string.buttons);
+    }
 
-        OnOffStatusUtil statusUtil = new OnOffStatusUtil(buttons, zones, loadStatusMap);
+    /**
+     * Loads the OnOff statuses of the zones and buttons
+     *
+     * @param zones list of zones attached to the gateway
+     * @param buttons list of buttons attached to the gateway
+     * @param loadStatusMap map returned from the status query
+     */
+    public void loadOnOffStatuses(@NonNull List<Zone> zones, @NonNull List<Button> buttons, Map<Integer, Executor.LoadStatus> loadStatusMap) {
+        OnOffStatusUtil statusUtil = getOnOffStatusUtil(zones, buttons, loadStatusMap);
         this.zones = statusUtil.getOnOffZones();
         this.buttons = statusUtil.getOnOffButtons();
+    }
+
+    /**
+     * Get the status utils to load the On Off status of the buttons and zones
+     *
+     * @param zones list of zones on the current gateway
+     * @param buttons list of buttons on the current gateway
+     * @param loadStatusMap status map returned from the status query
+     * @return utils used to get the on off status of buttons
+     */
+    @VisibleForTesting
+    protected OnOffStatusUtil getOnOffStatusUtil(@NonNull List<Zone> zones, @NonNull List<Button> buttons, Map<Integer, Executor.LoadStatus> loadStatusMap) {
+        return new OnOffStatusUtil(buttons, zones, loadStatusMap);
     }
 
     /**
