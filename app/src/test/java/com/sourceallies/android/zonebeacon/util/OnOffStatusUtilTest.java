@@ -17,8 +17,8 @@
 package com.sourceallies.android.zonebeacon.util;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
-import com.sourceallies.android.zonebeacon.data.OnOffButton;
-import com.sourceallies.android.zonebeacon.data.OnOffZone;
+import com.sourceallies.android.zonebeacon.data.StatefulButton;
+import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
@@ -44,7 +44,7 @@ public class OnOffStatusUtilTest {
 
     @Test
     public void test_getButtons() {
-        List<OnOffButton> buttons = util.getOnOffButtons();
+        List<StatefulButton> buttons = util.getStatefulButtons();
 
         assertEquals(Executor.LoadStatus.OFF, buttons.get(0).getLoadStatus());
         assertEquals(Executor.LoadStatus.OFF, buttons.get(1).getLoadStatus());
@@ -57,7 +57,7 @@ public class OnOffStatusUtilTest {
 
     @Test
     public void test_getZones() {
-        List<OnOffZone> zones = util.getOnOffZones();
+        List<StatefulZone> zones = util.getStatefulZones();
 
         assertEquals(Executor.LoadStatus.OFF, zones.get(0).getLoadStatus());
         assertEquals(Executor.LoadStatus.ON , zones.get(1).getLoadStatus());
@@ -68,31 +68,31 @@ public class OnOffStatusUtilTest {
 
     @Test
     public void test_invalidate() {
-        assertNull(util.onOffButtons);
-        assertNull(util.onOffZones);
+        assertNull(util.statefulButtons);
+        assertNull(util.statefulZones);
 
-        util.getOnOffButtons();
-        util.getOnOffZones();
+        util.getStatefulButtons();
+        util.getStatefulZones();
 
-        assertNotNull(util.onOffButtons);
-        assertNotNull(util.onOffZones);
+        assertNotNull(util.statefulButtons);
+        assertNotNull(util.statefulZones);
 
         util.invalidate();
 
-        assertNull(util.onOffButtons);
-        assertNull(util.onOffZones);
+        assertNull(util.statefulButtons);
+        assertNull(util.statefulZones);
     }
 
     @Test
     public void test_reGetButtonList() {
-        List<OnOffButton> buttons = util.getOnOffButtons();
-        assertEquals(buttons, util.getOnOffButtons());
+        List<StatefulButton> buttons = util.getStatefulButtons();
+        assertEquals(buttons, util.getStatefulButtons());
     }
 
     @Test
     public void test_reGetZoneList() {
-        List<OnOffZone> zones = util.getOnOffZones();
-        assertEquals(zones, util.getOnOffZones());
+        List<StatefulZone> zones = util.getStatefulZones();
+        assertEquals(zones, util.getStatefulZones());
     }
 
     private List<Zone> getZoneList() {

@@ -17,7 +17,6 @@
 package com.sourceallies.android.zonebeacon.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +26,8 @@ import android.widget.TextView;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
-import com.sourceallies.android.zonebeacon.data.OnOffButton;
-import com.sourceallies.android.zonebeacon.data.OnOffZone;
+import com.sourceallies.android.zonebeacon.data.StatefulButton;
+import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
@@ -107,8 +106,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_sections_two() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -121,8 +120,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_sections_one_zone() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -135,8 +134,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_sections_one_button() {
-        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(0),
@@ -149,8 +148,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_sections_zero() {
-        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(0),
@@ -163,8 +162,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_items_sectionZero_zones() {
-        Mockito.doReturn(getOnOffZoneList(2)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(2)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(2),
@@ -177,8 +176,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_items_sectionZero_buttons() {
-        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(2)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(0)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(2)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(0),
@@ -191,8 +190,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_items_sectionOne() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -205,8 +204,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_items_sectionOne_zeroButtons() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(0)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -219,8 +218,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_bindHeader_zone() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -234,8 +233,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_bindHeader_button() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -249,8 +248,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_bindView_zone() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -264,8 +263,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_bindView_button() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -279,8 +278,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_create_header() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -297,8 +296,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_create_view() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -315,8 +314,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_getStatus() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -333,8 +332,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_clickListener() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -354,8 +353,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_itemClick() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -369,8 +368,8 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_itemClick_header() {
-        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getOnOffZones();
-        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getOnOffButtons();
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
 
         adapter.loadOnOffStatuses(
                 getZoneList(1),
@@ -407,26 +406,26 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         return buttons;
     }
 
-    private List<OnOffZone> getOnOffZoneList(int count) {
-        List<OnOffZone> zones = new ArrayList();
+    private List<StatefulZone> getOnOffZoneList(int count) {
+        List<StatefulZone> zones = new ArrayList();
 
         for (int i = 0; i < count; i++) {
             Zone zone = new Zone();
             zone.setName("Test Zone " + i);
             zone.setButtons(getButtonList(1));
-            zones.add(new OnOffZone(zone, Executor.LoadStatus.OFF));
+            zones.add(new StatefulZone(zone, Executor.LoadStatus.OFF));
         }
 
         return zones;
     }
 
-    private List<OnOffButton> getOnOffButtonList(int count) {
-        List<OnOffButton> buttons = new ArrayList<>();
+    private List<StatefulButton> getOnOffButtonList(int count) {
+        List<StatefulButton> buttons = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
             Button button = new Button();
             button.setName("Test Button " + i);
-            buttons.add(new OnOffButton(button, Executor.LoadStatus.OFF));
+            buttons.add(new StatefulButton(button, Executor.LoadStatus.OFF));
         }
 
         return buttons;
