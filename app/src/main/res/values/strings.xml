@@ -58,5 +58,6 @@
     <string name="commands">Commands</string>
     <string name="commands_info">Commands store information and settings for individual lights.</string>
     <string name="gateway">Gateway</string>
+    <string name="edit_gateway_information">Edit Gateway Items</string>
 
 </resources>
