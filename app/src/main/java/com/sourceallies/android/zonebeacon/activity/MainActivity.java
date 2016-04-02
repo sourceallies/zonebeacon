@@ -29,6 +29,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -78,6 +79,8 @@ public class MainActivity extends RoboAppCompatActivity {
     @Setter @Getter
     private RecyclerView recycler;
     @Getter
+    private SwipeRefreshLayout swipeRefreshLayout;
+    @Getter
     private Toolbar toolbar;
     @Getter
     private Spinner spinner;
@@ -114,6 +117,7 @@ public class MainActivity extends RoboAppCompatActivity {
         // Find the layout information
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         recycler = (RecyclerView) findViewById(R.id.recycler_view);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         spinner = (Spinner) findViewById(R.id.toolbar_spinner);
         dim = findViewById(R.id.dim);
@@ -131,6 +135,20 @@ public class MainActivity extends RoboAppCompatActivity {
 
         // put the labels on the floating action buttons.
         setFabButtons();
+
+        swipeRefreshLayout.setOnRefreshListener(getRefreshListener(this));
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+    }
+
+    @VisibleForTesting
+    protected SwipeRefreshLayout.OnRefreshListener getRefreshListener(final MainActivity activity) {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                activity.setRecycler();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        };
     }
 
     /**

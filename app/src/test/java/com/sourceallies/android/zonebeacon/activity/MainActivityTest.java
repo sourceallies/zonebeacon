@@ -146,6 +146,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(activity.getSpinner());
         assertNotNull(activity.getDim());
         assertNotNull(activity.getRecycler());
+        assertNotNull(activity.getSwipeRefreshLayout());
     }
 
     @Test
@@ -390,5 +391,13 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
                 .run();
 
         verify(activity).loadOnOffStatusesToAdapter(anyList(), anyList(), anyMap());
+    }
+
+    @Test
+    public void test_swipeRefreshListener() {
+        doNothing().when(activity).setRecycler();
+        activity.getRefreshListener(activity).onRefresh();
+
+        verify(activity).setRecycler();
     }
 }
