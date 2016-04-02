@@ -26,6 +26,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
@@ -109,4 +113,116 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
         assertEquals("1", interpreter.addZeros("1", 1));
     }
 
+    @Test
+    public void test_buildQueryCommand() {
+        Command command = interpreter.buildQueryActiveLoadsCommand();
+        assertEquals("Query Active Loads", command.getName());
+        assertEquals(0, (int) command.getControllerNumber());
+        assertEquals(0, command.getNumber());
+        assertEquals(-1, command.getId());
+        assertEquals(-1, command.getGatewayId());
+    }
+
+    @Test
+    public void test_queryActiveLoadsCommandString() {
+        assertEquals("^G", interpreter.getQueryActiveLoadsCommandString());
+    }
+
+    @Test
+    public void test_processActiveLoads_allByScene() {
+        Integer[] array = new Integer[192];
+        for (int i = 0; i < 192; i++) {
+            array[i] = i + 1;
+        }
+
+        // all lights by ^C001
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+        ), array);
+
+        array = new Integer[191];
+        for (int i = 0; i < 191; i++) {
+            array[i] = i + 2;
+        }
+
+        // all except load 1 (^C001^B001)
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"
+        ), array);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_processActiveLoads_nonHex() {
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "0100000000000G0000000000000000000000000000000000"
+        ), 1);
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void test_processActiveLoads_badLength() {
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "01000000000000000000"
+        ), 1);
+    }
+
+    @Test
+    public void test_processActiveLoads() {
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "010000000000000000000000000000000000000000000000"
+        ), 1);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "050000000000000000000000000000000000000000000000"
+        ), 1, 3);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "0D0000000000000000000000000000000000000000000000"
+        ), 1, 3, 4);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "6D0000000000000000000000000000000000000000000000"
+        ), 1, 3, 4, 6, 7);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FF3000000000000000000000000000000000000000000000"
+        ), 1, 2, 3, 4, 5, 6, 7, 8, 13, 14);
+
+        testLoadsActive(interpreter.processActiveLoadsResponse(
+                "FF7000000000000000000000000000000000000000000000"
+        ), 1, 2, 3, 4, 5, 6, 7, 8, 13, 14, 15);
+    }
+
+    @Test
+    public void test_convertToBinary() {
+        assertEquals("0000", interpreter.convertToBinary("0"));
+        assertEquals("0001", interpreter.convertToBinary("1"));
+        assertEquals("0010", interpreter.convertToBinary("2"));
+        assertEquals("0011", interpreter.convertToBinary("3"));
+        assertEquals("0100", interpreter.convertToBinary("4"));
+        assertEquals("0101", interpreter.convertToBinary("5"));
+        assertEquals("0110", interpreter.convertToBinary("6"));
+        assertEquals("0111", interpreter.convertToBinary("7"));
+        assertEquals("1000", interpreter.convertToBinary("8"));
+        assertEquals("1001", interpreter.convertToBinary("9"));
+        assertEquals("1010", interpreter.convertToBinary("A"));
+        assertEquals("1011", interpreter.convertToBinary("B"));
+        assertEquals("1100", interpreter.convertToBinary("C"));
+        assertEquals("1101", interpreter.convertToBinary("D"));
+        assertEquals("1110", interpreter.convertToBinary("E"));
+        assertEquals("1111", interpreter.convertToBinary("F"));
+    }
+
+    private void testLoadsActive(Map<Integer, Executor.LoadStatus> map, Integer... expected) {
+        for (Integer i : expected) {
+            assertEquals("load number: " + i, Executor.LoadStatus.ON, map.get(i));
+            map.remove(i);
+        }
+
+        Iterator it = map.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            assertEquals("load number: " + pair.getKey(), Executor.LoadStatus.OFF, pair.getValue());
+            it.remove();
+        }
+    }
 }

@@ -17,6 +17,7 @@
 package com.sourceallies.android.zonebeacon.api.executor;
 
 import com.sourceallies.android.zonebeacon.api.CommandCallback;
+import com.sourceallies.android.zonebeacon.api.QueryLoadsCallback;
 import com.sourceallies.android.zonebeacon.api.interpreter.CentraLiteInterpreter;
 import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
 import com.sourceallies.android.zonebeacon.data.model.Command;
@@ -25,6 +26,7 @@ import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Adhere's to the strategy pattern. This interface will be implemented in various different ways.
@@ -160,6 +162,31 @@ public abstract class Executor {
      */
     protected Interpreter getInterpreter() {
         return interpreter;
+    }
+
+
+    /**
+     * Get a list of the currently active loads (by load number).
+     * </p>
+     * This list of commands can be used to determine what buttons and zones are activated.
+     *
+     * @return List of loads that are currently turned on, by load number.
+     */
+    public void queryActiveLoads(Gateway gateway, final QueryLoadsCallback callback) {
+        addCommand(interpreter.buildQueryActiveLoadsCommand(), LoadStatus.OFF);
+        setCommandCallback(getCommandCallbackForQueryingLoads(interpreter, callback));
+
+        execute(gateway);
+    }
+
+    protected CommandCallback getCommandCallbackForQueryingLoads(final Interpreter interpreter, final QueryLoadsCallback callback) {
+        return new CommandCallback() {
+            @Override
+            public void onResponse(Command command, String text) {
+                Map<Integer, LoadStatus> activeLoads = interpreter.processActiveLoadsResponse(text);
+                callback.onResponse(activeLoads);
+            }
+        };
     }
 
     /**
