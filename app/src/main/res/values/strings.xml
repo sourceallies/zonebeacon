@@ -52,7 +52,6 @@
     <string name="load_number">Load Number</string>
     <string name="controller_number">Controller Number</string>
     <string name="app_helper">Zone Beacon Help</string>
-    <string name="get_help_additional_info">Check this YouTube channel for more info on setting up your system.</string>
     <string name="gateways">Gateways</string>
     <string name="gateways_info">Name, IP address, and port number describe and provide access to your lighting system.\n\nFor help setting up your system, check this YouTube channel.</string>
     <string name="commands">Commands</string>

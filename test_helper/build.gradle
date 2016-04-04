@@ -29,7 +29,7 @@ android {
 
     lintOptions {
         abortOnError true
-        disable 'InvalidPackage'
+        disable 'InvalidPackage', 'GradleDependency'
         textReport true
         textOutput 'stdout'
         xmlReport false

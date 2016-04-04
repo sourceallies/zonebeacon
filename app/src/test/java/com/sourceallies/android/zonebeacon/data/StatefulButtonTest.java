@@ -14,30 +14,23 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package com.sourceallies.android.zonebeacon.data;
 
-buildscript {
-    repositories {
-        jcenter()
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.data.model.Zone;
+
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+public class StatefulButtonTest {
+    @Test
+    public void test_creation() {
+        Zone zone = new Zone();
+        Executor.LoadStatus status = Executor.LoadStatus.OFF;
+
+        StatefulZone statefulZone = new StatefulZone(zone, status);
+        assertEquals(status, statefulZone.getLoadStatus());
+        assertEquals(zone, statefulZone.getZone());
     }
-    dependencies {
-        classpath "com.android.tools.build:gradle:${GRADLE_PLUGIN_VERSION}"
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.4.3'
-    }
-}
-
-allprojects {
-    repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-ext {
-    success = 0
-    failure = 0
 }

@@ -16,6 +16,7 @@
 
 package com.sourceallies.android.zonebeacon.activity;
 
+import android.app.Activity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 //import android.app.FragmentManager;
@@ -28,6 +29,7 @@ import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,9 +49,18 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
 import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
+import com.sourceallies.android.zonebeacon.api.QueryLoadsCallback;
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.DataSource;
+import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
+import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -67,6 +78,8 @@ public class MainActivity extends RoboAppCompatActivity {
     private CoordinatorLayout rootLayout;
     @Setter @Getter
     private RecyclerView recycler;
+    @Getter
+    private SwipeRefreshLayout swipeRefreshLayout;
     @Getter
     private Toolbar toolbar;
     @Getter
@@ -104,6 +117,7 @@ public class MainActivity extends RoboAppCompatActivity {
         // Find the layout information
         rootLayout = (CoordinatorLayout) findViewById(R.id.root_layout);
         recycler = (RecyclerView) findViewById(R.id.recycler_view);
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         spinner = (Spinner) findViewById(R.id.toolbar_spinner);
         dim = findViewById(R.id.dim);
@@ -122,8 +136,19 @@ public class MainActivity extends RoboAppCompatActivity {
         // put the labels on the floating action buttons.
         setFabButtons();
 
-        // Add the data to the spinnerAdapter and disply it in the recycler
-        setRecycler();
+        swipeRefreshLayout.setOnRefreshListener(getRefreshListener(this));
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+    }
+
+    @VisibleForTesting
+    protected SwipeRefreshLayout.OnRefreshListener getRefreshListener(final MainActivity activity) {
+        return new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                activity.setRecycler();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        };
     }
 
     /**
@@ -235,23 +260,118 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     @VisibleForTesting
     protected void setRecycler() {
-        DataSource source = DataSource.getInstance(this);
+        final Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
+        DataSource source = getDataSource();
         source.open();
 
-        Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
+        GridLayoutManager manager = getLayoutManager();
+        recycler.setLayoutManager(manager);
 
         if (currentGateway != null) {
-            mainAdapter = new MainAdapter(this, currentGateway, source.findZones(currentGateway), source.findButtons(currentGateway));
+            final List<Zone> zones = source.findZones(currentGateway);
+            final List<Button> buttons = source.findButtons(currentGateway);
 
-            GridLayoutManager manager = getLayoutManager();
-            recycler.setLayoutManager(manager);
+            Executor executor = getExecutor();
+            executor.queryActiveLoads(currentGateway, getQueryCallback(this, currentGateway, zones, buttons));
+
+            mainAdapter = new MainAdapter(
+                    MainActivity.this,
+                    currentGateway
+            );
+
+            loadOnOffStatusesToAdapter(
+                    source.findZones(currentGateway),
+                    source.findButtons(currentGateway),
+                    null
+            );
+
             mainAdapter.setLayoutManager(manager);
-            recycler.setAdapter(mainAdapter);
         } else {
             mainAdapter = null;
         }
 
+        recycler.setAdapter(mainAdapter);
         source.close();
+    }
+
+    /**
+     * Apply the load status map to the adapter
+     *
+     * @param zones List of zones in the current gateway
+     * @param buttons list of buttons in the current gateway
+     * @param map map of the load statuses. Load number is key, status is the value
+     */
+    @VisibleForTesting
+    protected void loadOnOffStatusesToAdapter(List<Zone> zones, List<Button> buttons, Map<Integer, Executor.LoadStatus> map) {
+        mainAdapter.loadOnOffStatuses(
+                zones,
+                buttons,
+                map
+        );
+    }
+
+    /**
+     * Get the instance of the DataSource.
+     *
+     * @return singleton of the DataSource
+     */
+    @VisibleForTesting
+    protected DataSource getDataSource() {
+        return DataSource.getInstance(this);
+    }
+
+    /**
+     * Get the instance of the Executor
+     *
+     * @return singleton of the Executor
+     */
+    @VisibleForTesting
+    protected Executor getExecutor() {
+        return Executor.createForGateway(getCurrentGateway());
+    }
+
+    /**
+     * Get the callback that used for querying the gateway for which loads are on and off
+     *
+     * @param currentGateway the currently selected gateway
+     * @param zones list of zones on the gateway
+     * @param buttons list of buttons on the gateway
+     * @return callback that will reset the RecyclerView to have a list of load statuses
+     */
+    @VisibleForTesting
+    protected QueryLoadsCallback getQueryCallback(final Activity activity, final Gateway currentGateway, final List<Zone> zones, final List<Button> buttons) {
+        return new QueryLoadsCallback() {
+            @Override
+            public void onResponse(final Map<Integer, Executor.LoadStatus> loadStatusMap) {
+                activity.runOnUiThread(setLoadStatusRunnable(currentGateway, zones, buttons, loadStatusMap));
+            }
+        };
+    }
+
+    /**
+     * Get the callback that used for querying the gateway for which loads are on and off
+     *
+     * @param currentGateway the currently selected gateway
+     * @param zones list of zones on the gateway
+     * @param buttons list of buttons on the gateway
+     * @param map the map of load statuses with the load number as the key, and the status as the value
+     * @return Runnable that will reset the RecyclerView to have a list of load statuses
+     */
+    @VisibleForTesting
+    protected Runnable setLoadStatusRunnable(final Gateway currentGateway, final List<Zone> zones,
+                                             final List<Button> buttons, final Map<Integer, Executor.LoadStatus> map) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                mainAdapter = new MainAdapter(
+                        MainActivity.this,
+                        currentGateway
+                );
+
+                loadOnOffStatusesToAdapter(zones, buttons, map);
+                recycler.setAdapter(mainAdapter);
+            }
+        };
     }
 
     /**
@@ -284,7 +404,7 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     @VisibleForTesting
     protected void setSpinnerAdapter() {
-        DataSource dataSource = DataSource.getInstance(this);
+        DataSource dataSource = getDataSource();
         dataSource.open();
 
         spinnerAdapter = createSpinnerAdapter(dataSource);
@@ -396,6 +516,14 @@ public class MainActivity extends RoboAppCompatActivity {
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Add the data to the spinnerAdapter and display it in the recycler
+        setRecycler();
     }
 
     @Override

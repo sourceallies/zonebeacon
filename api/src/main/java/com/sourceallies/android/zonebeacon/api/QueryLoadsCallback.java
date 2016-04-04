@@ -14,30 +14,13 @@
  * limitations under the License.
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+package com.sourceallies.android.zonebeacon.api;
 
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:${GRADLE_PLUGIN_VERSION}"
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.4.3'
-    }
-}
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
 
-allprojects {
-    repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
-}
+import java.util.List;
+import java.util.Map;
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
-
-ext {
-    success = 0
-    failure = 0
+public interface QueryLoadsCallback {
+    void onResponse(Map<Integer, Executor.LoadStatus> loadStatusMap);
 }
