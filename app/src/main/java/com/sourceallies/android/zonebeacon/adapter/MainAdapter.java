@@ -102,7 +102,9 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         this.zones = statusUtil.getStatefulZones();
         this.buttons = statusUtil.getStatefulButtons();
 
-        notifyDataSetChanged();
+        try {
+            notifyDataSetChanged();
+        } catch (Exception e) { }
     }
 
     /**
@@ -206,9 +208,11 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean dataChanged = false;
                 if (!isZone(section)) {
                     executor.addCommands(buttons.get(relativePosition).getButton().getCommands(), getStatus(buttonSwitch));
+                    statusUtil.setStates(buttons.get(relativePosition).getButton().getCommands(),
+                            getStatus(buttonSwitch) == Executor.LoadStatus.ON ?
+                                    Executor.LoadStatus.OFF : Executor.LoadStatus.ON);
                 } else {
                     for (Button button : zones.get(relativePosition).getZone().getButtons()) {
                         executor.addCommands(button.getCommands(), getStatus(buttonSwitch));
@@ -216,17 +220,13 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
                                 getStatus(buttonSwitch) == Executor.LoadStatus.ON ?
                                         Executor.LoadStatus.OFF : Executor.LoadStatus.ON);
                     }
-
-                    statusUtil.invalidate();
-                    dataChanged = true;
                 }
 
                 executor.execute(gateway);
                 buttonSwitch.setChecked(!buttonSwitch.isChecked());
 
-                if (dataChanged) {
-                    updateLoadStatus();
-                }
+                statusUtil.invalidate();
+                updateLoadStatus();
             }
         };
     }
