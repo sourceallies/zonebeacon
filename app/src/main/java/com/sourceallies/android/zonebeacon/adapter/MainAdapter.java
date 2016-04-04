@@ -55,6 +55,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     private String zonesTitle;
     private String buttonsTitle;
 
+    private OnOffStatusUtil statusUtil;
+
     protected Gateway gateway;
     protected List<StatefulZone> zones;
     protected List<StatefulButton> buttons;
@@ -83,7 +85,20 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * @param loadStatusMap map returned from the status query
      */
     public void loadOnOffStatuses(@NonNull List<Zone> zones, @NonNull List<Button> buttons, Map<Integer, Executor.LoadStatus> loadStatusMap) {
-        OnOffStatusUtil statusUtil = getOnOffStatusUtil(zones, buttons, loadStatusMap);
+        statusUtil = getOnOffStatusUtil(zones, buttons, loadStatusMap);
+        this.zones = statusUtil.getStatefulZones();
+        this.buttons = statusUtil.getStatefulButtons();
+
+        try {
+            notifyDataSetChanged();
+        } catch (Exception e) { }
+    }
+
+    /**
+     * Grab the new load states from the load status utils
+     */
+    @VisibleForTesting
+    protected void updateLoadStatus() {
         this.zones = statusUtil.getStatefulZones();
         this.buttons = statusUtil.getStatefulButtons();
 
@@ -191,24 +206,27 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean dataChanged = false;
                 if (!isZone(section)) {
                     executor.addCommands(buttons.get(relativePosition).getButton().getCommands(), getStatus(buttonSwitch));
                 } else {
                     for (Button button : zones.get(relativePosition).getZone().getButtons()) {
                         executor.addCommands(button.getCommands(), getStatus(buttonSwitch));
+                        statusUtil.setStates(button.getCommands(),
+                                getStatus(buttonSwitch) == Executor.LoadStatus.ON ?
+                                        Executor.LoadStatus.OFF : Executor.LoadStatus.ON);
                     }
+
+                    statusUtil.invalidate();
+                    dataChanged = true;
                 }
 
                 executor.execute(gateway);
                 buttonSwitch.setChecked(!buttonSwitch.isChecked());
 
-                executor.setCommandCallback(new CommandCallback() {
-                    @Override
-                    public void onResponse(Command command, String text) {
-                        executor.setCommandCallback(null);
-                        ((MainActivity)context).setRecycler();
-                    }
-                });
+                if (dataChanged) {
+                    updateLoadStatus();
+                }
             }
         };
     }
