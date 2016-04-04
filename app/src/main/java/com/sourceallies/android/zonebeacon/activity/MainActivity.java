@@ -560,7 +560,7 @@ public class MainActivity extends RoboAppCompatActivity {
                 openOption(null);
                 return true;
             case R.id.transfer_settings:
-                openOption(null);
+                openOption(TransferActivity.class);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

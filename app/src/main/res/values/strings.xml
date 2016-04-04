@@ -56,5 +56,7 @@
     <string name="gateways_info">Name, IP address, and port number describe and provide access to your lighting system.\n\nFor help setting up your system, check this YouTube channel.</string>
     <string name="commands">Commands</string>
     <string name="commands_info">Commands store information and settings for individual lights.</string>
+    <string name="initial_nearby_information">Zone Beacon can find other devices nearby who are also using the app and you can easily exchange settings with them so you only have to set up the app once.\n\nTo find nearby devices, we\'ll use a combination of bluetooth, WiFi, and ultrasonic sound.</string>
+    <string name="searching_for_friends">Zone Beacon is searching for other devices nearby. Make sure that you have the app opened to this screen on all devices!</string>
     
 </resources>

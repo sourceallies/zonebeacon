@@ -289,7 +289,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
         when(item.getItemId()).thenReturn(R.id.transfer_settings);
         activity.onOptionsItemSelected(item);
-        verify(activity).openOption(null);
+        verify(activity).openOption(TransferActivity.class);
     }
 
     @Test
