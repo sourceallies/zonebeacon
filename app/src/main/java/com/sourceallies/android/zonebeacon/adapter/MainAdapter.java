@@ -28,10 +28,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.activity.MainActivity;
+import com.sourceallies.android.zonebeacon.api.CommandCallback;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.StatefulButton;
 import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
@@ -83,6 +86,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         OnOffStatusUtil statusUtil = getOnOffStatusUtil(zones, buttons, loadStatusMap);
         this.zones = statusUtil.getStatefulZones();
         this.buttons = statusUtil.getStatefulButtons();
+
+        notifyDataSetChanged();
     }
 
     /**
@@ -195,8 +200,15 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
                 }
 
                 executor.execute(gateway);
-
                 buttonSwitch.setChecked(!buttonSwitch.isChecked());
+
+                executor.setCommandCallback(new CommandCallback() {
+                    @Override
+                    public void onResponse(Command command, String text) {
+                        executor.setCommandCallback(null);
+                        ((MainActivity)context).setRecycler();
+                    }
+                });
             }
         };
     }
