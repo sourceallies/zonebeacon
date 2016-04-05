@@ -95,6 +95,41 @@ public class OnOffStatusUtilTest {
         assertEquals(zones, util.getStatefulZones());
     }
 
+    @Test
+    public void test_setState() {
+        util.setState(2, Executor.LoadStatus.ON);
+        List<StatefulButton> buttons = util.getStatefulButtons();
+
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(0).getLoadStatus());
+        assertEquals(Executor.LoadStatus.ON , buttons.get(1).getLoadStatus());
+        assertEquals(Executor.LoadStatus.ON , buttons.get(2).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(3).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(4).getLoadStatus());
+        assertEquals(Executor.LoadStatus.ON , buttons.get(5).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(6).getLoadStatus());
+    }
+
+    @Test
+    public void test_setStates() {
+        List<Command> commands = new ArrayList();
+        for (int i = 1; i < 7; i++) {
+            Command c = new Command();
+            c.setNumber(i);
+            commands.add(c);
+        }
+
+        util.setStates(commands, Executor.LoadStatus.OFF);
+        List<StatefulButton> buttons = util.getStatefulButtons();
+
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(0).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(1).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(2).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(3).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(4).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(5).getLoadStatus());
+        assertEquals(Executor.LoadStatus.OFF, buttons.get(6).getLoadStatus());
+    }
+
     private List<Zone> getZoneList() {
         List<Zone> zones = new ArrayList<>();
 
