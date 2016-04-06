@@ -28,6 +28,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.DayNight">
 
+        <meta-data
+            android:name="com.google.android.nearby.messages.API_KEY"
+            android:value="AIzaSyDIzl_FSbfAD-vtHtt7Kddv4Enp50VvdMo"/>
+
         <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

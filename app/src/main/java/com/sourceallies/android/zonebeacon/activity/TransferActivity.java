@@ -21,11 +21,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.nearby.Nearby;
 import com.sourceallies.android.zonebeacon.R;
 
 import roboguice.inject.ContentView;
@@ -36,9 +42,13 @@ import roboguice.inject.ContentView;
  * a new device.
  */
 @ContentView(R.layout.activity_transfer)
-public class TransferActivity extends RoboAppCompatActivity {
+public class TransferActivity extends RoboAppCompatActivity
+        implements DialogInterface.OnClickListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final String SEEN_NEARBY_KEY = "seen_nearby";
+
+    private GoogleApiClient client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,10 +67,12 @@ public class TransferActivity extends RoboAppCompatActivity {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.initial_nearby_information)
                     .setCancelable(false)
-                    .setPositiveButton(android.R.string.ok, null)
+                    .setPositiveButton(android.R.string.ok, this)
                     .show();
 
             sharedPrefs.edit().putBoolean(SEEN_NEARBY_KEY, true).commit();
+        } else {
+            initializeClient();
         }
     }
 
@@ -73,6 +85,44 @@ public class TransferActivity extends RoboAppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onClick(DialogInterface dialogInterface, int i) {
+        initializeClient();
+    }
+
+    private void initializeClient() {
+        client = new GoogleApiClient.Builder(this)
+                .addApi(Nearby.MESSAGES_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    /**
+     * Gets the Google API client to use for executing API requests.
+     *
+     * @return the client.
+     */
+    @Nullable
+    public GoogleApiClient getClient() {
+        return client;
     }
 
 }

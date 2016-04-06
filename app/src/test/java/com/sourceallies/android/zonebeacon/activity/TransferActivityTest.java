@@ -48,6 +48,17 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
+    public void test_apiClientNull() {
+        assertNull(activity.getClient());
+    }
+
+    @Test
+    public void test_apiClientNotNullOnSecondLaunch() {
+        activity = Robolectric.setupActivity(TransferActivity.class);
+        assertNotNull(activity.getClient());
+    }
+
+    @Test
     public void test_changedSeenNearbySetting() {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
         assertTrue(sharedPrefs.getBoolean("seen_nearby", false));
@@ -65,6 +76,21 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
         when(menuItem.getItemId()).thenReturn(1);
         activity.onOptionsItemSelected(menuItem);
         assertFalse(activity.isFinishing());
+    }
+
+    @Test
+    public void test_onConnected() {
+        activity.onConnected(null);
+    }
+
+    @Test
+    public void test_onConnectionSuspended() {
+        activity.onConnectionSuspended(0);
+    }
+
+    @Test
+    public void test_onConnectionFailed() {
+        activity.onConnectionFailed(null);
     }
 
 }
