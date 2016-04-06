@@ -70,7 +70,7 @@ public class TransferActivity extends RoboAppCompatActivity
                     .setPositiveButton(android.R.string.ok, this)
                     .show();
 
-            sharedPrefs.edit().putBoolean(SEEN_NEARBY_KEY, true).commit();
+            sharedPrefs.edit().putBoolean(SEEN_NEARBY_KEY, true).apply();
         } else {
             initializeClient();
         }
