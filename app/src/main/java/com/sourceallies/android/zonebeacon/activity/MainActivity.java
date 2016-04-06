@@ -259,7 +259,7 @@ public class MainActivity extends RoboAppCompatActivity {
      * on the current gateway
      */
     @VisibleForTesting
-    protected void setRecycler() {
+    public void setRecycler() {
         final Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
         DataSource source = getDataSource();
         source.open();
@@ -271,21 +271,22 @@ public class MainActivity extends RoboAppCompatActivity {
             final List<Zone> zones = source.findZones(currentGateway);
             final List<Button> buttons = source.findButtons(currentGateway);
 
-            Executor executor = getExecutor();
-            executor.queryActiveLoads(currentGateway, getQueryCallback(this, currentGateway, zones, buttons));
-
             mainAdapter = new MainAdapter(
                     MainActivity.this,
                     currentGateway
             );
 
             loadOnOffStatusesToAdapter(
-                    source.findZones(currentGateway),
-                    source.findButtons(currentGateway),
+                    zones,
+                    buttons,
                     null
             );
 
             mainAdapter.setLayoutManager(manager);
+
+            Executor executor = getExecutor();
+            executor.queryActiveLoads(currentGateway, getQueryCallback(this, currentGateway, zones, buttons));
+
         } else {
             mainAdapter = null;
         }
@@ -363,13 +364,7 @@ public class MainActivity extends RoboAppCompatActivity {
         return new Runnable() {
             @Override
             public void run() {
-                mainAdapter = new MainAdapter(
-                        MainActivity.this,
-                        currentGateway
-                );
-
                 loadOnOffStatusesToAdapter(zones, buttons, map);
-                recycler.setAdapter(mainAdapter);
             }
         };
     }
