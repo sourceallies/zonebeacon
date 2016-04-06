@@ -59,6 +59,28 @@ public class OnOffStatusUtil {
     }
 
     /**
+     * Manually set the state of the load
+     *
+     * @param loadNumber load to toggle
+     * @param newStatus  the new status of the load
+     */
+    public void setState(Integer loadNumber, Executor.LoadStatus newStatus) {
+        loadStatusMap.put(loadNumber, newStatus);
+    }
+
+    /**
+     * Manually set the states for the given list of commands (loads)
+     *
+     * @param commands  list of commands to change
+     * @param newStatus state we want to set them to
+     */
+    public void setStates(List<Command> commands, Executor.LoadStatus newStatus) {
+        for (Command command : commands) {
+            setState(command.getNumber(), newStatus);
+        }
+    }
+
+    /**
      * Invalidate the list of buttons and zones so that it is re-queried when the OnOffStatusUtil#getStatefulButtons()
      * and OnOffStatusUtil#getStatefulZones()
      */
