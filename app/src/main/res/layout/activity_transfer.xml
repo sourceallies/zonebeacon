@@ -38,26 +38,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <TextView
+            android:layout_width="192dp"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical"
             android:gravity="center"
-            android:id="@+id/empty_view">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_nearby"
-                android:layout_marginBottom="32dp"/>
-
-            <TextView android:layout_width="192dp"
-                android:layout_height="wrap_content"
-                android:text="@string/searching_for_friends"
-                android:gravity="center_horizontal"/>
-
-        </LinearLayout>
+            android:drawableTop="@drawable/ic_nearby"
+            android:drawablePadding="32dp"
+            android:text="@string/searching_for_friends"/>
 
     </com.sourceallies.android.zonebeacon.view.NearbyBackgroundLayout>
 
