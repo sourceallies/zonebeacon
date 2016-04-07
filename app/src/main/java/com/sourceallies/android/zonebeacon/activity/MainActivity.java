@@ -46,6 +46,7 @@ import android.widget.Spinner;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.inject.Inject;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
 import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
@@ -56,6 +57,7 @@ import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
+import com.sourceallies.android.zonebeacon.util.ControllerUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +75,9 @@ import roboguice.inject.ContentView;
 public class MainActivity extends RoboAppCompatActivity {
 
     public static final int RESULT_INTRO = 1;
+
+    @Inject
+    private ControllerUtil controllerUtil;
 
     @Getter
     private CoordinatorLayout rootLayout;
@@ -285,7 +290,11 @@ public class MainActivity extends RoboAppCompatActivity {
             mainAdapter.setLayoutManager(manager);
 
             Executor executor = getExecutor();
-            executor.queryActiveLoads(currentGateway, getQueryCallback(this, currentGateway, zones, buttons));
+            executor.queryActiveLoads(
+                    currentGateway,
+                    controllerUtil.getControllerNumbersByZones(zones),
+                    getQueryCallback(this, currentGateway, zones, buttons)
+            );
 
         } else {
             mainAdapter = null;
