@@ -504,7 +504,7 @@ public class MainAdapterTest extends ZoneBeaconRobolectricSuite {
         return buttons;
     }
 
-    private Map<Integer, Executor.LoadStatus> getMap() {
+    private Map<Integer, Map<Integer, Executor.LoadStatus>> getMap() {
         return new HashMap();
     }
 }

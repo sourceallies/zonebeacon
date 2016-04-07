@@ -195,7 +195,7 @@ public class OnOffStatusUtil {
 
     @VisibleForTesting
     protected Executor.LoadStatus getStatus(Map<Integer, Executor.LoadStatus> loadStatusMap, int commandNumber) {
-        if (loadStatusMap == null) {
+        if (loadStatusMap == null || !loadStatusMap.containsKey(commandNumber)) {
             return Executor.LoadStatus.OFF;
         } else {
             return loadStatusMap.get(commandNumber);
