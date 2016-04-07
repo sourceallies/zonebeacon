@@ -29,6 +29,9 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -62,6 +65,20 @@ public class ExecutorTest extends ZoneBeaconSuite {
     }
 
     @Test
+    public void test_queryActiveLoads_multiController() {
+        Gateway gateway = getGatewayForSystem(1);
+        Executor e = Mockito.spy(Executor.createForGateway(gateway));
+        Mockito.doNothing().when(e).execute(gateway);
+
+        QueryLoadsCallback callback = Mockito.mock(QueryLoadsCallback.class);
+        List<Integer> controllers = Arrays.asList(new Integer[] {1, 2, 3});
+        e.queryActiveLoads(gateway, controllers, callback);
+
+        Mockito.verify(e, Mockito.times(3)).addCommand(Mockito.any(Command.class), Mockito.eq(Executor.LoadStatus.OFF));
+        Mockito.verify(e).execute(gateway);
+    }
+
+    @Test
     public void test_queryCommandCallback() {
         QueryLoadsCallback callback = Mockito.mock(QueryLoadsCallback.class);
         Interpreter interpreter = Mockito.mock(Interpreter.class);
@@ -72,10 +89,56 @@ public class ExecutorTest extends ZoneBeaconSuite {
         Gateway gateway = getGatewayForSystem(1);
         Executor e = Mockito.spy(Executor.createForGateway(gateway));
 
-        e.getCommandCallbackForQueryingLoads(interpreter, callback)
-                .onResponse(null, "test text");
+        e.getCommandCallbackForQueryingLoads(interpreter, Arrays.asList(new Integer[] {1}), callback)
+                .onResponse(null, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
         Mockito.verify(callback).onResponse(Mockito.anyMap());
+    }
+
+    @Test
+    public void test_loadQueryMap_multiMcp() {
+        String response96Chars = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF" +
+                "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"; // iterations through the map
+
+        Interpreter interpreter = Mockito.mock(Interpreter.class);
+        Mockito.when(interpreter.processActiveLoadsResponse(Mockito.anyString()))
+                .thenReturn(new HashMap<Integer, Executor.LoadStatus>());
+
+        Map<Integer, Map<Integer, Executor.LoadStatus>> map = new HashMap();
+        List<Integer> controllers = Arrays.asList(new Integer[] {1, 2});
+
+        Gateway gateway = getGatewayForSystem(1);
+        Executor e = Mockito.spy(Executor.createForGateway(gateway));
+
+        e.loadMapFromResponse(map, controllers, interpreter, response96Chars);
+
+        assertNotNull(map.get(Integer.valueOf(1)));
+        assertNotNull(map.get(Integer.valueOf(2)));
+
+        assertNull(map.get(Integer.valueOf(0)));
+        assertNull(map.get(Integer.valueOf(3)));
+    }
+
+    @Test
+    public void test_loadQueryMap_singleMcp() {
+        String response96Chars = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+
+        Interpreter interpreter = Mockito.mock(Interpreter.class);
+        Mockito.when(interpreter.processActiveLoadsResponse(Mockito.anyString()))
+                .thenReturn(new HashMap<Integer, Executor.LoadStatus>());
+
+        Map<Integer, Map<Integer, Executor.LoadStatus>> map = new HashMap();
+        List<Integer> controllers = Arrays.asList(new Integer[] {0});
+
+        Gateway gateway = getGatewayForSystem(1);
+        Executor e = Mockito.spy(Executor.createForGateway(gateway));
+
+        e.loadMapFromResponse(map, controllers, interpreter, response96Chars);
+
+        assertNotNull(map.get(Integer.valueOf(0)));
+
+        assertNull(map.get(Integer.valueOf(1)));
+        assertNull(map.get(Integer.valueOf(2)));
     }
 
     private Gateway getGatewayForSystem(int systemTypeId) {

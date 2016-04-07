@@ -22,5 +22,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface QueryLoadsCallback {
-    void onResponse(Map<Integer, Executor.LoadStatus> loadStatusMap);
+    /**
+     * Called on the response from the Executor
+     *
+     * @param loadStatusMap returns a 2D Map. First key is the controller number (0 being no controller).
+     *                      Second key is the load number on that controller.
+     */
+    void onResponse(Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap);
 }
