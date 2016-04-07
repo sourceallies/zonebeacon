@@ -303,7 +303,7 @@ public class MainActivity extends RoboAppCompatActivity {
      * @param map map of the load statuses. Load number is key, status is the value
      */
     @VisibleForTesting
-    protected void loadOnOffStatusesToAdapter(List<Zone> zones, List<Button> buttons, Map<Integer, Executor.LoadStatus> map) {
+    protected void loadOnOffStatusesToAdapter(List<Zone> zones, List<Button> buttons, Map<Integer, Map<Integer, Executor.LoadStatus>> map) {
         mainAdapter.loadOnOffStatuses(
                 zones,
                 buttons,
@@ -343,7 +343,7 @@ public class MainActivity extends RoboAppCompatActivity {
     protected QueryLoadsCallback getQueryCallback(final Activity activity, final Gateway currentGateway, final List<Zone> zones, final List<Button> buttons) {
         return new QueryLoadsCallback() {
             @Override
-            public void onResponse(final Map<Integer, Executor.LoadStatus> loadStatusMap) {
+            public void onResponse(final Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap) {
                 activity.runOnUiThread(setLoadStatusRunnable(currentGateway, zones, buttons, loadStatusMap));
             }
         };
@@ -360,7 +360,7 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     @VisibleForTesting
     protected Runnable setLoadStatusRunnable(final Gateway currentGateway, final List<Zone> zones,
-                                             final List<Button> buttons, final Map<Integer, Executor.LoadStatus> map) {
+                                             final List<Button> buttons, final Map<Integer, Map<Integer, Executor.LoadStatus>> map) {
         return new Runnable() {
             @Override
             public void run() {
