@@ -86,10 +86,11 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      *
      * @param zones list of zones attached to the gateway
      * @param buttons list of buttons attached to the gateway
-     * @param loadStatusMap map returned from the status query
+     * @param loadStatusMap 2D map returned from the status query. First key is the controller number (0 for no controller specified)
+     *                      Second key is the load number.
      */
     public void loadOnOffStatuses(@NonNull List<Zone> zones, @NonNull List<Button> buttons,
-                                  Map<Integer, Executor.LoadStatus> loadStatusMap) {
+                                  Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap) {
         statusUtil = getOnOffStatusUtil(zones, buttons, loadStatusMap);
         this.zones = statusUtil.getStatefulZones();
         this.buttons = statusUtil.getStatefulButtons();
@@ -142,7 +143,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     @VisibleForTesting
     protected OnOffStatusUtil getOnOffStatusUtil(@NonNull List<Zone> zones,
                                                  @NonNull List<Button> buttons,
-                                                 Map<Integer, Executor.LoadStatus> loadStatusMap) {
+                                                 Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap) {
         return new OnOffStatusUtil(buttons, zones, loadStatusMap);
     }
 

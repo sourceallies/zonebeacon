@@ -56,8 +56,12 @@ public class CentraLiteInterpreter extends Interpreter {
     }
 
     @Override
-    public String getQueryActiveLoadsCommandString() {
-        return "^G";
+    public String getQueryActiveLoadsCommandString(int controllerNumber) {
+        if (controllerNumber == Interpreter.SINGLE_MCP_SYSTEM) {
+            return "^G";
+        } else {
+            return "^g" + controllerNumber;
+        }
     }
 
     @Override
@@ -68,12 +72,12 @@ public class CentraLiteInterpreter extends Interpreter {
         int loadIndex = 0;
         int currentIndex = 0;
 
-        if (length != 48) {
-            throw new RuntimeException("Length of the status string is incorrect");
+        if (length % 48 != 0) {
+            throw new RuntimeException("Length of the status string is incorrect. Must be length % 48 = 0");
         }
 
         if (!statusString.matches("[0-9a-fA-F]+")) {
-            throw new RuntimeException("Status string has more than just hex values");
+            throw new RuntimeException("Status string has more than just hex values.");
         }
 
         // get the binary of the each character and make a list

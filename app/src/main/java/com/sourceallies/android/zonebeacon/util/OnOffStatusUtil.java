@@ -16,7 +16,10 @@
 
 package com.sourceallies.android.zonebeacon.util;
 
+import android.support.annotation.VisibleForTesting;
+
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
 import com.sourceallies.android.zonebeacon.data.StatefulButton;
 import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
@@ -40,7 +43,7 @@ public class OnOffStatusUtil {
 
     private List<Button> buttons;
     private List<Zone> zones;
-    private Map<Integer, Executor.LoadStatus> loadStatusMap;
+    private Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap;
 
     protected List<StatefulButton> statefulButtons = null;
     protected List<StatefulZone> statefulZones = null;
@@ -50,9 +53,10 @@ public class OnOffStatusUtil {
      *
      * @param buttons list of buttons we are looking to get the load status of
      * @param zones list of zones that we are looking to get the load status of
-     * @param loadStatusMap map that contains the load number as the key and its On Off status as the value
+     * @param loadStatusMap 2D map that contains controller number as the first key
+     *                      and the load number as the second key, with its On Off status as the value
      */
-    public OnOffStatusUtil(List<Button> buttons, List<Zone> zones, Map<Integer, Executor.LoadStatus> loadStatusMap) {
+    public OnOffStatusUtil(List<Button> buttons, List<Zone> zones, Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap) {
         this.buttons = buttons;
         this.zones = zones;
         this.loadStatusMap = loadStatusMap == null ? new HashMap() : loadStatusMap;
@@ -61,11 +65,17 @@ public class OnOffStatusUtil {
     /**
      * Manually set the state of the load
      *
+     * @param controllerNumber controller number for the load
      * @param loadNumber load to toggle
      * @param newStatus  the new status of the load
      */
-    public void setState(Integer loadNumber, Executor.LoadStatus newStatus) {
-        loadStatusMap.put(loadNumber, newStatus);
+    public void setState(Integer controllerNumber, Integer loadNumber, Executor.LoadStatus newStatus) {
+        if (loadStatusMap.containsKey(controllerNumber)) {
+            loadStatusMap.get(controllerNumber).put(loadNumber, newStatus);
+        } else {
+            loadStatusMap.put(controllerNumber, new HashMap<Integer, Executor.LoadStatus>());
+            loadStatusMap.get(controllerNumber).put(loadNumber, newStatus);
+        }
     }
 
     /**
@@ -76,7 +86,11 @@ public class OnOffStatusUtil {
      */
     public void setStates(List<Command> commands, Executor.LoadStatus newStatus) {
         for (Command command : commands) {
-            setState(command.getNumber(), newStatus);
+            if (command.getCommandType().isActivateControllerSelection()) {
+                setState(command.getControllerNumber(), command.getNumber(), newStatus);
+            } else {
+                setState(Interpreter.SINGLE_MCP_SYSTEM, command.getNumber(), newStatus);
+            }
         }
     }
 
@@ -106,7 +120,7 @@ public class OnOffStatusUtil {
 
                 boolean loadOff = false;
                 for (Command command : button.getCommands()) {
-                    Executor.LoadStatus status = loadStatusMap.get(command.getNumber());
+                    Executor.LoadStatus status = getStatus(loadStatusMap, command);
                     if (status == null || status == Executor.LoadStatus.OFF) {
                         loadOff = true;
                         break;
@@ -142,7 +156,7 @@ public class OnOffStatusUtil {
                 boolean loadOff = false;
                 for (Button button : zone.getButtons()) {
                     for (Command command : button.getCommands()) {
-                        Executor.LoadStatus status = loadStatusMap.get(command.getNumber());
+                        Executor.LoadStatus status = getStatus(loadStatusMap, command);
                         if (status == null || status == Executor.LoadStatus.OFF) {
                             loadOff = true;
                             break;
@@ -162,6 +176,31 @@ public class OnOffStatusUtil {
             }
 
             return statefulZones;
+        }
+    }
+
+    /**
+     * Get the current status of a command from the status map
+     *
+     * @param loadStatusMap map to search through
+     * @param command command we want the status of
+     * @return the current status of the command
+     */
+    @VisibleForTesting
+    protected Executor.LoadStatus getStatus(Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap, Command command) {
+        if (command.getCommandType().isActivateControllerSelection()) {
+            return getStatus(loadStatusMap.get(command.getControllerNumber()), command.getNumber());
+        } else {
+            return getStatus(loadStatusMap.get(Interpreter.SINGLE_MCP_SYSTEM), command.getNumber());
+        }
+    }
+
+    @VisibleForTesting
+    protected Executor.LoadStatus getStatus(Map<Integer, Executor.LoadStatus> loadStatusMap, int commandNumber) {
+        if (loadStatusMap == null || !loadStatusMap.containsKey(commandNumber)) {
+            return Executor.LoadStatus.OFF;
+        } else {
+            return loadStatusMap.get(commandNumber);
         }
     }
 }
