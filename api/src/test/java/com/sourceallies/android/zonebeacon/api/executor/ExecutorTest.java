@@ -115,7 +115,7 @@ public class ExecutorTest extends ZoneBeaconSuite {
         assertNotNull(map.get(Integer.valueOf(1)));
         assertNotNull(map.get(Integer.valueOf(2)));
 
-        assertNull(map.get(Integer.valueOf(0)));
+        assertNull(map.get(Integer.valueOf(Interpreter.SINGLE_MCP_SYSTEM)));
         assertNull(map.get(Integer.valueOf(3)));
     }
 
@@ -128,14 +128,15 @@ public class ExecutorTest extends ZoneBeaconSuite {
                 .thenReturn(new HashMap<Integer, Executor.LoadStatus>());
 
         Map<Integer, Map<Integer, Executor.LoadStatus>> map = new HashMap();
-        List<Integer> controllers = Arrays.asList(new Integer[] {0});
+        List<Integer> controllers = Arrays.asList(new Integer[] {Interpreter.SINGLE_MCP_SYSTEM});
 
         Gateway gateway = getGatewayForSystem(1);
         Executor e = Mockito.spy(Executor.createForGateway(gateway));
 
         e.loadMapFromResponse(map, controllers, interpreter, response96Chars);
 
-        assertNotNull(map.get(Integer.valueOf(0)));
+        // map should hold value for the single mcp system, since that is the controller number we passed in
+        assertNotNull(map.get(Integer.valueOf(Interpreter.SINGLE_MCP_SYSTEM)));
 
         assertNull(map.get(Integer.valueOf(1)));
         assertNull(map.get(Integer.valueOf(2)));

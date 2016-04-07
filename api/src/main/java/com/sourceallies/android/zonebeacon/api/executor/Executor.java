@@ -176,7 +176,7 @@ public abstract class Executor {
      * @return List of loads that are currently turned on, by load number.
      */
     public void queryActiveLoads(Gateway gateway, final QueryLoadsCallback callback) {
-        queryActiveLoads(gateway, Arrays.asList(new Integer[] {0}), callback);
+        queryActiveLoads(gateway, Arrays.asList(new Integer[] {Interpreter.SINGLE_MCP_SYSTEM}), callback);
     }
 
     /**
@@ -203,7 +203,7 @@ public abstract class Executor {
      * Get the callback used within the executor to monitor when the statuses are returned from the load status query.
      *
      * @param interpreter System interpreter that we are using
-     * @param controllerNumbers list of controllers we queried against. Controller number 0 is no multi-mcp system
+     * @param controllerNumbers list of controllers we queried against. Controller number Interpreter#SINGLE_MCP_SYSTEM is no multi-mcp system
      * @param callback the callback for what to do after handling the commands response.
      * @return
      */

@@ -17,6 +17,7 @@
 package com.sourceallies.android.zonebeacon.util;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
 import com.sourceallies.android.zonebeacon.data.StatefulButton;
 import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
@@ -40,7 +41,8 @@ public class OnOffStatusUtilTest {
 
     @Before
     public void setUp() {
-        util = new OnOffStatusUtil(getButtonList(0), getZoneList(0), getMap());
+        // create controllers for single mcp system
+        util = new OnOffStatusUtil(getButtonList(Interpreter.SINGLE_MCP_SYSTEM), getZoneList(Interpreter.SINGLE_MCP_SYSTEM), getMap(Interpreter.SINGLE_MCP_SYSTEM));
     }
 
     @Test
@@ -98,7 +100,7 @@ public class OnOffStatusUtilTest {
 
     @Test
     public void test_setState() {
-        util.setState(0, 2, Executor.LoadStatus.ON);
+        util.setState(Interpreter.SINGLE_MCP_SYSTEM, 2, Executor.LoadStatus.ON);
         List<StatefulButton> buttons = util.getStatefulButtons();
 
         assertEquals(Executor.LoadStatus.OFF, buttons.get(0).getLoadStatus());
@@ -138,7 +140,7 @@ public class OnOffStatusUtilTest {
 
     @Test
     public void test_setStates_multiMcp() {
-        util = new OnOffStatusUtil(getButtonList(1), getZoneList(1), getMap());
+        util = new OnOffStatusUtil(getButtonList(1), getZoneList(1), getMap(Interpreter.SINGLE_MCP_SYSTEM));
 
         List<Command> commands = new ArrayList();
         for (int i = 1; i < 7; i++) {
@@ -172,7 +174,7 @@ public class OnOffStatusUtilTest {
         controller0.put(1, Executor.LoadStatus.OFF);
         controller0.put(2, Executor.LoadStatus.ON);
 
-        map.put(0, controller0);
+        map.put(Interpreter.SINGLE_MCP_SYSTEM, controller0);
         map.put(1, controller0);
 
         Command command = new Command();
@@ -279,7 +281,7 @@ public class OnOffStatusUtilTest {
         return command;
     }
 
-    private Map<Integer, Map<Integer, Executor.LoadStatus>> getMap() {
+    private Map<Integer, Map<Integer, Executor.LoadStatus>> getMap(int controllerNumber) {
         Map<Integer, Executor.LoadStatus> map = new HashMap();
 
         map.put(1, Executor.LoadStatus.OFF);
@@ -288,7 +290,7 @@ public class OnOffStatusUtilTest {
         map.put(4, Executor.LoadStatus.ON);
 
         Map<Integer, Map<Integer, Executor.LoadStatus>> fullMap = new HashMap();
-        fullMap.put(0, map);
+        fullMap.put(controllerNumber, map);
 
         return fullMap;
     }

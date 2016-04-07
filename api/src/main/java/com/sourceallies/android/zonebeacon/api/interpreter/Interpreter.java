@@ -31,6 +31,8 @@ import java.util.Map;
  */
 public abstract class Interpreter {
 
+    public static final int SINGLE_MCP_SYSTEM = -1;
+
     /**
      * Receives a command that is stored in the database and turns it into an executable string
      * that can be sent to the gateway/control unit.

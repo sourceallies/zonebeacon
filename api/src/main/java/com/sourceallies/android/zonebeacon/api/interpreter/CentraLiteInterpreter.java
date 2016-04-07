@@ -57,7 +57,7 @@ public class CentraLiteInterpreter extends Interpreter {
 
     @Override
     public String getQueryActiveLoadsCommandString(int controllerNumber) {
-        if (controllerNumber == 0) {
+        if (controllerNumber == Interpreter.SINGLE_MCP_SYSTEM) {
             return "^G";
         } else {
             return "^g" + controllerNumber;
