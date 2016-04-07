@@ -50,7 +50,7 @@ public class ControllerUtil {
 
         if (controllerNumbers.size() == 0) {
             // we will add the zero to designate that we want it to query without multi-mcp support.
-            controllerNumbers.add(0);
+            controllerNumbers.add(-1);
         }
 
         return controllerNumbers;

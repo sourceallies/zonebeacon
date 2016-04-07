@@ -19,6 +19,7 @@ package com.sourceallies.android.zonebeacon.util;
 import android.support.annotation.VisibleForTesting;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.api.interpreter.Interpreter;
 import com.sourceallies.android.zonebeacon.data.StatefulButton;
 import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
@@ -64,6 +65,7 @@ public class OnOffStatusUtil {
     /**
      * Manually set the state of the load
      *
+     * @param controllerNumber controller number for the load
      * @param loadNumber load to toggle
      * @param newStatus  the new status of the load
      */
@@ -87,7 +89,7 @@ public class OnOffStatusUtil {
             if (command.getCommandType().isActivateControllerSelection()) {
                 setState(command.getControllerNumber(), command.getNumber(), newStatus);
             } else {
-                setState(0, command.getNumber(), newStatus);
+                setState(Interpreter.SINGLE_MCP_SYSTEM, command.getNumber(), newStatus);
             }
         }
     }
@@ -189,7 +191,7 @@ public class OnOffStatusUtil {
         if (command.getCommandType().isActivateControllerSelection()) {
             return getStatus(loadStatusMap.get(command.getControllerNumber()), command.getNumber());
         } else {
-            return getStatus(loadStatusMap.get(0), command.getNumber());
+            return getStatus(loadStatusMap.get(Interpreter.SINGLE_MCP_SYSTEM), command.getNumber());
         }
     }
 

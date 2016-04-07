@@ -29,7 +29,7 @@ public class ControllerUtilTest {
         List<Integer> controllers = util.getControllerNumbersByButtons(buttons);
 
         assertEquals(1, controllers.size());
-        assertEquals(Integer.valueOf(0), controllers.get(0));
+        assertEquals(Integer.valueOf(-1), controllers.get(0));
     }
 
     @Test
@@ -38,7 +38,7 @@ public class ControllerUtilTest {
         List<Integer> controllers = util.getControllerNumbersByButtons(buttons);
 
         assertEquals(1, controllers.size());
-        assertEquals(Integer.valueOf(0), controllers.get(0));
+        assertEquals(Integer.valueOf(-1), controllers.get(0));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class ControllerUtilTest {
         List<Integer> controllers = util.getControllerNumbersByZones(zones);
 
         assertEquals(1, controllers.size());
-        assertEquals(Integer.valueOf(0), controllers.get(0));
+        assertEquals(Integer.valueOf(-1), controllers.get(0));
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ControllerUtilTest {
         List<Integer> controllers = util.getControllerNumbersByZones(zones);
 
         assertEquals(1, controllers.size());
-        assertEquals(Integer.valueOf(0), controllers.get(0));
+        assertEquals(Integer.valueOf(-1), controllers.get(0));
     }
 
     @Test
