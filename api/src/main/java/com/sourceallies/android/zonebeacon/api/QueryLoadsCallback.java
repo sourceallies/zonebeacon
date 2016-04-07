@@ -25,7 +25,8 @@ public interface QueryLoadsCallback {
     /**
      * Called on the response from the Executor
      *
-     * @param loadStatusMap returns a 2D Map. First key is the controller number (0 being no controller).
+     * @param loadStatusMap returns a 2D Map. First key is the controller number
+     *                      (Interpreter.SINGLE_MCP_SYSTEM being no controller specified).
      *                      Second key is the load number on that controller.
      */
     void onResponse(Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap);
