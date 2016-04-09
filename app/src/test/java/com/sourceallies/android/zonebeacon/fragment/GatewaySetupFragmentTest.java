@@ -21,6 +21,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 
+import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 
 import org.junit.Before;
@@ -29,6 +30,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
 
 public class GatewaySetupFragmentTest extends ZoneBeaconRobolectricSuite {
 
@@ -56,7 +59,7 @@ public class GatewaySetupFragmentTest extends ZoneBeaconRobolectricSuite {
     public void test_videoLink() {
         fragment.getVideoLink().getClickListener().onClick("this YouTube channel");
 
-        Mockito.verify(activity).startActivity(Mockito.any(Intent.class));
+        verify(activity).startActivity(any(Intent.class));
     }
 
     @Test
@@ -158,6 +161,12 @@ public class GatewaySetupFragmentTest extends ZoneBeaconRobolectricSuite {
         setText(fragment.getPort(), "");
 
         assertFalse(fragment.isComplete());
+    }
+
+    @Test
+    public void test_clickTransferButton() {
+        fragment.getView().findViewById(R.id.transfer_button).performClick();
+        verify(activity).startActivity(any(Intent.class));
     }
 
     private void setText(TextInputLayout input, String text) {

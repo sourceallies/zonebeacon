@@ -32,6 +32,8 @@ import android.widget.TextView;
 import com.klinker.android.link_builder.Link;
 import com.klinker.android.link_builder.LinkBuilder;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.activity.IntroActivity;
+import com.sourceallies.android.zonebeacon.activity.TransferActivity;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 
 import lombok.Getter;
@@ -65,6 +67,15 @@ public class GatewaySetupFragment extends AbstractSetupFragment {
         name = (TextInputLayout) root.findViewById(R.id.name);
         ipAddress = (TextInputLayout) root.findViewById(R.id.ip_address);
         port = (TextInputLayout) root.findViewById(R.id.port);
+
+        root.findViewById(R.id.transfer_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), TransferActivity.class);
+                intent.putExtra(TransferActivity.SHARE_DATA, false);
+                getActivity().startActivity(intent);
+            }
+        });
 
         // create a clickable link to the YouTube channel for help setting up ZoneBeacon
         buildLinkToSetupVideo(root);

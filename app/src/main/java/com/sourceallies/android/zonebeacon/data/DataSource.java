@@ -755,8 +755,6 @@ public class DataSource {
     public String getDatabaseJson() throws JSONException {
         JSONObject json = new JSONObject();
 
-        json.put(SystemType.TABLE, sqlToJson("select * from system_type"));
-        json.put(CommandType.TABLE, sqlToJson("select * from command_type"));
         json.put(Gateway.TABLE, sqlToJson("select * from gateway"));
         json.put(Command.TABLE, sqlToJson("select * from command"));
         json.put(Button.TABLE, sqlToJson("select * from button"));

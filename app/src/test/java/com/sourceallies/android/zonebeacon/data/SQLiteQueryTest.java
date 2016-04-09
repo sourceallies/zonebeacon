@@ -31,6 +31,7 @@ import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 import com.sourceallies.android.zonebeacon.util.FixtureLoader;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -347,20 +348,14 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(10, zones.get(2).getButtons().get(2).getId());
     }
 
-    @Test
+    @Test(expected = JSONException.class)
     public void test_getDatabaseJson_containsSystemType() throws Exception {
-        JSONArray json = getJson().getJSONArray(SystemType.TABLE);
-        assertNotNull(json);
-        assertEquals(1, json.length());
-        assertEquals("1,CentraLite Elegance,1.0", json.getString(0));
+        getJson().getJSONArray(SystemType.TABLE);
     }
 
-    @Test
+    @Test(expected = JSONException.class)
     public void test_getDatabaseJson_containsCommandType() throws Exception {
-        JSONArray json = getJson().getJSONArray(CommandType.TABLE);
-        assertNotNull(json);
-        assertEquals(8, json.length());
-        assertEquals("1,Single MCP - Load/Relay,^A%nnn,^B%nnn,1,0,1", json.get(0));
+        getJson().getJSONArray(CommandType.TABLE);
     }
 
     @Test
