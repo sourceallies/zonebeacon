@@ -96,7 +96,16 @@
         android:paddingRight="64dp"
         android:textSize="16sp"
         android:text="@string/initial_gateway_help"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/transfer_from_another_device"
+        android:id="@+id/transfer_button"/>
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="64dp" />
+
 </LinearLayout>

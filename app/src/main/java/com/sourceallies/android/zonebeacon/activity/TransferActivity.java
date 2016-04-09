@@ -173,8 +173,8 @@ public class TransferActivity extends RoboAppCompatActivity
             String strMsg = source.getDatabaseJson();
             source.close();
 
-            return new Message(strMsg.getBytes());
-        } catch (JSONException e) {
+            return new Message(GzipUtil.gzip(strMsg));
+        } catch (Exception e) {
             throw new RuntimeException("unable to create json to send", e);
         }
     }
