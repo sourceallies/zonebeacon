@@ -32,6 +32,10 @@ import com.sourceallies.android.zonebeacon.data.model.SystemType;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -188,7 +192,7 @@ public class DataSource {
         values.put(Gateway.COLUMN_PORT_NUMBER, port);
         values.put(Gateway.COLUMN_SYSTEM_TYPE_ID, 1); // just one for now. Since there is only elegance.
 
-        return database.insert(Gateway.TABLE_GATEWAY, null, values);
+        return database.insert(Gateway.TABLE, null, values);
     }
 
     /**
@@ -203,16 +207,16 @@ public class DataSource {
         for (Zone zone : zones) {
             for (Button button : zone.getButtons()) {
                 for (Command command : button.getCommands()) {
-                    database.delete(Command.TABLE_COMMAND, Command.COLUMN_ID + " = " + command.getId(), null);
+                    database.delete(Command.TABLE, Command.COLUMN_ID + " = " + command.getId(), null);
                 }
 
-                database.delete(Button.TABLE_BUTTON, Button.COLUMN_ID + " = " + button.getId(), null);
+                database.delete(Button.TABLE, Button.COLUMN_ID + " = " + button.getId(), null);
             }
 
-            database.delete(Zone.TABLE_ZONE, Zone.COLUMN_ID + " = " + zone.getId(), null);
+            database.delete(Zone.TABLE, Zone.COLUMN_ID + " = " + zone.getId(), null);
         }
 
-        return database.delete(Gateway.TABLE_GATEWAY, Gateway.COLUMN_ID + " = " + gatewayId, null);
+        return database.delete(Gateway.TABLE, Gateway.COLUMN_ID + " = " + gatewayId, null);
     }
 
     /**
@@ -391,7 +395,7 @@ public class DataSource {
         values.put(Command.COLUMN_COMMAND_TYPE_ID, commandTypeId);
         values.put(Command.COLUMN_CONTROLLER_NUMBER, controllerNumber);
 
-        return database.insert(Command.TABLE_COMMAND, null, values);
+        return database.insert(Command.TABLE, null, values);
     }
 
     /**
@@ -402,7 +406,7 @@ public class DataSource {
      * @return the number of items deleted.
      */
     public int deleteCommand(long id) {
-        return database.delete(Command.TABLE_COMMAND, Command.COLUMN_ID + " = " + id, null);
+        return database.delete(Command.TABLE, Command.COLUMN_ID + " = " + id, null);
     }
 
     /**
@@ -459,14 +463,14 @@ public class DataSource {
         ContentValues values = new ContentValues(1);
         values.put(Button.COLUMN_NAME, name);
 
-        long buttonId = database.insert(Button.TABLE_BUTTON, null, values);
+        long buttonId = database.insert(Button.TABLE, null, values);
 
         if (buttonId != -1) {
             for (Command command : commands) {
                 ContentValues v = new ContentValues(2);
                 v.put(ButtonCommandLink.COLUMN_COMMAND_ID, command.getId());
                 v.put(ButtonCommandLink.COLUMN_BUTTON_ID, buttonId);
-                database.insert(ButtonCommandLink.TABLE_BUTTON_COMMAND_LINK, null, v);
+                database.insert(ButtonCommandLink.TABLE, null, v);
             }
         }
 
@@ -481,8 +485,8 @@ public class DataSource {
      * @return the number of rows deleted.
      */
     public int deleteButton(long id) {
-        int deleted = database.delete(Button.TABLE_BUTTON, Button.COLUMN_ID + " = " + id, null);
-        deleted += database.delete(ButtonCommandLink.TABLE_BUTTON_COMMAND_LINK,
+        int deleted = database.delete(Button.TABLE, Button.COLUMN_ID + " = " + id, null);
+        deleted += database.delete(ButtonCommandLink.TABLE,
                 ButtonCommandLink.COLUMN_BUTTON_ID + " = " + id, null);
 
         return deleted;
@@ -599,14 +603,14 @@ public class DataSource {
         ContentValues values = new ContentValues(1);
         values.put(Zone.COLUMN_NAME, name);
 
-        long zoneId = database.insert(Zone.TABLE_ZONE, null, values);
+        long zoneId = database.insert(Zone.TABLE, null, values);
 
         if (zoneId != -1) {
             for (Button button : buttons) {
                 ContentValues v = new ContentValues(2);
                 v.put(ZoneButtonLink.COLUMN_BUTTON_ID, button.getId());
                 v.put(ZoneButtonLink.COLUMN_ZONE_ID, zoneId);
-                database.insert(ZoneButtonLink.TABLE_ZONE_BUTTON_LINK, null, v);
+                database.insert(ZoneButtonLink.TABLE, null, v);
             }
         }
 
@@ -621,8 +625,8 @@ public class DataSource {
      * @return the number of rows deleted.
      */
     public int deleteZone(long id) {
-        int deleted = database.delete(Zone.TABLE_ZONE, Zone.COLUMN_ID + " = " + id, null);
-        deleted += database.delete(ZoneButtonLink.TABLE_ZONE_BUTTON_LINK,
+        int deleted = database.delete(Zone.TABLE, Zone.COLUMN_ID + " = " + id, null);
+        deleted += database.delete(ZoneButtonLink.TABLE,
                 ZoneButtonLink.COLUMN_ZONE_ID + " = " + id, null);
 
         return deleted;
@@ -746,6 +750,52 @@ public class DataSource {
         cursor.close();
 
         return new ArrayList<>(zones.values());
+    }
+
+    public String getDatabaseJson() throws JSONException {
+        JSONObject json = new JSONObject();
+
+        json.put(SystemType.TABLE, sqlToJson("select * from system_type"));
+        json.put(CommandType.TABLE, sqlToJson("select * from command_type"));
+        json.put(Gateway.TABLE, sqlToJson("select * from gateway"));
+        json.put(Command.TABLE, sqlToJson("select * from command"));
+        json.put(Button.TABLE, sqlToJson("select * from button"));
+        json.put(ButtonCommandLink.TABLE, sqlToJson("select * from button_command_link"));
+        json.put(Zone.TABLE, sqlToJson("select * from zone"));
+        json.put(ZoneButtonLink.TABLE, sqlToJson("select * from zone_button_link"));
+
+        return json.toString();
+    }
+
+    /**
+     * Creates a json array where each item is a row in the database. Each row contains all fields
+     * from that table in a comma separated order.
+     *
+     * @param query the sql string to get the data.
+     * @return the json array of data.
+     */
+    private JSONArray sqlToJson(String query) {
+        JSONArray array = new JSONArray();
+
+        Cursor cursor = database.rawQuery(query, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < cursor.getColumnCount(); i++) {
+                    builder.append(cursor.getString(i));
+                    if (i != cursor.getColumnCount() - 1) {
+                        builder.append(",");
+                    }
+                }
+
+                array.put(builder.toString());
+            } while (cursor.moveToNext());
+
+            cursor.close();
+        }
+
+        return array;
     }
 
     // You could call this sometime on the system to insert some dummy data for the UI.
