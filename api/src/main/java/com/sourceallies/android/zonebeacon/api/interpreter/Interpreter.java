@@ -31,6 +31,8 @@ import java.util.Map;
  */
 public abstract class Interpreter {
 
+    public static final int SINGLE_MCP_SYSTEM = -1;
+
     /**
      * Receives a command that is stored in the database and turns it into an executable string
      * that can be sent to the gateway/control unit.
@@ -65,9 +67,11 @@ public abstract class Interpreter {
     /**
      * Get the command string that will be sent to the system to query the active loads.
      *
+     * @param controllerNumber The number for the controller we want to query. Can be zero if
+     *                         our system only has a single controller.
      * @return a String representing the command to query what loads are activated.
      */
-    public abstract String getQueryActiveLoadsCommandString();
+    public abstract String getQueryActiveLoadsCommandString(int controllerNumber);
 
     /**
      * Decode the response from the system and return a list of what loads are currently active.
@@ -83,13 +87,13 @@ public abstract class Interpreter {
      *
      * @return a String representing the command to query what loads are activated.
      */
-    public Command buildQueryActiveLoadsCommand() {
+    public Command buildQueryActiveLoadsCommand(int controllerNumber) {
         Command command = new Command();
         command.setName("Query Active Loads");
         command.setId(-1);
         command.setGatewayId(-1);
         command.setNumber(0);
-        command.setControllerNumber(0);
+        command.setControllerNumber(controllerNumber);
 
         CommandType type = new CommandType();
         type.setId(-1);
@@ -98,8 +102,8 @@ public abstract class Interpreter {
         type.setName("Query Active Loads");
         type.setSystemTypeId(-1);
 
-        type.setBaseSerialOffCode(getQueryActiveLoadsCommandString());
-        type.setBaseSerialOnCode(getQueryActiveLoadsCommandString());
+        type.setBaseSerialOffCode(getQueryActiveLoadsCommandString(controllerNumber));
+        type.setBaseSerialOnCode(getQueryActiveLoadsCommandString(controllerNumber));
 
         command.setCommandType(type);
 
