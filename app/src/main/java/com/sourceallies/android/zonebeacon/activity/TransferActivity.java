@@ -45,6 +45,10 @@ import com.google.android.gms.nearby.messages.PublishCallback;
 import com.google.android.gms.nearby.messages.PublishOptions;
 import com.google.android.gms.nearby.messages.SubscribeOptions;
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.data.DataSource;
+import com.sourceallies.android.zonebeacon.util.GzipUtil;
+
+import org.json.JSONException;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -161,9 +165,23 @@ public class TransferActivity extends RoboAppCompatActivity
                 .build();
     }
 
-    private Message createMessage() {
-        String strMsg = "This is NearbyPubSub.";
-        return new Message(strMsg.getBytes());
+    @VisibleForTesting
+    protected Message createMessage() {
+        try {
+            DataSource source = getDataSource();
+            source.open();
+            String strMsg = source.getDatabaseJson();
+            source.close();
+
+            return new Message(strMsg.getBytes());
+        } catch (JSONException e) {
+            throw new RuntimeException("unable to create json to send", e);
+        }
+    }
+
+    @VisibleForTesting
+    protected DataSource getDataSource() {
+        return DataSource.getInstance(this);
     }
 
     @Override
@@ -229,8 +247,12 @@ public class TransferActivity extends RoboAppCompatActivity
      * @param message the message that was found.
      */
     public void onFound(Message message) {
-        Toast.makeText(TransferActivity.this, "message found: " + new String(message.getContent()),
-                Toast.LENGTH_SHORT).show();
+        try {
+            Toast.makeText(TransferActivity.this, "message found: " +
+                    GzipUtil.ungzip(message.getContent()), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            throw new RuntimeException("unable to uncompress message contents", e);
+        }
     }
 
     @VisibleForTesting
