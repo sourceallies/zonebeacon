@@ -21,7 +21,7 @@
     <string name="powered_by_sai">Powered by Source Allies, Inc.</string>
     <string name="initial_gateway_setup">Add a Gateway</string>
     <string name="initial_gateway_help">Enter your gateway information.\n\nNot sure what this is? Check this YouTube channel for more info on setting up your system.\n\nOr...</string>
-    <string name="transfer_from_another_device">Transfer from Another Device</string>
+    <string name="transfer_from_another_device">Transfer Settings from Another Device</string>
     <string name="name">Name this gateway</string>
     <string name="ip_address">IP address</string>
     <string name="port">Port</string>
