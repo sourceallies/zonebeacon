@@ -23,7 +23,7 @@ import lombok.Setter;
 
 public class CommandType implements DatabaseTable {
 
-    public static final String TABLE_COMMAND_TYPE = "command_type";
+    public static final String TABLE = "command_type";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_BASE_SERIAL_ON_CODE = "base_serial_on_code";
@@ -43,7 +43,7 @@ public class CommandType implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_COMMAND_TYPE + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_NAME + " varchar(255) not null, " +
             COLUMN_BASE_SERIAL_ON_CODE + " varchar(255) not null, " +
@@ -54,7 +54,7 @@ public class CommandType implements DatabaseTable {
             ");";
 
     private static final String[] INDEXES = {
-            "create index if not exists command_type_system_type_id_index on " + TABLE_COMMAND_TYPE +
+            "create index if not exists command_type_system_type_id_index on " + TABLE +
                     " (" + COLUMN_SYSTEM_TYPE_ID + ");"
     };
 
@@ -104,7 +104,7 @@ public class CommandType implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_COMMAND_TYPE;
+        return TABLE;
     }
 
     @Override
@@ -116,7 +116,7 @@ public class CommandType implements DatabaseTable {
     public String[] getDefaultDataStatements() {
         String[] defaults = new String[DEFAULTS.length];
         for (int i = 0; i < DEFAULTS.length; i++) {
-            defaults[i] = "INSERT INTO '" + TABLE_COMMAND_TYPE + "' ('" + COLUMN_ID + "', '" +
+            defaults[i] = "INSERT INTO '" + TABLE + "' ('" + COLUMN_ID + "', '" +
                     COLUMN_SYSTEM_TYPE_ID + "', '" + COLUMN_NAME + "', '" + COLUMN_BASE_SERIAL_ON_CODE +
                     "', '" + COLUMN_BASE_SERIAL_OFF_CODE + "', '" + COLUMN_ACTIVATE_CONTROLLER_SELECTION +
                     "', '" + COLUMN_SHOWN_IN_COMMAND_LIST +
