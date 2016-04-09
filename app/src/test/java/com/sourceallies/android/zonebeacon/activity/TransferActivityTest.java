@@ -123,7 +123,19 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
+    public void test_onConnected_dontShareData() {
+        activity.setShareData(false);
+        activity.onConnected(null);
+    }
+
+    @Test
     public void test_onStop() {
+        activity.onStop();
+    }
+
+    @Test
+    public void test_onStop_dontShareData() {
+        activity.setShareData(false);
         activity.onStop();
     }
 
@@ -224,8 +236,16 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_onActivityResult_successful() {
+    public void test_onActivityResult_successful_shareData() {
         activity.setResolvingError(true);
+        activity.onActivityResult(1, Activity.RESULT_OK, null);
+        assertFalse(activity.isResolvingError());
+    }
+
+    @Test
+    public void test_onActivityResult_successful_dontShareData() {
+        activity.setResolvingError(true);
+        activity.setShareData(false);
         activity.onActivityResult(1, Activity.RESULT_OK, null);
         assertFalse(activity.isResolvingError());
     }

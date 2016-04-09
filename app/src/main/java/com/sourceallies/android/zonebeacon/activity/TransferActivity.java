@@ -62,6 +62,7 @@ public class TransferActivity extends RoboAppCompatActivity
 
     private static final String TAG = "TransferActivity";
     private static final String SEEN_NEARBY_KEY = "seen_nearby";
+    public static final String SHARE_DATA = "share_data";
     private static final int REQUEST_RESOLVE_ERROR = 1;
 
     @Getter
@@ -74,6 +75,9 @@ public class TransferActivity extends RoboAppCompatActivity
     @Getter
     private Message message;
 
+    @Setter
+    private boolean shareData;
+
     @Getter
     private MessageListener messageListener = new MessageListener() {
         @Override
@@ -85,6 +89,8 @@ public class TransferActivity extends RoboAppCompatActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        shareData = getIntent().getBooleanExtra(SHARE_DATA, true);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -117,8 +123,11 @@ public class TransferActivity extends RoboAppCompatActivity
     public void onStop() {
         super.onStop();
 
-        unpublish(client, message);
-        unsubscribe(client, messageListener);
+        if (shareData) {
+            unpublish(client, message);
+        } else {
+            unsubscribe(client, messageListener);
+        }
     }
 
     @Override
@@ -159,8 +168,11 @@ public class TransferActivity extends RoboAppCompatActivity
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        publish(client, message);
-        subscribe(client, messageListener);
+        if (shareData) {
+            publish(client, message);
+        } else {
+            subscribe(client, messageListener);
+        }
     }
 
     @Override
@@ -269,8 +281,11 @@ public class TransferActivity extends RoboAppCompatActivity
             resolvingError = false;
 
             if (resultCode == Activity.RESULT_OK) {
-                publish(client, message);
-                subscribe(client, messageListener);
+                if (shareData) {
+                    publish(client, message);
+                } else {
+                    subscribe(client, messageListener);
+                }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 finish();
             } else {
