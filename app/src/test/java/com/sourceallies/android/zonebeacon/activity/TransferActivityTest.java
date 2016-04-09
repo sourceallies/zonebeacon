@@ -29,7 +29,10 @@ import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
+import com.sourceallies.android.zonebeacon.data.DataSource;
+import com.sourceallies.android.zonebeacon.util.GzipUtil;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -37,6 +40,7 @@ import org.robolectric.Robolectric;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -54,6 +58,8 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
     private GoogleApiClient client;
     @Mock
     private PendingIntent pendingIntent;
+    @Mock
+    private DataSource dataSource;
 
     @Before
     public void setUp() {
@@ -92,9 +98,35 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
     }
 
     @Test
-    public void test_messageListenerInvokesOnFound() {
+    public void test_messageListenerInvokesOnFound() throws Exception {
+        Message message = new Message(GzipUtil.gzip("test"));
+        activity.getMessageListener().onFound(message);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void test_messageListenerInvokesOnFound_nonGzippedString() {
         Message message = new Message("test".getBytes());
         activity.getMessageListener().onFound(message);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void test_messageListenerInvokesOnFound_messageError() {
+        Message message = new Message(null);
+        activity.getMessageListener().onFound(message);
+    }
+
+    @Test
+    public void test_createMessage() throws Exception {
+        when(activity.getDataSource()).thenReturn(dataSource);
+        when(dataSource.getDatabaseJson()).thenReturn("test string");
+        assertNotNull(activity.createMessage());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void test_createMessage_exception() throws Exception {
+        when(activity.getDataSource()).thenReturn(dataSource);
+        doThrow(JSONException.class).when(dataSource).getDatabaseJson();
+        activity.createMessage();
     }
 
     @Test
