@@ -752,6 +752,12 @@ public class DataSource {
         return new ArrayList<>(zones.values());
     }
 
+    /**
+     * Gets a string that represents the entire database on this device.
+     *
+     * @return a string with json arrays holding database rows.
+     * @throws JSONException
+     */
     public String getDatabaseJson() throws JSONException {
         JSONObject json = new JSONObject();
 
@@ -763,6 +769,16 @@ public class DataSource {
         json.put(ZoneButtonLink.TABLE, sqlToJson("select * from zone_button_link"));
 
         return json.toString();
+    }
+
+    /**
+     * Takes a json that was created by getDatabaseJson() and inserts the rows into the database.
+     * All old data in those tables will be deleted first.
+     *
+     * @param json the json object to process.
+     */
+    public void insertDatabaseJson(JSONObject json) {
+        // TODO
     }
 
     /**

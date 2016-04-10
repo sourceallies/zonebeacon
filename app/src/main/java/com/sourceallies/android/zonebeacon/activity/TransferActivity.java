@@ -49,6 +49,7 @@ import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.util.GzipUtil;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -248,8 +249,14 @@ public class TransferActivity extends RoboAppCompatActivity
      */
     public void onFound(Message message) {
         try {
-            Toast.makeText(TransferActivity.this, "message found: " +
-                    GzipUtil.ungzip(message.getContent()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.found_settings), Toast.LENGTH_SHORT).show();
+
+            DataSource dataSource = getDataSource();
+            dataSource.open();
+            dataSource.insertDatabaseJson(new JSONObject(GzipUtil.ungzip(message.getContent())));
+            dataSource.close();
+
+            finish();
         } catch (Exception e) {
             throw new RuntimeException("unable to uncompress message contents", e);
         }

@@ -33,6 +33,7 @@ import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.util.GzipUtil;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -99,8 +100,13 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
 
     @Test
     public void test_messageListenerInvokesOnFound() throws Exception {
-        Message message = new Message(GzipUtil.gzip("test"));
+        when(activity.getDataSource()).thenReturn(dataSource);
+
+        Message message = new Message(GzipUtil.gzip("{}"));
         activity.getMessageListener().onFound(message);
+
+        //verify(dataSource).insertDatabaseJson(new JSONObject("{}"));
+        assertTrue(activity.isFinishing());
     }
 
     @Test(expected = RuntimeException.class)
