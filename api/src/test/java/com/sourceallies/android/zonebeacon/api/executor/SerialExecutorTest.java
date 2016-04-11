@@ -39,6 +39,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -99,6 +100,27 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
     public void test_addCommand() {
         executor.addCommand(command, Executor.LoadStatus.OFF);
         assertEquals(1, executor.getCommands().size());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void test_addNullCommand_brightness() {
+        executor.addCommand(null, Executor.LoadStatus.OFF, 99);
+    }
+
+    @Test
+    public void test_addCommand_brightness() {
+        executor.addCommand(command, Executor.LoadStatus.OFF, 99);
+        assertEquals(1, executor.getCommands().size());
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void test_addCommand_brightnessTooLow() {
+        executor.addCommand(command, Executor.LoadStatus.OFF, 0);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void test_addCommand_brightnessTooHigh() {
+        executor.addCommand(command, Executor.LoadStatus.OFF, 100);
     }
 
     @Test
@@ -175,9 +197,9 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         Command command2 = mock(Command.class);
         Command command3 = mock(Command.class);
 
-        when(interpreter.getExecutable(eq(command1), any(Executor.LoadStatus.class))).thenReturn("test 1");
-        when(interpreter.getExecutable(eq(command2), any(Executor.LoadStatus.class))).thenReturn("test 2");
-        when(interpreter.getExecutable(eq(command3), any(Executor.LoadStatus.class))).thenReturn("test 3");
+        when(interpreter.getExecutable(eq(command1), anyInt(), any(Executor.LoadStatus.class))).thenReturn("test 1");
+        when(interpreter.getExecutable(eq(command2), anyInt(), any(Executor.LoadStatus.class))).thenReturn("test 2");
+        when(interpreter.getExecutable(eq(command3), anyInt(), any(Executor.LoadStatus.class))).thenReturn("test 3");
 
         executor.addCommand(command1, Executor.LoadStatus.OFF);
         executor.addCommand(command2, Executor.LoadStatus.ON);
