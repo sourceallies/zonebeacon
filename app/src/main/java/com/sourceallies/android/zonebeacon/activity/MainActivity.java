@@ -242,9 +242,7 @@ public class MainActivity extends RoboAppCompatActivity {
      * Displays the the brightness control fragment.
      */
     public void showBrightnessDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        BrightnessControlFragment brightnessControl = BrightnessControlFragment.newInstance();
-        brightnessControl.show(fm, "fragment_brightness_control");
+
     }
 
 

@@ -275,8 +275,14 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                ((MainActivity) context).showBrightnessDialog();
-                return false;
+                FragmentManager fm = ((MainActivity) context).getSupportFragmentManager();
+                boolean isZone = isZone(section);
+                BrightnessControlFragment brightnessControl = BrightnessControlFragment
+                        .newInstance(gateway.getId(), isZone,
+                                isZone ? zones.get(relativePosition).getZone().getId() :
+                                        buttons.get(relativePosition).getButton().getId());
+                brightnessControl.show(fm, "fragment_brightness_control");
+                return true;
             }
         };
     }

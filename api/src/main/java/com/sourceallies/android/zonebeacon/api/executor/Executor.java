@@ -148,9 +148,6 @@ public abstract class Executor {
         commands.add(new OnOffCommand(command, status));
     }
 
-    public void addBrightnessCommand(Command, Integer){
-
-    }
 
     /**
      * Adds a command to the currently established connection. If no connection is established, an
