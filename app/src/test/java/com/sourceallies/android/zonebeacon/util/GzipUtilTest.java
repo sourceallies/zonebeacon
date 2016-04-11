@@ -43,7 +43,7 @@ public class GzipUtilTest extends ZoneBeaconSuite {
     }
 
     private static final int TEST_JSON_SIZE = 1463;
-    private static final String TEST_JSON =
+    public static final String TEST_JSON =
             "{\n" +
                     "   \"system_type\":[\n" +
                     "      \"1,CentraLite Elegance,1.0\"\n" +

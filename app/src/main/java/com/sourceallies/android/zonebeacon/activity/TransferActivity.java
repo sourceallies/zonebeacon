@@ -256,6 +256,7 @@ public class TransferActivity extends RoboAppCompatActivity
             dataSource.insertDatabaseJson(new JSONObject(GzipUtil.ungzip(message.getContent())));
             dataSource.close();
 
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         } catch (Exception e) {
             throw new RuntimeException("unable to uncompress message contents", e);
