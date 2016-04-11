@@ -58,7 +58,8 @@ android {
     lintOptions {
         abortOnError true
         disable 'GoogleAppIndexingWarning', 'AllowBackup', 'InvalidPackage', 'IconMissingDensityFolder',
-                'UnusedAttribute', 'ClickableViewAccessibility', 'IconDensities', 'GradleDependency'
+                'UnusedAttribute', 'ClickableViewAccessibility', 'IconDensities', 'GradleDependency',
+                'UseSparseArrays'
         textReport true
         textOutput 'stdout'
         xmlReport false
