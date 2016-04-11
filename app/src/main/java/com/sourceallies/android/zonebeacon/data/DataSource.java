@@ -845,9 +845,13 @@ public class DataSource {
             builder.append(" VALUES (");
 
             for (int j = 0; j < items.length; j++) {
-                builder.append("'");
-                builder.append(items[j]);
-                builder.append("'");
+                if (!items[j].equals("null")) {
+                    builder.append("'");
+                    builder.append(items[j].replace("'", "''")); // escape apostrophe
+                    builder.append("'");
+                } else {
+                    builder.append("null");
+                }
 
                 if (j != items.length - 1) {
                     builder.append(",");
