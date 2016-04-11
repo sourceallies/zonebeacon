@@ -120,6 +120,19 @@ public class DataSource {
     }
 
     /**
+     * Available to close the database after tests have finished running. Don't call
+     * in the production application outside of test code.
+     */
+    @VisibleForTesting
+    public synchronized static void forceCloseImmediate() {
+        if (instance != null && instance.openCounter.get() > 0) {
+            instance.openCounter.set(0);
+            instance.dbHelper.close();
+            instance = null;
+        }
+    }
+
+    /**
      * Get the currently open database
      *
      * @return sqlite database
