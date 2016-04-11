@@ -24,7 +24,6 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,15 +31,20 @@ import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.activity.MainActivity;
+import com.sourceallies.android.zonebeacon.api.CommandCallback;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.data.StatefulButton;
+import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
+import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import lombok.Setter;
+import java.util.Map;
 
 /**
  * Adapter used on the MainActivity of the app to display the buttons and zones available.
@@ -55,27 +59,95 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     private String zonesTitle;
     private String buttonsTitle;
 
+    private OnOffStatusUtil statusUtil;
+
     protected Gateway gateway;
-    protected List<Zone> zones;
-    protected List<Button> buttons;
+    protected List<StatefulZone> zones;
+    protected List<StatefulButton> buttons;
+
+    private List<ViewHolder> viewHolders;
 
     /**
      * Constructor for the spinnerAdapter.
      *
-     * @param zones   List of zones in the current gateway
-     * @param buttons List of buttons in the current gateway
+     * @param context context for the activity
+     * @param gateway the current gateway for the adapter
      */
-    public MainAdapter(Activity context, @NonNull Gateway gateway,
-                       @NonNull List<Zone> zones, @NonNull List<Button> buttons) {
+    public MainAdapter(@NonNull Activity context, @NonNull Gateway gateway) {
         this.context = context;
+        this.viewHolders = new ArrayList<>();
         this.executor = Executor.createForGateway(gateway);
 
         this.gateway = gateway;
-        this.zones = zones;
-        this.buttons = buttons;
 
         zonesTitle = context.getString(R.string.zones);
         buttonsTitle = context.getString(R.string.buttons);
+    }
+
+    /**
+     * Loads the OnOff statuses of the zones and buttons
+     *
+     * @param zones list of zones attached to the gateway
+     * @param buttons list of buttons attached to the gateway
+     * @param loadStatusMap 2D map returned from the status query. First key is the controller number (0 for no controller specified)
+     *                      Second key is the load number.
+     */
+    public void loadOnOffStatuses(@NonNull List<Zone> zones, @NonNull List<Button> buttons,
+                                  Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap) {
+        statusUtil = getOnOffStatusUtil(zones, buttons, loadStatusMap);
+        this.zones = statusUtil.getStatefulZones();
+        this.buttons = statusUtil.getStatefulButtons();
+
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Grab the new load states from the load status utils
+     */
+    @VisibleForTesting
+    protected void updateLoadStatus() {
+        this.zones = statusUtil.getStatefulZones();
+        this.buttons = statusUtil.getStatefulButtons();
+
+        for (ViewHolder holder : viewHolders) {
+            updateHolderSwitch(holder);
+        }
+    }
+
+    @VisibleForTesting
+    protected void updateHolderSwitch(ViewHolder holder) {
+        if (isZone(holder.section)) {
+            if (shouldToggleSwitch(holder.buttonSwitch.isChecked(),
+                    zones.get(holder.relativePosition).getLoadStatus())) {
+                holder.buttonSwitch.toggle();
+            }
+        } else {
+            if (shouldToggleSwitch(holder.buttonSwitch.isChecked(),
+                    buttons.get(holder.relativePosition).getLoadStatus())) {
+                holder.buttonSwitch.toggle();
+            }
+        }
+    }
+
+    @VisibleForTesting
+    protected boolean shouldToggleSwitch(boolean isChecked, Executor.LoadStatus newStatus) {
+        return (isChecked && newStatus == Executor.LoadStatus.OFF) ||
+                (!isChecked && newStatus == Executor.LoadStatus.ON);
+    }
+
+    /**
+     * Get the status utils to load the On Off status of the buttons and zones
+     *
+     * @param zones list of zones on the current gateway
+     * @param buttons list of buttons on the current gateway
+     * @param loadStatusMap status map returned from the status query
+     * @return utils used to get the on off status of buttons
+     */
+    @VisibleForTesting
+    protected OnOffStatusUtil getOnOffStatusUtil(@NonNull List<Zone> zones,
+                                                 @NonNull List<Button> buttons,
+                                                 Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap) {
+        return new OnOffStatusUtil(buttons, zones, loadStatusMap);
     }
 
     /**
@@ -130,11 +202,22 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * @param absolutePosition index out of all non-header items
      */
     @Override
-    public void onBindViewHolder(ViewHolder holder, int section, int relativePosition, int absolutePosition) {
-        if (isZone(section))
-            holder.title.setText(zones.get(relativePosition).getName());
-        else
-            holder.title.setText(buttons.get(relativePosition).getName());
+    public void onBindViewHolder(ViewHolder holder, int section, int relativePosition,
+                                 int absolutePosition) {
+        holder.section = section;
+        holder.relativePosition = relativePosition;
+
+        if (isZone(section)) {
+            holder.title.setText(zones.get(relativePosition).getZone().getName());
+            holder.buttonSwitch.setChecked(
+                    zones.get(relativePosition).getLoadStatus() == Executor.LoadStatus.ON
+            );
+        } else {
+            holder.title.setText(buttons.get(relativePosition).getButton().getName());
+            holder.buttonSwitch.setChecked(
+                    buttons.get(relativePosition).getLoadStatus() == Executor.LoadStatus.ON
+            );
+        }
 
         setItemClick(holder.root, holder.buttonSwitch, section, relativePosition);
 
@@ -161,16 +244,27 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 if (!isZone(section)) {
-                    executor.addCommands(buttons.get(relativePosition).getCommands(), getStatus(buttonSwitch));
+                    executor.addCommands(buttons.get(relativePosition).getButton().getCommands(),
+                            getStatus(buttonSwitch));
+                    statusUtil.setStates(buttons.get(relativePosition).getButton().getCommands(),
+                            getStatus(buttonSwitch) == Executor.LoadStatus.ON ?
+                                    Executor.LoadStatus.OFF : Executor.LoadStatus.ON);
                 } else {
-                    for (Button button : zones.get(relativePosition).getButtons()) {
+                    for (Button button : zones.get(relativePosition).getZone().getButtons()) {
                         executor.addCommands(button.getCommands(), getStatus(buttonSwitch));
+                        statusUtil.setStates(button.getCommands(),
+                                getStatus(buttonSwitch) == Executor.LoadStatus.ON ?
+                                        Executor.LoadStatus.OFF : Executor.LoadStatus.ON);
                     }
                 }
 
                 executor.execute(gateway);
 
-                buttonSwitch.setChecked(!buttonSwitch.isChecked());
+                // toggle the current button state with an animation
+                buttonSwitch.toggle();
+
+                statusUtil.invalidate();
+                updateLoadStatus();
             }
         };
     }
@@ -212,7 +306,13 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
                 .inflate(viewType == VIEW_TYPE_HEADER ?
                         R.layout.adapter_item_button_zone_header :
                         R.layout.adapter_item_button_zone, parent, false);
-        return new ViewHolder(v);
+        ViewHolder holder = new ViewHolder(v);
+
+        if (viewType == VIEW_TYPE_ITEM) {
+            viewHolders.add(holder);
+        }
+
+        return holder;
     }
 
     /**
@@ -247,6 +347,9 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
      * It allows them to be recycled.
      */
     protected class ViewHolder extends RecyclerView.ViewHolder {
+
+        public int section;
+        public int relativePosition;
 
         @NonNull
         public TextView title;

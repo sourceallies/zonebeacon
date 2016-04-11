@@ -26,7 +26,7 @@ import lombok.Setter;
  */
 public class ButtonCommandLink implements DatabaseTable {
 
-    public static final String TABLE_BUTTON_COMMAND_LINK = "button_command_link";
+    public static final String TABLE = "button_command_link";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_BUTTON_ID = "button_id";
     public static final String COLUMN_COMMAND_ID = "command_id";
@@ -38,16 +38,16 @@ public class ButtonCommandLink implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_BUTTON_COMMAND_LINK + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_BUTTON_ID + " integer not null, " +
             COLUMN_COMMAND_ID + " integer not null" +
             ");";
 
     private static final String[] INDEXES = {
-            "create index if not exists button_command_button_id_index on " + TABLE_BUTTON_COMMAND_LINK +
+            "create index if not exists button_command_button_id_index on " + TABLE +
                     " (" + COLUMN_BUTTON_ID + ");",
-            "create index if not exists button_command_command_id_index on " + TABLE_BUTTON_COMMAND_LINK +
+            "create index if not exists button_command_command_id_index on " + TABLE +
                     " (" + COLUMN_COMMAND_ID + ");"
     };
 
@@ -70,7 +70,7 @@ public class ButtonCommandLink implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_BUTTON_COMMAND_LINK;
+        return TABLE;
     }
 
     @Override

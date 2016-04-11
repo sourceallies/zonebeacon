@@ -17,7 +17,6 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
 import android.database.Cursor;
-import android.os.Handler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +26,7 @@ import lombok.Setter;
  */
 public class Gateway implements DatabaseTable {
 
-    public static final String TABLE_GATEWAY = "gateway";
+    public static final String TABLE = "gateway";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_IP_ADDRESS = "ip_address";
@@ -43,7 +42,7 @@ public class Gateway implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_GATEWAY + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_NAME + " varchar(255) not null, " +
             COLUMN_IP_ADDRESS + " varchar(255) not null, " +
@@ -52,7 +51,7 @@ public class Gateway implements DatabaseTable {
             ");";
 
     private static final String[] INDEXES = {
-            "create index if not exists gateway_system_type_id_index on " + TABLE_GATEWAY +
+            "create index if not exists gateway_system_type_id_index on " + TABLE +
                     " (" + COLUMN_SYSTEM_TYPE_ID + ");"
     };
 
@@ -83,7 +82,7 @@ public class Gateway implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_GATEWAY;
+        return TABLE;
     }
 
     @Override

@@ -28,7 +28,7 @@ import lombok.Setter;
  */
 public class Zone implements DatabaseTable {
 
-    public static final String TABLE_ZONE = "zone";
+    public static final String TABLE = "zone";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
 
@@ -38,7 +38,7 @@ public class Zone implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_ZONE + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_NAME + " varchar(255) not null" +
             ");";
@@ -62,7 +62,7 @@ public class Zone implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_ZONE;
+        return TABLE;
     }
 
     @Override

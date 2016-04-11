@@ -18,6 +18,10 @@ package com.sourceallies.android.zonebeacon.api.interpreter;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Command;
+import com.sourceallies.android.zonebeacon.data.model.CommandType;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Adheres to the strategy pattern. This interface can be implemented in various different ways.
@@ -25,7 +29,9 @@ import com.sourceallies.android.zonebeacon.data.model.Command;
  * Once implemented, that interpreter can be loaded into the app so that we can support different
  * control unit types easily.
  */
-public interface Interpreter {
+public abstract class Interpreter {
+
+    public static final int SINGLE_MCP_SYSTEM = -1;
 
     /**
      * Receives a command that is stored in the database and turns it into an executable string
@@ -35,7 +41,7 @@ public interface Interpreter {
      * @param status ON or OFF, representing the current state of the light
      * @return a string representing the command for the control unit.
      */
-    String getExecutable(Command command, Executor.LoadStatus status);
+    public abstract String getExecutable(Command command, Executor.LoadStatus status);
 
     /**
      * Receives a command that is stored in the database and turns it into an executable string
@@ -46,7 +52,7 @@ public interface Interpreter {
      * @param status ON or OFF, representing the current state of the light
      * @return a string representing the command for the control unit.
      */
-    String getExecutable(Command command, Integer brightnessLevel, Executor.LoadStatus status);
+    public abstract String getExecutable(Command command, Integer brightnessLevel, Executor.LoadStatus status);
 
     /**
      * Processes the response provided by the control unit and hands it off back to the app.
@@ -56,6 +62,51 @@ public interface Interpreter {
      * @param response the response from the control unit.
      * @return a processed response.
      */
-    String processResponse(String response);
+    public abstract String processResponse(String response);
 
+    /**
+     * Get the command string that will be sent to the system to query the active loads.
+     *
+     * @param controllerNumber The number for the controller we want to query. Can be zero if
+     *                         our system only has a single controller.
+     * @return a String representing the command to query what loads are activated.
+     */
+    public abstract String getQueryActiveLoadsCommandString(int controllerNumber);
+
+    /**
+     * Decode the response from the system and return a list of what loads are currently active.
+     *
+     * @param statusString the response from the system when it is sent the
+     *                       Interpreter#queryActiveLoadsCommand;
+     * @return List of loads that are currently active.
+     */
+    public abstract Map<Integer, Executor.LoadStatus> processActiveLoadsResponse(String statusString);
+
+    /**
+     * Get the command string that will be sent to the system to query the active loads.
+     *
+     * @return a String representing the command to query what loads are activated.
+     */
+    public Command buildQueryActiveLoadsCommand(int controllerNumber) {
+        Command command = new Command();
+        command.setName("Query Active Loads");
+        command.setId(-1);
+        command.setGatewayId(-1);
+        command.setNumber(0);
+        command.setControllerNumber(controllerNumber);
+
+        CommandType type = new CommandType();
+        type.setId(-1);
+        type.setActivateControllerSelection(false);
+        type.setShownInCommandList(false);
+        type.setName("Query Active Loads");
+        type.setSystemTypeId(-1);
+
+        type.setBaseSerialOffCode(getQueryActiveLoadsCommandString(controllerNumber));
+        type.setBaseSerialOnCode(getQueryActiveLoadsCommandString(controllerNumber));
+
+        command.setCommandType(type);
+
+        return command;
+    }
 }

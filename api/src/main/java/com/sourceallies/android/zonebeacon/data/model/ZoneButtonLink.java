@@ -26,7 +26,7 @@ import lombok.Setter;
  */
 public class ZoneButtonLink implements DatabaseTable {
 
-    public static final String TABLE_ZONE_BUTTON_LINK = "zone_button_link";
+    public static final String TABLE = "zone_button_link";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_ZONE_ID = "zone_id";
     public static final String COLUMN_BUTTON_ID = "button_id";
@@ -38,16 +38,16 @@ public class ZoneButtonLink implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_ZONE_BUTTON_LINK + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_ZONE_ID + " integer not null, " +
             COLUMN_BUTTON_ID + " integer not null" +
             ");";
 
     private static final String[] INDEXES = {
-            "create index if not exists zone_button_button_id_index on " + TABLE_ZONE_BUTTON_LINK +
+            "create index if not exists zone_button_button_id_index on " + TABLE +
                     " (" + COLUMN_BUTTON_ID + ");",
-            "create index if not exists zone_button_zone_id_index on " + TABLE_ZONE_BUTTON_LINK +
+            "create index if not exists zone_button_zone_id_index on " + TABLE +
                     " (" + COLUMN_ZONE_ID + ");"
     };
 
@@ -70,7 +70,7 @@ public class ZoneButtonLink implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_ZONE_BUTTON_LINK;
+        return TABLE;
     }
 
     @Override
