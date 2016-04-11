@@ -17,7 +17,6 @@
 package com.sourceallies.android.zonebeacon.data.model;
 
 import android.database.Cursor;
-import android.os.Handler;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,7 +26,7 @@ import lombok.Setter;
  */
 public class Command implements DatabaseTable {
 
-    public static final String TABLE_COMMAND = "command";
+    public static final String TABLE = "command";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_GATEWAY_ID = "gateway_id";
@@ -45,7 +44,7 @@ public class Command implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_COMMAND + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_NAME + " varchar(255) not null, " +
             COLUMN_GATEWAY_ID + " integer not null, " +
@@ -55,9 +54,9 @@ public class Command implements DatabaseTable {
             ");";
 
     private static final String[] INDEXES = {
-            "create index if not exists gateway_id_index on " + TABLE_COMMAND +
+            "create index if not exists gateway_id_index on " + TABLE +
                     " (" + COLUMN_GATEWAY_ID + ");",
-            "create index if not exists command_type_id_index on " + TABLE_COMMAND +
+            "create index if not exists command_type_id_index on " + TABLE +
                     " (" + COLUMN_COMMAND_TYPE_ID + ");"
     };
 
@@ -96,7 +95,7 @@ public class Command implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_COMMAND;
+        return TABLE;
     }
 
     @Override

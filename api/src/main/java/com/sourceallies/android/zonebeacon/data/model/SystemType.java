@@ -26,7 +26,7 @@ import lombok.Setter;
  */
 public class SystemType implements DatabaseTable {
 
-    public static final String TABLE_SYSTEM_TYPE = "system_type";
+    public static final String TABLE = "system_type";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
     public static final String COLUMN_VERSION = "version";
@@ -38,7 +38,7 @@ public class SystemType implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_SYSTEM_TYPE + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_NAME + " varchar(255) not null, " +
             COLUMN_VERSION + " varchar(32)" +
@@ -67,7 +67,7 @@ public class SystemType implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_SYSTEM_TYPE;
+        return TABLE;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class SystemType implements DatabaseTable {
     public String[] getDefaultDataStatements() {
         String[] defaults = new String[DEFAULTS.length];
         for (int i = 0; i < DEFAULTS.length; i++) {
-            defaults[i] = "INSERT INTO '" + TABLE_SYSTEM_TYPE + "' ('" + COLUMN_ID + "', '" +
+            defaults[i] = "INSERT INTO '" + TABLE + "' ('" + COLUMN_ID + "', '" +
                     COLUMN_NAME + "', '" + COLUMN_VERSION + "') VALUES (" + DEFAULTS[i] + ");";
         }
 

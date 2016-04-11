@@ -22,12 +22,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
+
+import java.lang.reflect.Method;
 
 import roboguice.activity.RoboFragmentActivity;
 
@@ -41,6 +44,15 @@ public abstract class ZoneBeaconRobolectricSuite {
     @Before
     public final void setup() {
         MockitoAnnotations.initMocks(this);
+    }
+
+    @After
+    public final void teardown() {
+        try {
+            Class clazz = Class.forName("com.sourceallies.android.zonebeacon.data.DataSource");
+            Method method = clazz.getMethod("forceCloseImmediate");
+            method.invoke(null);
+        } catch (Throwable e) { }
     }
 
     /**

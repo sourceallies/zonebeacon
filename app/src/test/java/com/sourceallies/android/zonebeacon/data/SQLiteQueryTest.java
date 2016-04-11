@@ -21,13 +21,18 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.data.model.Button;
+import com.sourceallies.android.zonebeacon.data.model.ButtonCommandLink;
 import com.sourceallies.android.zonebeacon.data.model.CommandType;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.SystemType;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.data.model.ZoneButtonLink;
 import com.sourceallies.android.zonebeacon.util.FixtureLoader;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.RuntimeEnvironment;
@@ -343,6 +348,73 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals(10, zones.get(2).getButtons().get(2).getId());
     }
 
+    @Test(expected = JSONException.class)
+    public void test_getDatabaseJson_containsSystemType() throws Exception {
+        getJson().getJSONArray(SystemType.TABLE);
+    }
+
+    @Test(expected = JSONException.class)
+    public void test_getDatabaseJson_containsCommandType() throws Exception {
+        getJson().getJSONArray(CommandType.TABLE);
+    }
+
+    @Test
+    public void test_getDatabaseJson_containsGateway() throws Exception {
+        JSONArray json = getJson().getJSONArray(Gateway.TABLE);
+        assertNotNull(json);
+        assertEquals(2, json.length());
+        assertEquals("1,Gateway 1,192.168.1.150,11000,101", json.get(0));
+    }
+
+    @Test
+    public void test_getDatabaseJson_containsCommand() throws Exception {
+        JSONArray json = getJson().getJSONArray(Command.TABLE);
+        assertNotNull(json);
+        assertEquals(16, json.length());
+        assertEquals("1,command 1,1,1,1,1", json.get(0));
+    }
+
+    @Test
+    public void test_getDatabaseJson_containsButton() throws Exception {
+        JSONArray json = getJson().getJSONArray(Button.TABLE);
+        assertNotNull(json);
+        assertEquals(10, json.length());
+        assertEquals("1,button 1", json.get(0));
+    }
+
+    @Test
+    public void test_getDatabaseJson_containsButtonCommandLink() throws Exception {
+        JSONArray json = getJson().getJSONArray(ButtonCommandLink.TABLE);
+        assertNotNull(json);
+        assertEquals(18, json.length());
+        assertEquals("1,1,1", json.get(0));
+    }
+
+    @Test
+    public void test_getDatabaseJson_containsZone() throws Exception {
+        JSONArray json = getJson().getJSONArray(Zone.TABLE);
+        assertNotNull(json);
+        assertEquals(5, json.length());
+        assertEquals("1,zone 1", json.get(0));
+    }
+
+    @Test
+    public void test_getDatabaseJson_containsZoneButtonLink() throws Exception {
+        JSONArray json = getJson().getJSONArray(ZoneButtonLink.TABLE);
+        assertNotNull(json);
+        assertEquals(14, json.length());
+        assertEquals("1,1,1", json.get(0));
+    }
+
+    @Test
+    public void test_insertDatabaseJson() throws Exception {
+        String originalDatabaseJson = source.getDatabaseJson();
+        source.insertDatabaseJson(getJson());
+        String newDatabaseJson = source.getDatabaseJson();
+
+        assertEquals(originalDatabaseJson, newDatabaseJson);
+    }
+
     private int getTableCount(String table) {
         Cursor cursor = source.getDatabase().rawQuery("SELECT count(*) FROM " + table, null);
         if (cursor != null && cursor.moveToFirst()) {
@@ -359,6 +431,11 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         SQLiteDatabase database = source.getDatabase();
         FixtureLoader loader = new FixtureLoader();
         loader.loadFixturesToDatabase(database);
+    }
+
+    private JSONObject getJson() throws Exception {
+        String s = source.getDatabaseJson();
+        return new JSONObject(s);
     }
 
 }
