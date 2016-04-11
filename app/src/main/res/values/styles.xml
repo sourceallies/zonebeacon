@@ -22,6 +22,7 @@
         <item name="list_item_divider">@color/black_divider</item>
         <item name="primary_text_color">@color/light_primary_text</item>
         <item name="secondary_text_color">@color/light_secondary_text</item>
+        <item name="nearby_circle_color">@color/nearby_circle_light</item>
     </style>
 
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">

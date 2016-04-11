@@ -28,7 +28,7 @@ import lombok.Setter;
  */
 public class Button implements DatabaseTable {
 
-    public static final String TABLE_BUTTON = "button";
+    public static final String TABLE = "button";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_NAME = "name";
 
@@ -38,7 +38,7 @@ public class Button implements DatabaseTable {
     };
 
     private static final String DATABASE_CREATE = "create table if not exists " +
-            TABLE_BUTTON + " (" +
+            TABLE + " (" +
             COLUMN_ID + " integer primary key autoincrement, " +
             COLUMN_NAME + " varchar(255) not null" +
             ");";
@@ -62,7 +62,7 @@ public class Button implements DatabaseTable {
 
     @Override
     public String getTableName() {
-        return TABLE_BUTTON;
+        return TABLE;
     }
 
     @Override

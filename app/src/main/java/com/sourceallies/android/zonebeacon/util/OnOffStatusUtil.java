@@ -16,6 +16,7 @@
 
 package com.sourceallies.android.zonebeacon.util;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.VisibleForTesting;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
@@ -43,6 +44,8 @@ public class OnOffStatusUtil {
 
     private List<Button> buttons;
     private List<Zone> zones;
+
+    @SuppressLint({"UseSparseArrays"})
     private Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap;
 
     protected List<StatefulButton> statefulButtons = null;

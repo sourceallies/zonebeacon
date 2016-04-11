@@ -44,4 +44,7 @@
     <color name="light_secondary_text">#8C000000</color>
     <color name="dark_secondary_text">#8CFFFFFF</color>
 
+    <color name="nearby_circle_light">#77000000</color>
+    <color name="nearby_circle_dark">#77FFFFFF</color>
+
 </resources>

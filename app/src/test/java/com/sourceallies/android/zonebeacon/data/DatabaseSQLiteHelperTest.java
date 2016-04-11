@@ -27,7 +27,6 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.robolectric.RuntimeEnvironment;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -95,14 +94,14 @@ public class DatabaseSQLiteHelperTest extends ZoneBeaconRobolectricSuite {
     }
 
     private void verifyDropStatement() {
-        verify(database).execSQL("drop table if exists " + Button.TABLE_BUTTON);
-        verify(database).execSQL("drop table if exists " + ButtonCommandLink.TABLE_BUTTON_COMMAND_LINK);
-        verify(database).execSQL("drop table if exists " + Command.TABLE_COMMAND);
-        verify(database).execSQL("drop table if exists " + CommandType.TABLE_COMMAND_TYPE);
-        verify(database).execSQL("drop table if exists " + Gateway.TABLE_GATEWAY);
-        verify(database).execSQL("drop table if exists " + SystemType.TABLE_SYSTEM_TYPE);
-        verify(database).execSQL("drop table if exists " + Zone.TABLE_ZONE);
-        verify(database).execSQL("drop table if exists " + ZoneButtonLink.TABLE_ZONE_BUTTON_LINK);
+        verify(database).execSQL("drop table if exists " + Button.TABLE);
+        verify(database).execSQL("drop table if exists " + ButtonCommandLink.TABLE);
+        verify(database).execSQL("drop table if exists " + Command.TABLE);
+        verify(database).execSQL("drop table if exists " + CommandType.TABLE);
+        verify(database).execSQL("drop table if exists " + Gateway.TABLE);
+        verify(database).execSQL("drop table if exists " + SystemType.TABLE);
+        verify(database).execSQL("drop table if exists " + Zone.TABLE);
+        verify(database).execSQL("drop table if exists " + ZoneButtonLink.TABLE);
         verifyNoMoreInteractions(database);
     }
 

@@ -15,88 +15,98 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/colorPrimary"
-              android:layout_weight="10" >
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:paddingLeft="32dp"
-        android:layout_weight="2"
-        android:textStyle="bold"
-        android:textColor="@android:color/white"
-        android:paddingRight="32dp"
-        android:textSize="28sp"
-        android:text="@string/initial_gateway_setup"/>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/colorPrimary">
 
     <LinearLayout
-        android:layout_width="230dp"
-        android:layout_height="0dp"
         android:orientation="vertical"
-        android:gravity="center"
-        android:layout_gravity="center"
-        android:layout_weight="5">
+        android:layout_gravity="center_horizontal"
+        android:layout_width="230dp"
+        android:layout_height="wrap_content" >
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/name"
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="92dp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:layout_marginTop="24dp"
+            android:text="@string/initial_gateway_setup"/>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="textCapWords|textAutoCorrect"
-                android:hint="@string/name" />
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/ip_address"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_gravity="center">
 
-            <EditText
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="textUri"
-                android:hint="@string/ip_address" />
-        </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/port"
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:inputType="textCapWords|textAutoCorrect"
+                    android:hint="@string/name" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/ip_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:inputType="textUri"
+                    android:hint="@string/ip_address" />
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/port"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:singleLine="true"
+                    android:hint="@string/port" />
+            </android.support.design.widget.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:paddingTop="32dp"
+            android:paddingBottom="32dp"
+            android:text="@string/initial_gateway_help"/>
 
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:singleLine="true"
-                android:hint="@string/port" />
-        </android.support.design.widget.TextInputLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/transfer_from_another_device"
+            android:id="@+id/transfer_button"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="64dp" />
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="3"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textColor="@android:color/white"
-        android:paddingLeft="64dp"
-        android:paddingRight="64dp"
-        android:textSize="16sp"
-        android:text="@string/initial_gateway_help"/>
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="64dp" />
-</LinearLayout>
+</ScrollView>
