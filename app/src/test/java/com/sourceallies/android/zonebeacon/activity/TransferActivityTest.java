@@ -31,6 +31,7 @@ import com.google.android.gms.nearby.messages.MessageListener;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.util.GzipUtil;
+import com.sourceallies.android.zonebeacon.util.GzipUtilTest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -102,7 +103,7 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
     public void test_messageListenerInvokesOnFound() throws Exception {
         when(activity.getDataSource()).thenReturn(dataSource);
 
-        Message message = new Message(GzipUtil.gzip("{}"));
+        Message message = new Message(GzipUtil.gzip(GzipUtilTest.TEST_JSON));
         activity.getMessageListener().onFound(message);
 
         //verify(dataSource).insertDatabaseJson(new JSONObject("{}"));

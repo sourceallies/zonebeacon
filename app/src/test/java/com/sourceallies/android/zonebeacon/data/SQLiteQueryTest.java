@@ -406,6 +406,15 @@ public class SQLiteQueryTest extends ZoneBeaconRobolectricSuite {
         assertEquals("1,1,1", json.get(0));
     }
 
+    @Test
+    public void test_insertDatabaseJson() throws Exception {
+        String originalDatabaseJson = source.getDatabaseJson();
+        source.insertDatabaseJson(getJson());
+        String newDatabaseJson = source.getDatabaseJson();
+
+        assertEquals(originalDatabaseJson, newDatabaseJson);
+    }
+
     private int getTableCount(String table) {
         Cursor cursor = source.getDatabase().rawQuery("SELECT count(*) FROM " + table, null);
         if (cursor != null && cursor.moveToFirst()) {

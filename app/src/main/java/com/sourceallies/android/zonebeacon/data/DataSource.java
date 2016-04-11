@@ -777,8 +777,18 @@ public class DataSource {
      *
      * @param json the json object to process.
      */
-    public void insertDatabaseJson(JSONObject json) {
-        // TODO
+    public void insertDatabaseJson(JSONObject json) throws JSONException {
+        beginTransaction();
+
+        jsonToSql(json.getJSONArray(Gateway.TABLE), Gateway.TABLE);
+        jsonToSql(json.getJSONArray(Command.TABLE), Command.TABLE);
+        jsonToSql(json.getJSONArray(Button.TABLE), Button.TABLE);
+        jsonToSql(json.getJSONArray(ButtonCommandLink.TABLE), ButtonCommandLink.TABLE);
+        jsonToSql(json.getJSONArray(Zone.TABLE), Zone.TABLE);
+        jsonToSql(json.getJSONArray(ZoneButtonLink.TABLE), ZoneButtonLink.TABLE);
+
+        setTransactionSuccessful();
+        endTransaction();
     }
 
     /**
@@ -810,6 +820,43 @@ public class DataSource {
         }
 
         return array;
+    }
+
+    /**
+     * Converts a json array of rows to sql insert statements and then puts them into the correct
+     * table in the database.
+     *
+     * @param array the array of rows. Each should be a comma separated string.
+     * @param tableName the name of the table to insert data into.
+     * @throws JSONException
+     */
+    private void jsonToSql(JSONArray array, String tableName) throws JSONException {
+        // first thing, delete everything currently in the table
+        database.execSQL("DELETE FROM " + tableName + ";");
+
+        // insert each row item by item
+        for (int i = 0; i < array.length(); i++) {
+            String row = array.getString(i);
+            String[] items = row.split(",");
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("INSERT INTO ");
+            builder.append(tableName);
+            builder.append(" VALUES (");
+
+            for (int j = 0; j < items.length; j++) {
+                builder.append("'");
+                builder.append(items[j]);
+                builder.append("'");
+
+                if (j != items.length - 1) {
+                    builder.append(",");
+                }
+            }
+
+            builder.append(");");
+            database.execSQL(builder.toString());
+        }
     }
 
     // You could call this sometime on the system to insert some dummy data for the UI.
