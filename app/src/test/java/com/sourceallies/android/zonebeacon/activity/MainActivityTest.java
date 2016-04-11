@@ -29,6 +29,9 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
+import com.sourceallies.android.zonebeacon.api.QueryLoadsCallback;
+import com.sourceallies.android.zonebeacon.api.executor.Executor;
+import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import org.junit.Before;
@@ -39,6 +42,7 @@ import org.robolectric.Robolectric;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -47,6 +51,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doNothing;
@@ -59,6 +65,10 @@ import static org.robolectric.Shadows.shadowOf;
 
 public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
+    @Mock
+    private DataSource dataSource;
+    @Mock
+    private Executor executor;
     @Mock
     private SharedPreferences sharedPrefs;
     @Mock
@@ -76,7 +86,14 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         activity = Robolectric.setupActivity(MainActivity.class);
         activity = spy(activity);
 
+        doNothing().when(activity).recreate();
+        doNothing().when(executor).queryActiveLoads(any(Gateway.class), any(QueryLoadsCallback.class));
+        doReturn(new ArrayList()).when(dataSource).findButtons(any(Gateway.class));
+        doReturn(new ArrayList()).when(dataSource).findZones(any(Gateway.class));
+
         doNothing().when(recycler).setLayoutManager(any(RecyclerView.LayoutManager.class));
+        doReturn(executor).when(activity).getExecutor();
+        doReturn(dataSource).when(activity).getDataSource();
 
         adapter = createAdapter();
         activity.setSpinnerAdapter(adapter);
@@ -129,6 +146,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertNotNull(activity.getSpinner());
         assertNotNull(activity.getDim());
         assertNotNull(activity.getRecycler());
+        assertNotNull(activity.getSwipeRefreshLayout());
     }
 
     @Test
@@ -253,7 +271,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
     public void test_getHelp() {
         activity.getHelpListener().onClick(null);
         verify(activity).collapseFab();
-        verify(activity).openOption(null);
+        verify(activity).openOption(GetHelpActivity.class);
     }
 
     @Test
@@ -271,7 +289,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
         when(item.getItemId()).thenReturn(R.id.transfer_settings);
         activity.onOptionsItemSelected(item);
-        verify(activity).openOption(null);
+        verify(activity).openOption(TransferActivity.class);
     }
 
     @Test
@@ -354,5 +372,32 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         config.orientation = Configuration.ORIENTATION_PORTRAIT;
         doReturn(false).when(res).getBoolean(R.bool.tablet);
         assertEquals(1, activity.getColumnCount());
+    }
+
+    @Test
+    public void test_queryCallback() {
+        Runnable runnable = Mockito.mock(Runnable.class);
+        doReturn(runnable).when(activity).setLoadStatusRunnable(any(Gateway.class), anyList(), anyList(), anyMap());
+        activity.getQueryCallback(activity, Mockito.mock(Gateway.class), Mockito.mock(List.class), Mockito.mock(List.class))
+            .onResponse(Mockito.mock(Map.class));
+
+        verify(activity).runOnUiThread(runnable);
+    }
+
+    @Test
+    public void test_setLoadRunnable() {
+        doNothing().when(activity).loadOnOffStatusesToAdapter(anyList(), anyList(), anyMap());
+        activity.setLoadStatusRunnable(Mockito.mock(Gateway.class), Mockito.mock(List.class), Mockito.mock(List.class), Mockito.mock(Map.class))
+                .run();
+
+        verify(activity).loadOnOffStatusesToAdapter(anyList(), anyList(), anyMap());
+    }
+
+    @Test
+    public void test_swipeRefreshListener() {
+        doNothing().when(activity).setRecycler();
+        activity.getRefreshListener(activity).onRefresh();
+
+        verify(activity).setRecycler();
     }
 }

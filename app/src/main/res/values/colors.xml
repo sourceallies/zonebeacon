@@ -38,5 +38,13 @@
     <color name="white_pressed">#f1f1f1</color>
 
     <color name="appIntro1">#222222</color>
+    
+    <color name="light_primary_text">#E2000000</color>
+    <color name="dark_primary_text">#E2FFFFFF</color>
+    <color name="light_secondary_text">#8C000000</color>
+    <color name="dark_secondary_text">#8CFFFFFF</color>
+
+    <color name="nearby_circle_light">#77000000</color>
+    <color name="nearby_circle_dark">#77FFFFFF</color>
 
 </resources>

@@ -22,5 +22,8 @@
         <item name="dim">@color/dark_dim</item>
         <item name="list_item_background">@color/dark_list_item</item>
         <item name="list_item_divider">@color/white_divider</item>
+        <item name="primary_text_color">@color/dark_primary_text</item>
+        <item name="secondary_text_color">@color/dark_secondary_text</item>
+        <item name="nearby_circle_color">@color/nearby_circle_dark</item>
     </style>
 </resources>

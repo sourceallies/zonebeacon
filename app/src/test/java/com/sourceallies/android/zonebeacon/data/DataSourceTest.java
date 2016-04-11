@@ -41,7 +41,6 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class DataSourceTest extends ZoneBeaconRobolectricSuite {
@@ -113,13 +112,13 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     @Test
     public void test_insertGateway() {
         source.insertNewGateway("Test Gateway", "192.168.1.100", 11000);
-        verify(database).insert(Mockito.eq(Gateway.TABLE_GATEWAY), anyString(), any(ContentValues.class));
+        verify(database).insert(Mockito.eq(Gateway.TABLE), anyString(), any(ContentValues.class));
     }
 
     @Test
     public void test_deleteGateway() {
         source.deleteGateway(1);
-        verify(database).delete(Gateway.TABLE_GATEWAY, "_id = 1", null);
+        verify(database).delete(Gateway.TABLE, "_id = 1", null);
     }
 
     @Test
@@ -294,13 +293,13 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
         commandType.setId(1);
 
         source.insertNewCommand("command 1", 1, 1, commandType, 1);
-        verify(database).insert(eq(Command.TABLE_COMMAND), anyString(), any(ContentValues.class));
+        verify(database).insert(eq(Command.TABLE), anyString(), any(ContentValues.class));
     }
 
     @Test
     public void test_deleteCommand() {
         source.deleteCommand(1);
-        verify(database).delete(Command.TABLE_COMMAND, "_id = 1", null);
+        verify(database).delete(Command.TABLE, "_id = 1", null);
     }
 
     @Test
@@ -349,7 +348,7 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     public void test_insertButton() {
         ContentValues values = new ContentValues(1);
         values.put("name", "test button");
-        when(database.insert(Button.TABLE_BUTTON, null, values)).thenReturn(1L);
+        when(database.insert(Button.TABLE, null, values)).thenReturn(1L);
 
         List<Command> commands = new ArrayList<>();
         Command command1 = new Command();
@@ -361,8 +360,8 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
 
         source.insertNewButton("test button", commands);
 
-        verify(database).insert(Button.TABLE_BUTTON, null, values);
-        verify(database, times(2)).insert(eq(ButtonCommandLink.TABLE_BUTTON_COMMAND_LINK),
+        verify(database).insert(Button.TABLE, null, values);
+        verify(database, times(2)).insert(eq(ButtonCommandLink.TABLE),
                 anyString(), any(ContentValues.class));
     }
 
@@ -452,7 +451,7 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
     public void test_insertZone() {
         ContentValues values = new ContentValues(1);
         values.put("name", "test zone");
-        when(database.insert(Zone.TABLE_ZONE, null, values)).thenReturn(1L);
+        when(database.insert(Zone.TABLE, null, values)).thenReturn(1L);
 
         List<Button> buttons = new ArrayList<>();
         Button button1 = new Button();
@@ -464,8 +463,8 @@ public class DataSourceTest extends ZoneBeaconRobolectricSuite {
 
         source.insertNewZone("test zone", buttons);
 
-        verify(database).insert(Zone.TABLE_ZONE, null, values);
-        verify(database, times(2)).insert(eq(ZoneButtonLink.TABLE_ZONE_BUTTON_LINK),
+        verify(database).insert(Zone.TABLE, null, values);
+        verify(database, times(2)).insert(eq(ZoneButtonLink.TABLE),
                 anyString(), any(ContentValues.class));
     }
 
