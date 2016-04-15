@@ -132,7 +132,8 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
-        percent.setText(progress + "%");
+        String text = "%s%";
+        percent.setText(text.replace("%s", progress + ""));
 
         // set the alpha level of the image equal to the percent value
         float ratio = (float) progress / 100;
