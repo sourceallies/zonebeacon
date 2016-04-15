@@ -238,13 +238,6 @@ public class MainActivity extends RoboAppCompatActivity {
         });
     }
 
-    /**
-     * Displays the the brightness control fragment.
-     */
-    public void showBrightnessDialog() {
-
-    }
-
 
     /**
      * Creates the adapter for the toolbar spinner that displays the gateways

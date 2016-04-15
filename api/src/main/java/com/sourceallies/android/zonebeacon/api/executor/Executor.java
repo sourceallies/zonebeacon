@@ -166,7 +166,7 @@ public abstract class Executor {
             throw new RuntimeException("Brightness must be between 1 and 99");
         }
 
-        commands.add(new OnOffCommand(command, LoadStatus.OFF, brightness));
+        commands.add(new OnOffCommand(command, status, brightness));
     }
 
     /**
