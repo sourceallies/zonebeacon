@@ -238,8 +238,8 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
     }
 
     @VisibleForTesting
-     protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch,
-                                                     final int section, final int relativePosition) {
+    protected View.OnClickListener getClickListener(final SwitchCompat buttonSwitch,
+                                                    final int section, final int relativePosition) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -277,11 +277,14 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
             public boolean onLongClick(View v) {
                 FragmentManager fm = ((MainActivity) context).getSupportFragmentManager();
                 boolean isZone = isZone(section);
+
                 BrightnessControlFragment brightnessControl = BrightnessControlFragment
                         .newInstance(gateway.getId(), isZone,
                                 isZone ? zones.get(relativePosition).getZone().getId() :
                                         buttons.get(relativePosition).getButton().getId());
+
                 brightnessControl.show(fm, "fragment_brightness_control");
+
                 return true;
             }
         };
