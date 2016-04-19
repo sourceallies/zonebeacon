@@ -17,6 +17,8 @@
 package com.sourceallies.android.zonebeacon.adapter;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +26,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.sourceallies.android.zonebeacon.R;
+import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
+import com.sourceallies.android.zonebeacon.activity.MainActivity;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.StatefulButton;
 import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
 
 import org.junit.Before;
@@ -44,14 +49,22 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-public class MainAdapterTest extends ZoneBeaconSuite {
+public class MainAdapterTest extends ZoneBeaconRobolectricSuite {
 
     private static final String ZONES_TITLE = "Zones";
     private static final String BUTTONS_TITLE = "Buttons";
 
     @Mock
-    Activity context;
+    MainActivity context;
     @Mock
     LayoutInflater inflater;
     @Mock
@@ -72,22 +85,24 @@ public class MainAdapterTest extends ZoneBeaconSuite {
     OnOffStatusUtil onOffStatusUtil;
     @Mock
     Executor executor;
+    @Mock
+    BrightnessControlFragment brightnessControlFragment;
 
     MainAdapter adapter;
 
     @Before
     public void setUp() {
-        Mockito.when(context.getLayoutInflater()).thenReturn(inflater);
+        when(context.getLayoutInflater()).thenReturn(inflater);
         Mockito.doReturn(view).when(inflater).inflate(Mockito.anyInt(), Mockito.any(ViewGroup.class), Mockito.eq(false));
         Mockito.doReturn(title).when(view).findViewById(R.id.title);
         Mockito.doReturn(fabSpacer).when(view).findViewById(R.id.fab_spacer);
         Mockito.doReturn(View.VISIBLE).when(fabSpacer).getVisibility();
 
-        Mockito.when(context.getString(R.string.zones)).thenReturn(ZONES_TITLE);
-        Mockito.when(context.getString(R.string.buttons)).thenReturn(BUTTONS_TITLE);
+        when(context.getString(R.string.zones)).thenReturn(ZONES_TITLE);
+        when(context.getString(R.string.buttons)).thenReturn(BUTTONS_TITLE);
 
-        Mockito.when(gateway.getIpAddress()).thenReturn("192.168.1.150");
-        Mockito.when(gateway.getPortNumber()).thenReturn(11000);
+        when(gateway.getIpAddress()).thenReturn("192.168.1.150");
+        when(gateway.getPortNumber()).thenReturn(11000);
 
         Mockito.doNothing().when(executor).execute(Mockito.any(Gateway.class));
         Mockito.doNothing().when(title).setText(Mockito.anyString());
@@ -100,7 +115,14 @@ public class MainAdapterTest extends ZoneBeaconSuite {
                 gateway
         ));
 
-        Mockito.when(adapter.getOnOffStatusUtil(Mockito.anyList(), Mockito.anyList(), Mockito.anyMap()))
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+                super.onChanged();
+            }
+        });
+
+        when(adapter.getOnOffStatusUtil(Mockito.anyList(), Mockito.anyList(), Mockito.anyMap()))
                 .thenReturn(onOffStatusUtil);
     }
 
@@ -228,7 +250,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         );
 
         adapter.onBindHeaderViewHolder(viewHolder, 0);
-        Mockito.verify(title).setText(ZONES_TITLE);
+        verify(title).setText(ZONES_TITLE);
     }
 
     @Test
@@ -243,7 +265,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         );
 
         adapter.onBindHeaderViewHolder(viewHolder, 1);
-        Mockito.verify(title).setText(BUTTONS_TITLE);
+        verify(title).setText(BUTTONS_TITLE);
     }
 
     @Test
@@ -258,7 +280,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         );
 
         adapter.onBindViewHolder(viewHolder, 0, 0, -1);
-        Mockito.verify(title).setText("Test Zone 0");
+        verify(title).setText("Test Zone 0");
     }
 
     @Test
@@ -273,7 +295,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         );
 
         adapter.onBindViewHolder(viewHolder, 1, 0, -1);
-        Mockito.verify(title).setText("Test Button 0");
+        verify(title).setText("Test Button 0");
     }
 
     @Test
@@ -288,7 +310,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         );
 
         adapter.onCreateViewHolder(parent, -2); // View type header
-        Mockito.verify(inflater)
+        verify(inflater)
                 .inflate(Mockito.eq(R.layout.adapter_item_button_zone_header),
                         Mockito.any(ViewGroup.class),
                         Mockito.anyBoolean());
@@ -306,7 +328,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         );
 
         MainAdapter.ViewHolder holder = adapter.onCreateViewHolder(parent, -1); // View type item
-        Mockito.verify(inflater)
+        verify(inflater)
                 .inflate(Mockito.eq(R.layout.adapter_item_button_zone),
                         Mockito.any(ViewGroup.class),
                         Mockito.anyBoolean());
@@ -323,10 +345,10 @@ public class MainAdapterTest extends ZoneBeaconSuite {
                 getMap()
         );
 
-        Mockito.when(buttonSwitch.isChecked()).thenReturn(true);
+        when(buttonSwitch.isChecked()).thenReturn(true);
         assertEquals(Executor.LoadStatus.ON, adapter.getStatus(buttonSwitch));
 
-        Mockito.when(buttonSwitch.isChecked()).thenReturn(false);
+        when(buttonSwitch.isChecked()).thenReturn(false);
         assertEquals(Executor.LoadStatus.OFF, adapter.getStatus(buttonSwitch));
     }
 
@@ -344,11 +366,52 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         adapter.executor = executor;
 
         adapter.getClickListener(buttonSwitch, 0, 0).onClick(buttonSwitch);
-        Mockito.verify(buttonSwitch).setChecked(true);
+        verify(buttonSwitch).toggle();
 
         Mockito.doReturn(true).when(buttonSwitch).isChecked();
         adapter.getClickListener(buttonSwitch, 1, 0).onClick(buttonSwitch);
-        Mockito.verify(buttonSwitch).setChecked(false);
+        verify(buttonSwitch, times(2)).toggle();
+    }
+
+    @Test
+    public void test_getLongClick() {
+        BrightnessControlFragment spy = Mockito.spy(new BrightnessControlFragment());
+        doNothing().when(spy).show(any(FragmentManager.class), anyString());
+
+        Mockito.when(adapter.getFragmentManager()).thenReturn(mock(FragmentManager.class));
+        Mockito.doReturn(spy).when(adapter).getBrightnessControl(anyInt(), anyInt());
+
+        adapter.getLongClickListener(0, 0).onLongClick(null);
+
+        verify(adapter).getBrightnessControl(anyInt(), anyInt());
+    }
+
+    @Test
+    public void test_brightnessFragment_isZone() {
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
+
+        adapter.loadOnOffStatuses(
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
+
+        assertNotNull(adapter.getBrightnessControl(0,0));
+    }
+
+    @Test
+    public void test_brightnessFragment_notZone() {
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
+
+        adapter.loadOnOffStatuses(
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
+
+        assertNotNull(adapter.getBrightnessControl(1,0));
     }
 
     @Test
@@ -363,7 +426,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         );
 
         adapter.setItemClick(view, buttonSwitch, 0, 0);
-        Mockito.verify(view).setOnClickListener(Mockito.any(View.OnClickListener.class));
+        verify(view).setOnClickListener(Mockito.any(View.OnClickListener.class));
     }
 
     @Test
@@ -379,6 +442,65 @@ public class MainAdapterTest extends ZoneBeaconSuite {
 
         adapter.setItemClick(view, null, 0, 0);
         Mockito.verifyZeroInteractions(view);
+    }
+
+    @Test
+    public void test_shouldToggleSwitch() {
+        assertTrue(adapter.shouldToggleSwitch(true, Executor.LoadStatus.OFF));
+        assertTrue(adapter.shouldToggleSwitch(false, Executor.LoadStatus.ON));
+    }
+
+    @Test
+    public void test_shouldNotToggleSwitch() {
+        assertFalse(adapter.shouldToggleSwitch(false, Executor.LoadStatus.OFF));
+        assertFalse(adapter.shouldToggleSwitch(true, Executor.LoadStatus.ON));
+    }
+
+    @Test
+    public void test_updateLoadStatus() {
+        test_create_view();
+        doNothing().when(adapter).updateHolderSwitch(any(MainAdapter.ViewHolder.class));
+        adapter.updateLoadStatus();
+
+        verify(adapter).updateHolderSwitch(any(MainAdapter.ViewHolder.class));
+    }
+
+    @Test
+    public void test_updateHolderSwitch_zone_toggle() {
+        test_updateHolderSwitch(true, true);
+    }
+
+    @Test
+    public void test_updateHolderSwitch_zone_dontToggle() {
+        test_updateHolderSwitch(true, false);
+    }
+
+    @Test
+    public void test_updateHolderSwitch_button_toggle() {
+        test_updateHolderSwitch(false, true);
+    }
+
+    @Test
+    public void test_updateHolderSwitch_button_dontToggle() {
+        test_updateHolderSwitch(false, false);
+    }
+
+    private void test_updateHolderSwitch(boolean isZone, boolean shouldSwitch) {
+        test_sections_two();
+
+        viewHolder.section = isZone ? 0 : 1;
+        viewHolder.relativePosition = 0;
+        viewHolder.buttonSwitch = buttonSwitch;
+
+        when(buttonSwitch.isChecked()).thenReturn(shouldSwitch);
+
+        adapter.updateHolderSwitch(viewHolder);
+
+        if (shouldSwitch) {
+            verify(buttonSwitch).toggle();
+        } else {
+            verify(buttonSwitch, times(0)).toggle();
+        }
     }
 
     private List<Zone> getZoneList(int count) {
@@ -431,7 +553,7 @@ public class MainAdapterTest extends ZoneBeaconSuite {
         return buttons;
     }
 
-    private Map<Integer, Executor.LoadStatus> getMap() {
+    private Map<Integer, Map<Integer, Executor.LoadStatus>> getMap() {
         return new HashMap();
     }
 }

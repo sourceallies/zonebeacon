@@ -289,7 +289,7 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
         when(item.getItemId()).thenReturn(R.id.transfer_settings);
         activity.onOptionsItemSelected(item);
-        verify(activity).openOption(null);
+        verify(activity).openOption(TransferActivity.class);
     }
 
     @Test
@@ -333,11 +333,6 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
 
         activity.getSpinner().setSelection(2);
         assertEquals(1, activity.getCurrentSpinnerSelection());
-    }
-
-    @Test
-    public void test_showBrightnessDialog() {
-        activity.showBrightnessDialog();
     }
 
     private GatewaySpinnerAdapter createAdapter() {

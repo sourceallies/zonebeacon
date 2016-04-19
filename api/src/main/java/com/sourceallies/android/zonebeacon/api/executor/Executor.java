@@ -25,6 +25,8 @@ import com.sourceallies.android.zonebeacon.data.model.Gateway;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -146,6 +148,27 @@ public abstract class Executor {
         commands.add(new OnOffCommand(command, status));
     }
 
+
+    /**
+     * Adds a command to the currently established connection. If no connection is established, an
+     * exception will be thrown.
+     *
+     * @param command the command to pass through an interpreter and send through the connection.
+     * @param status the current status of the load (LoadStatus.ON or LoadStatus.OFF).
+     * @param brightness the brightness to set for the light.
+     */
+    public void addCommand(Command command, LoadStatus status, int brightness) {
+        if (command == null) {
+            throw new RuntimeException("Command cannot be null");
+        }
+
+        if (brightness < 1 || brightness > 99) {
+            throw new RuntimeException("Brightness must be between 1 and 99");
+        }
+
+        commands.add(new OnOffCommand(command, status, brightness));
+    }
+
     /**
      * Gets a list of the currently added commands.
      *
@@ -164,29 +187,72 @@ public abstract class Executor {
         return interpreter;
     }
 
+    /**
+     * Get a list of the currently active loads (by load number).
+     * </p>
+     * This list of commands can be used to determine what buttons and zones are activated.
+     *
+     * @param gateway the gateway we want to query
+     * @param callback action to perform after the loads have been queried
+     * @return List of loads that are currently turned on, by load number.
+     */
+    public void queryActiveLoads(Gateway gateway, final QueryLoadsCallback callback) {
+        queryActiveLoads(gateway, Arrays.asList(new Integer[] {Interpreter.SINGLE_MCP_SYSTEM}), callback);
+    }
 
     /**
      * Get a list of the currently active loads (by load number).
      * </p>
      * This list of commands can be used to determine what buttons and zones are activated.
      *
+     * @param gateway the gateway we want to query
+     * @param controllerNumbers list of controller numbers that we want to find the statuses for
+     * @param callback action to perform after the loads have been queried
      * @return List of loads that are currently turned on, by load number.
      */
-    public void queryActiveLoads(Gateway gateway, final QueryLoadsCallback callback) {
-        addCommand(interpreter.buildQueryActiveLoadsCommand(), LoadStatus.OFF);
-        setCommandCallback(getCommandCallbackForQueryingLoads(interpreter, callback));
+    public void queryActiveLoads(Gateway gateway, List<Integer> controllerNumbers, final QueryLoadsCallback callback) {
+        for (int number : controllerNumbers) {
+            addCommand(interpreter.buildQueryActiveLoadsCommand(number), LoadStatus.OFF);
+        }
+
+        setCommandCallback(getCommandCallbackForQueryingLoads(interpreter, controllerNumbers, callback));
 
         execute(gateway);
     }
 
-    protected CommandCallback getCommandCallbackForQueryingLoads(final Interpreter interpreter, final QueryLoadsCallback callback) {
+    /**
+     * Get the callback used within the executor to monitor when the statuses are returned from the load status query.
+     *
+     * @param interpreter System interpreter that we are using
+     * @param controllerNumbers list of controllers we queried against. Controller number Interpreter#SINGLE_MCP_SYSTEM is no multi-mcp system
+     * @param callback the callback for what to do after handling the commands response.
+     * @return
+     */
+    protected CommandCallback getCommandCallbackForQueryingLoads(final Interpreter interpreter, final List<Integer> controllerNumbers, final QueryLoadsCallback callback) {
         return new CommandCallback() {
             @Override
             public void onResponse(Command command, String text) {
-                Map<Integer, LoadStatus> activeLoads = interpreter.processActiveLoadsResponse(text);
+                Map<Integer, Map<Integer, LoadStatus>> activeLoads = new HashMap();
+                loadMapFromResponse(activeLoads, controllerNumbers, interpreter, text);
+
                 callback.onResponse(activeLoads);
             }
         };
+    }
+
+    /**
+     * Load the map of active loads with the interpreter and command response
+     *
+     * @param map empty map
+     * @param controllerNumbers list of controllers used in the query
+     * @param interpreter the system types interpreter
+     * @param text the text response from the executed command
+     */
+    protected void loadMapFromResponse(Map<Integer, Map<Integer, LoadStatus>> map, List<Integer> controllerNumbers, Interpreter interpreter, String text) {
+        for (int i = 0; i < controllerNumbers.size(); i++) {
+            String subResponse = text.substring(i * 48, (i * 48) + 48);
+            map.put(controllerNumbers.get(i), interpreter.processActiveLoadsResponse(subResponse));
+        }
     }
 
     /**
@@ -209,7 +275,8 @@ public abstract class Executor {
                         if (!commandsCombinable()) {
                             sendCommand(command);
                         } else {
-                            commandString += interpreter.getExecutable(command.command, command.status);
+                            commandString += interpreter.getExecutable(command.command,
+                                    command.brightness, command.status);
                         }
                     }
 
@@ -255,10 +322,16 @@ public abstract class Executor {
     protected class OnOffCommand {
         public LoadStatus status;
         public Command command;
+        public Integer brightness;
 
         public OnOffCommand(Command command, LoadStatus status) {
+            this(command, status, 99);
+        }
+
+        public OnOffCommand(Command command, LoadStatus status, Integer brightness) {
             this.status = status;
             this.command = command;
+            this.brightness = brightness;
         }
     }
 }

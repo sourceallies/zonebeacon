@@ -115,9 +115,9 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_buildQueryCommand() {
-        Command command = interpreter.buildQueryActiveLoadsCommand();
+        Command command = interpreter.buildQueryActiveLoadsCommand(-1);
         assertEquals("Query Active Loads", command.getName());
-        assertEquals(0, (int) command.getControllerNumber());
+        assertEquals(Interpreter.SINGLE_MCP_SYSTEM, (int) command.getControllerNumber());
         assertEquals(0, command.getNumber());
         assertEquals(-1, command.getId());
         assertEquals(-1, command.getGatewayId());
@@ -125,7 +125,8 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_queryActiveLoadsCommandString() {
-        assertEquals("^G", interpreter.getQueryActiveLoadsCommandString());
+        assertEquals("^G", interpreter.getQueryActiveLoadsCommandString(Interpreter.SINGLE_MCP_SYSTEM));
+        assertEquals("^g1", interpreter.getQueryActiveLoadsCommandString(1));
     }
 
     @Test
@@ -190,6 +191,18 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
         testLoadsActive(interpreter.processActiveLoadsResponse(
                 "FF7000000000000000000000000000000000000000000000"
         ), 1, 2, 3, 4, 5, 6, 7, 8, 13, 14, 15);
+    }
+
+    @Test
+    public void test_mattMultiMcp() {
+        // load 173 on MCP #1 should be on
+
+        // this is the status returned from ^g1
+        Map<Integer, Executor.LoadStatus> map = interpreter.processActiveLoadsResponse(
+                "08E50010000000000C000000000400000200000000900100"
+        );
+
+        assertEquals(Executor.LoadStatus.ON, map.get(173));
     }
 
     @Test

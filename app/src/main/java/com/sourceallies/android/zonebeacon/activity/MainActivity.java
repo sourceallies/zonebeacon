@@ -46,6 +46,7 @@ import android.widget.Spinner;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.google.inject.Inject;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.adapter.GatewaySpinnerAdapter;
 import com.sourceallies.android.zonebeacon.adapter.MainAdapter;
@@ -56,6 +57,7 @@ import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
 import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
+import com.sourceallies.android.zonebeacon.util.ControllerUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,6 +75,9 @@ import roboguice.inject.ContentView;
 public class MainActivity extends RoboAppCompatActivity {
 
     public static final int RESULT_INTRO = 1;
+
+    @Inject
+    private ControllerUtil controllerUtil;
 
     @Getter
     private CoordinatorLayout rootLayout;
@@ -233,15 +238,6 @@ public class MainActivity extends RoboAppCompatActivity {
         });
     }
 
-    /**
-     * Displays the the brightness control fragment.
-     */
-    public void showBrightnessDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        BrightnessControlFragment brightnessControl = BrightnessControlFragment.newInstance();
-        brightnessControl.show(fm, "fragment_brightness_control");
-    }
-
 
     /**
      * Creates the adapter for the toolbar spinner that displays the gateways
@@ -259,7 +255,7 @@ public class MainActivity extends RoboAppCompatActivity {
      * on the current gateway
      */
     @VisibleForTesting
-    protected void setRecycler() {
+    public void setRecycler() {
         final Gateway currentGateway = spinnerAdapter.getItem(getCurrentSpinnerSelection());
         DataSource source = getDataSource();
         source.open();
@@ -271,21 +267,26 @@ public class MainActivity extends RoboAppCompatActivity {
             final List<Zone> zones = source.findZones(currentGateway);
             final List<Button> buttons = source.findButtons(currentGateway);
 
-            Executor executor = getExecutor();
-            executor.queryActiveLoads(currentGateway, getQueryCallback(this, currentGateway, zones, buttons));
-
             mainAdapter = new MainAdapter(
                     MainActivity.this,
                     currentGateway
             );
 
             loadOnOffStatusesToAdapter(
-                    source.findZones(currentGateway),
-                    source.findButtons(currentGateway),
+                    zones,
+                    buttons,
                     null
             );
 
             mainAdapter.setLayoutManager(manager);
+
+            Executor executor = getExecutor();
+            executor.queryActiveLoads(
+                    currentGateway,
+                    controllerUtil.getControllerNumbersByZones(zones),
+                    getQueryCallback(this, currentGateway, zones, buttons)
+            );
+
         } else {
             mainAdapter = null;
         }
@@ -302,7 +303,7 @@ public class MainActivity extends RoboAppCompatActivity {
      * @param map map of the load statuses. Load number is key, status is the value
      */
     @VisibleForTesting
-    protected void loadOnOffStatusesToAdapter(List<Zone> zones, List<Button> buttons, Map<Integer, Executor.LoadStatus> map) {
+    protected void loadOnOffStatusesToAdapter(List<Zone> zones, List<Button> buttons, Map<Integer, Map<Integer, Executor.LoadStatus>> map) {
         mainAdapter.loadOnOffStatuses(
                 zones,
                 buttons,
@@ -342,7 +343,7 @@ public class MainActivity extends RoboAppCompatActivity {
     protected QueryLoadsCallback getQueryCallback(final Activity activity, final Gateway currentGateway, final List<Zone> zones, final List<Button> buttons) {
         return new QueryLoadsCallback() {
             @Override
-            public void onResponse(final Map<Integer, Executor.LoadStatus> loadStatusMap) {
+            public void onResponse(final Map<Integer, Map<Integer, Executor.LoadStatus>> loadStatusMap) {
                 activity.runOnUiThread(setLoadStatusRunnable(currentGateway, zones, buttons, loadStatusMap));
             }
         };
@@ -359,17 +360,11 @@ public class MainActivity extends RoboAppCompatActivity {
      */
     @VisibleForTesting
     protected Runnable setLoadStatusRunnable(final Gateway currentGateway, final List<Zone> zones,
-                                             final List<Button> buttons, final Map<Integer, Executor.LoadStatus> map) {
+                                             final List<Button> buttons, final Map<Integer, Map<Integer, Executor.LoadStatus>> map) {
         return new Runnable() {
             @Override
             public void run() {
-                mainAdapter = new MainAdapter(
-                        MainActivity.this,
-                        currentGateway
-                );
-
                 loadOnOffStatusesToAdapter(zones, buttons, map);
-                recycler.setAdapter(mainAdapter);
             }
         };
     }
@@ -406,7 +401,6 @@ public class MainActivity extends RoboAppCompatActivity {
     protected void setSpinnerAdapter() {
         DataSource dataSource = getDataSource();
         dataSource.open();
-
         spinnerAdapter = createSpinnerAdapter(dataSource);
         spinner.setAdapter(spinnerAdapter);
 
@@ -560,7 +554,7 @@ public class MainActivity extends RoboAppCompatActivity {
                 openOption(null);
                 return true;
             case R.id.transfer_settings:
-                openOption(null);
+                openOption(TransferActivity.class);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
