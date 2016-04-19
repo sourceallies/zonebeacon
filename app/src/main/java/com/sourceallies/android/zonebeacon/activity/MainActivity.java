@@ -238,15 +238,6 @@ public class MainActivity extends RoboAppCompatActivity {
         });
     }
 
-    /**
-     * Displays the the brightness control fragment.
-     */
-    public void showBrightnessDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        BrightnessControlFragment brightnessControl = BrightnessControlFragment.newInstance();
-        brightnessControl.show(fm, "fragment_brightness_control");
-    }
-
 
     /**
      * Creates the adapter for the toolbar spinner that displays the gateways
@@ -410,7 +401,6 @@ public class MainActivity extends RoboAppCompatActivity {
     protected void setSpinnerAdapter() {
         DataSource dataSource = getDataSource();
         dataSource.open();
-
         spinnerAdapter = createSpinnerAdapter(dataSource);
         spinner.setAdapter(spinnerAdapter);
 

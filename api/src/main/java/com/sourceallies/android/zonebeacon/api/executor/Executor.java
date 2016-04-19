@@ -148,6 +148,27 @@ public abstract class Executor {
         commands.add(new OnOffCommand(command, status));
     }
 
+
+    /**
+     * Adds a command to the currently established connection. If no connection is established, an
+     * exception will be thrown.
+     *
+     * @param command the command to pass through an interpreter and send through the connection.
+     * @param status the current status of the load (LoadStatus.ON or LoadStatus.OFF).
+     * @param brightness the brightness to set for the light.
+     */
+    public void addCommand(Command command, LoadStatus status, int brightness) {
+        if (command == null) {
+            throw new RuntimeException("Command cannot be null");
+        }
+
+        if (brightness < 1 || brightness > 99) {
+            throw new RuntimeException("Brightness must be between 1 and 99");
+        }
+
+        commands.add(new OnOffCommand(command, status, brightness));
+    }
+
     /**
      * Gets a list of the currently added commands.
      *
@@ -254,7 +275,8 @@ public abstract class Executor {
                         if (!commandsCombinable()) {
                             sendCommand(command);
                         } else {
-                            commandString += interpreter.getExecutable(command.command, command.status);
+                            commandString += interpreter.getExecutable(command.command,
+                                    command.brightness, command.status);
                         }
                     }
 
@@ -300,10 +322,16 @@ public abstract class Executor {
     protected class OnOffCommand {
         public LoadStatus status;
         public Command command;
+        public Integer brightness;
 
         public OnOffCommand(Command command, LoadStatus status) {
+            this(command, status, 99);
+        }
+
+        public OnOffCommand(Command command, LoadStatus status, Integer brightness) {
             this.status = status;
             this.command = command;
+            this.brightness = brightness;
         }
     }
 }
