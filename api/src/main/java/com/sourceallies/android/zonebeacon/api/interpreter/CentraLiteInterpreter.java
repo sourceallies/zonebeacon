@@ -46,7 +46,7 @@ public class CentraLiteInterpreter extends Interpreter {
 
         return base.replace("%nnn", addZeros(command.getNumber() + "", 3))
                 .replace("%s", addZeros(command.getControllerNumber() + "", 1))
-                .replace("%ll", brightnessLevel + ""); // TODO: apply brightness level here
+                .replace("%ll", brightnessLevel + "");
     }
 
     @Override

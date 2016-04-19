@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
@@ -37,6 +39,7 @@ import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Command;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
 
 import java.util.ArrayList;
@@ -230,6 +233,7 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
                                 int section, int relativePosition) {
         if (root != null && buttonSwitch != null) { // Null for the header
             root.setOnClickListener(getClickListener(buttonSwitch, section, relativePosition));
+            root.setOnLongClickListener(getLongClickListener(section, relativePosition));
         }
     }
 
@@ -263,6 +267,37 @@ public class MainAdapter extends SectionedRecyclerViewAdapter<MainAdapter.ViewHo
                 updateLoadStatus();
             }
         };
+    }
+
+    @VisibleForTesting
+    protected View.OnLongClickListener getLongClickListener(final int section, final int relativePosition) {
+        return new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                FragmentManager fm = getFragmentManager();
+
+                BrightnessControlFragment brightnessControl = getBrightnessControl(section, relativePosition);
+                brightnessControl.show(fm, "fragment_brightness_control");
+
+                return true;
+            }
+        };
+    }
+
+    @VisibleForTesting
+    protected FragmentManager getFragmentManager() {
+        return ((MainActivity) context).getSupportFragmentManager();
+    }
+
+    @VisibleForTesting
+    protected BrightnessControlFragment getBrightnessControl(int section, int relativePosition) {
+        boolean isZone = isZone(section);
+
+        return BrightnessControlFragment.newInstance(
+                gateway.getId(), isZone,
+                isZone ? zones.get(relativePosition).getZone().getId() :
+                        buttons.get(relativePosition).getButton().getId()
+        );
     }
 
     /**
