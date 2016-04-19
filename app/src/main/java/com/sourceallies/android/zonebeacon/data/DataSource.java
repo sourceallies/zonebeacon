@@ -919,6 +919,12 @@ public class DataSource {
         close();
     }
 
+    public void convertToMultiMcp() {
+        open();
+        execSql("UPDATE command SET controller_number = '1'");
+        execSql("UPDATE command SET command_type_id = '4'");
+    }
+
     private long insertFakeCommand(String name, int number) {
         return insertNewCommand(name, 1, number, 1, null);
     }*/
