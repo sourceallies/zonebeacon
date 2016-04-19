@@ -18,6 +18,7 @@ package com.sourceallies.android.zonebeacon.fragment;
 
 
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.sourceallies.android.zonebeacon.data.model.Zone;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DialogFragment that uses a SeekBar to allow the user to dim lights.
@@ -54,8 +56,14 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
     private ImageView bulbImg;
 
     private Gateway gateway;
+
+    @Setter
+    @Getter
     private Button button;
+    @Setter
+    @Getter
     private Zone zone;
+    @Setter
     private List<CommandType> commandTypes;
 
     private Executor executor;
@@ -94,24 +102,45 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
         commandTypes = source.findCommandTypesNotShownInUI(gateway);
 
         if (isZone) {
-            List<Zone> Zones = source.findZones(gateway);
-            for (Zone zone : Zones) {
-                if (zone.getId() == itemId) {
-                    this.zone = zone;
-                    break;
-                }
-            }
+            List<Zone> zones = source.findZones(gateway);
+            setZone(zones, itemId);
         } else {
-            List<Button> Buttons = source.findButtons(gateway);
-            for (Button button : Buttons) {
-                if (button.getId() == itemId) {
-                    this.button = button;
-                    break;
-                }
-            }
+            List<Button> buttons = source.findButtons(gateway);
+            setButton(buttons, itemId);
         }
 
         source.close();
+    }
+
+    /**
+     * Given a button list, we want to find the one that matches the itemId
+     *
+     * @param buttons list of buttons on the gateway
+     * @param itemId button id to look for
+     */
+    @VisibleForTesting
+    protected void setButton(List<Button> buttons, long itemId) {
+        for (Button button : buttons) {
+            if (button.getId() == itemId) {
+                this.button = button;
+                break;
+            }
+        }
+    }
+
+    /**
+     * Given a zone list, find the one that matches the itemId
+     * @param zones list of zones in the gateway
+     * @param itemId zone id to look for
+     */
+    @VisibleForTesting
+    protected void setZone(List<Zone> zones, long itemId) {
+        for (Zone zone : zones) {
+            if (zone.getId() == itemId) {
+                this.zone = zone;
+                break;
+            }
+        }
     }
 
     @Override
@@ -156,7 +185,8 @@ public class BrightnessControlFragment extends DialogFragment implements SeekBar
         executor.execute(gateway);
     }
 
-    private void addCommands(Button button, int progress) {
+    @VisibleForTesting
+    protected void addCommands(Button button, int progress) {
         for (Command command : button.getCommands()) {
             if (command.getControllerNumber() == null) {
                 // use the single MCP command type
