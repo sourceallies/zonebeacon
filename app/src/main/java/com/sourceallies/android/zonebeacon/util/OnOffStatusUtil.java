@@ -54,8 +54,8 @@ public class OnOffStatusUtil {
     /**
      * Create an object that can get the on off status of the individual buttons and zones
      *
-     * @param buttons list of buttons we are looking to get the load status of
-     * @param zones list of zones that we are looking to get the load status of
+     * @param buttons       list of buttons we are looking to get the load status of
+     * @param zones         list of zones that we are looking to get the load status of
      * @param loadStatusMap 2D map that contains controller number as the first key
      *                      and the load number as the second key, with its On Off status as the value
      */
@@ -69,8 +69,8 @@ public class OnOffStatusUtil {
      * Manually set the state of the load
      *
      * @param controllerNumber controller number for the load
-     * @param loadNumber load to toggle
-     * @param newStatus  the new status of the load
+     * @param loadNumber       load to toggle
+     * @param newStatus        the new status of the load
      */
     public void setState(Integer controllerNumber, Integer loadNumber, Executor.LoadStatus newStatus) {
         if (loadStatusMap.containsKey(controllerNumber)) {
@@ -134,7 +134,7 @@ public class OnOffStatusUtil {
                         new StatefulButton(
                                 button,
                                 loadOff ? Executor.LoadStatus.OFF : Executor.LoadStatus.ON
-                ));
+                        ));
             }
 
             return statefulButtons;
@@ -186,7 +186,7 @@ public class OnOffStatusUtil {
      * Get the current status of a command from the status map
      *
      * @param loadStatusMap map to search through
-     * @param command command we want the status of
+     * @param command       command we want the status of
      * @return the current status of the command
      */
     @VisibleForTesting

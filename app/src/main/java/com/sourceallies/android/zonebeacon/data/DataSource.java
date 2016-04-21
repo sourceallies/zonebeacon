@@ -839,7 +839,7 @@ public class DataSource {
      * Converts a json array of rows to sql insert statements and then puts them into the correct
      * table in the database.
      *
-     * @param array the array of rows. Each should be a comma separated string.
+     * @param array     the array of rows. Each should be a comma separated string.
      * @param tableName the name of the table to insert data into.
      * @throws JSONException
      */

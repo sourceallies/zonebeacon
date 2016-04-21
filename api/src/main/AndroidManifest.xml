@@ -14,4 +14,4 @@
   ~ limitations under the License.
   -->
 
-<manifest package="com.sourceallies.android.zonebeacon.api"/>
+<manifest package="com.sourceallies.android.zonebeacon.api" />

@@ -16,8 +16,6 @@
 
 package com.sourceallies.android.zonebeacon.util;
 
-import android.util.Base64;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -69,7 +67,7 @@ public class GzipUtil {
                         bytes.length - 4));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        for (int value = 0; value != -1;) {
+        for (int value = 0; value != -1; ) {
             value = gzipInputStream.read();
             if (value != -1) {
                 baos.write(value);

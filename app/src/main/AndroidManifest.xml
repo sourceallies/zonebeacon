@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 Source Allies, Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +15,9 @@
   -->
 
 <manifest package="com.sourceallies.android.zonebeacon"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:name=".ZoneBeaconApplication"
@@ -30,20 +29,31 @@
 
         <meta-data
             android:name="com.google.android.nearby.messages.API_KEY"
-            android:value="AIzaSyDIzl_FSbfAD-vtHtt7Kddv4Enp50VvdMo"/>
+            android:value="AIzaSyDIzl_FSbfAD-vtHtt7Kddv4Enp50VvdMo" />
 
         <activity android:name=".activity.MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
         <activity android:name=".activity.GatewayItemEditorActivity" />
-        <activity android:name=".activity.IntroActivity" android:windowSoftInputMode="adjustPan" android:theme="@style/AppIntroTheme" />
-        <activity android:name=".activity.CreationActivity" android:windowSoftInputMode="adjustPan" android:theme="@style/AppIntroTheme" />
-        <activity android:name=".activity.GetHelpActivity" android:windowSoftInputMode="adjustPan" android:label="@string/app_helper" />
-        <activity android:name=".activity.TransferActivity" android:label="@string/transfer_settings"/>
+        <activity
+            android:name=".activity.IntroActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppIntroTheme" />
+        <activity
+            android:name=".activity.CreationActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/AppIntroTheme" />
+        <activity
+            android:name=".activity.GetHelpActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:label="@string/app_helper" />
+        <activity
+            android:name=".activity.TransferActivity"
+            android:label="@string/transfer_settings" />
 
     </application>
 

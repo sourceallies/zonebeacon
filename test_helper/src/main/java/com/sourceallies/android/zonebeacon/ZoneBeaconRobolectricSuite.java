@@ -52,7 +52,8 @@ public abstract class ZoneBeaconRobolectricSuite {
             Class clazz = Class.forName("com.sourceallies.android.zonebeacon.data.DataSource");
             Method method = clazz.getMethod("forceCloseImmediate");
             method.invoke(null);
-        } catch (Throwable e) { }
+        } catch (Throwable e) {
+        }
     }
 
     /**

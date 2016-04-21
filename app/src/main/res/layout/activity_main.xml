@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 Source Allies, Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,15 +14,14 @@
   ~ limitations under the License.
   -->
 
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true" >
+    android:animateLayoutChanges="true">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -35,20 +33,19 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <Spinner
                 android:id="@+id/toolbar_spinner"
                 style="@style/ToolbarSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_marginTop="?android:actionBarSize"
@@ -69,7 +66,7 @@
         android:layout_height="match_parent"
         android:background="?dim"
         android:visibility="gone"
-        android:elevation="4dp"/>
+        android:elevation="4dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -98,7 +95,7 @@
                 fab:fab_size="mini"
                 fab:fab_title="@string/get_help"
                 fab:fab_colorPressed="@color/white_pressed"
-                fab:fab_icon="@drawable/ic_help"/>
+                fab:fab_icon="@drawable/ic_help" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_zone"
@@ -108,7 +105,7 @@
                 fab:fab_size="mini"
                 fab:fab_title="@string/add_zone"
                 fab:fab_colorPressed="@color/white_pressed"
-                fab:fab_icon="@drawable/ic_zone"/>
+                fab:fab_icon="@drawable/ic_zone" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_button"
@@ -118,7 +115,7 @@
                 fab:fab_size="mini"
                 fab:fab_title="@string/add_button"
                 fab:fab_colorPressed="@color/white_pressed"
-                fab:fab_icon="@drawable/ic_button"/>
+                fab:fab_icon="@drawable/ic_button" />
 
             <com.getbase.floatingactionbutton.FloatingActionButton
                 android:id="@+id/add_command"

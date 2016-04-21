@@ -31,7 +31,7 @@ public class InterceptingLinearLayout extends LinearLayout {
     }
 
     @Override
-    public boolean onInterceptTouchEvent (MotionEvent ev){
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
         return true;
     }
 }

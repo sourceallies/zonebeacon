@@ -21,14 +21,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?list_item_background"
-    android:descendantFocusability="blocksDescendants" >
+    android:descendantFocusability="blocksDescendants">
 
     <com.sourceallies.android.zonebeacon.view.InterceptingLinearLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:background="?android:selectableItemBackground"  >
+        android:background="?android:selectableItemBackground">
 
         <TextView
             android:id="@+id/title"
@@ -46,6 +46,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?list_item_divider"/>
+        android:background="?list_item_divider" />
 
 </LinearLayout>

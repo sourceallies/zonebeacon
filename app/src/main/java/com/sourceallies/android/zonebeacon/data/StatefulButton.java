@@ -18,7 +18,6 @@ package com.sourceallies.android.zonebeacon.data;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.model.Button;
-import com.sourceallies.android.zonebeacon.data.model.Zone;
 
 import lombok.Getter;
 import lombok.Setter;

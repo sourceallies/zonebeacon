@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 Source Allies, Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -45,7 +44,7 @@
             android:gravity="center"
             android:drawableTop="@drawable/ic_nearby"
             android:drawablePadding="32dp"
-            android:text="@string/searching_for_friends"/>
+            android:text="@string/searching_for_friends" />
 
     </com.sourceallies.android.zonebeacon.view.NearbyBackgroundLayout>
 

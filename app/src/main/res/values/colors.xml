@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2016 Source Allies, Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +37,7 @@
     <color name="white_pressed">#f1f1f1</color>
 
     <color name="appIntro1">#222222</color>
-    
+
     <color name="light_primary_text">#E2000000</color>
     <color name="dark_primary_text">#E2FFFFFF</color>
     <color name="light_secondary_text">#8C000000</color>

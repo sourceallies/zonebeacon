@@ -18,7 +18,6 @@ package com.sourceallies.android.zonebeacon.api;
 
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 
-import java.util.List;
 import java.util.Map;
 
 public interface QueryLoadsCallback {
