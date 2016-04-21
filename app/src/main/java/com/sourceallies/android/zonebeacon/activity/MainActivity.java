@@ -548,7 +548,7 @@ public class MainActivity extends RoboAppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                openOption(IntroActivity.class);
+                openOption(GatewayItemEditorActivity.class);
                 return true;
             case R.id.diagnosis:
                 openOption(null);
