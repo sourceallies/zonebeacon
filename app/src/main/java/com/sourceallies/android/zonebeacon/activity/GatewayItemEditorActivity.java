@@ -61,6 +61,7 @@ public class GatewayItemEditorActivity extends RoboAppCompatActivity {
         setSupportActionBar(toolbar);
         setTitle(getString(R.string.edit_gateway_information));
 
+        addAdapter();
 
     }
 
