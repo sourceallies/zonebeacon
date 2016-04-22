@@ -335,11 +335,6 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         assertEquals(1, activity.getCurrentSpinnerSelection());
     }
 
-    @Test
-    public void test_showBrightnessDialog() {
-        activity.showBrightnessDialog();
-    }
-
     private GatewaySpinnerAdapter createAdapter() {
         Gateway one = new Gateway();
         one.setId(1);

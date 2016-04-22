@@ -17,6 +17,7 @@
 package com.sourceallies.android.zonebeacon.adapter;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -27,12 +28,14 @@ import android.widget.TextView;
 import com.sourceallies.android.zonebeacon.R;
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.ZoneBeaconSuite;
+import com.sourceallies.android.zonebeacon.activity.MainActivity;
 import com.sourceallies.android.zonebeacon.api.executor.Executor;
 import com.sourceallies.android.zonebeacon.data.StatefulButton;
 import com.sourceallies.android.zonebeacon.data.StatefulZone;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
+import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 import com.sourceallies.android.zonebeacon.util.OnOffStatusUtil;
 
 import org.junit.Before;
@@ -47,7 +50,10 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +64,7 @@ public class MainAdapterTest extends ZoneBeaconRobolectricSuite {
     private static final String BUTTONS_TITLE = "Buttons";
 
     @Mock
-    Activity context;
+    MainActivity context;
     @Mock
     LayoutInflater inflater;
     @Mock
@@ -79,6 +85,8 @@ public class MainAdapterTest extends ZoneBeaconRobolectricSuite {
     OnOffStatusUtil onOffStatusUtil;
     @Mock
     Executor executor;
+    @Mock
+    BrightnessControlFragment brightnessControlFragment;
 
     MainAdapter adapter;
 
@@ -363,6 +371,47 @@ public class MainAdapterTest extends ZoneBeaconRobolectricSuite {
         Mockito.doReturn(true).when(buttonSwitch).isChecked();
         adapter.getClickListener(buttonSwitch, 1, 0).onClick(buttonSwitch);
         verify(buttonSwitch, times(2)).toggle();
+    }
+
+    @Test
+    public void test_getLongClick() {
+        BrightnessControlFragment spy = Mockito.spy(new BrightnessControlFragment());
+        doNothing().when(spy).show(any(FragmentManager.class), anyString());
+
+        Mockito.when(adapter.getFragmentManager()).thenReturn(mock(FragmentManager.class));
+        Mockito.doReturn(spy).when(adapter).getBrightnessControl(anyInt(), anyInt());
+
+        adapter.getLongClickListener(0, 0).onLongClick(null);
+
+        verify(adapter).getBrightnessControl(anyInt(), anyInt());
+    }
+
+    @Test
+    public void test_brightnessFragment_isZone() {
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
+
+        adapter.loadOnOffStatuses(
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
+
+        assertNotNull(adapter.getBrightnessControl(0,0));
+    }
+
+    @Test
+    public void test_brightnessFragment_notZone() {
+        Mockito.doReturn(getOnOffZoneList(1)).when(onOffStatusUtil).getStatefulZones();
+        Mockito.doReturn(getOnOffButtonList(1)).when(onOffStatusUtil).getStatefulButtons();
+
+        adapter.loadOnOffStatuses(
+                getZoneList(1),
+                getButtonList(1),
+                getMap()
+        );
+
+        assertNotNull(adapter.getBrightnessControl(1,0));
     }
 
     @Test
