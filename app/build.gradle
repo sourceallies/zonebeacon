@@ -17,6 +17,17 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply from: '../test_counter.gradle'
+apply from: 'jacoco.gradle'
+
+def propsFile = rootProject.file('keystore.properties')
+def props = new Properties()
+props.load(new FileInputStream(propsFile))
+
+propsFile = rootProject.file('api_keys.properties')
+def apiKeys = new Properties()
+apiKeys.load(new FileInputStream(propsFile))
+
+def buildNumber = System.getenv("BUILD_NUMBER") as Integer ?: Integer.parseInt(VERSION_CODE)
 
 android {
     compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
@@ -26,8 +37,11 @@ android {
         applicationId "com.sourceallies.android.zonebeacon"
         minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
-        versionName VERSION_NAME
-        versionCode Integer.parseInt(VERSION_CODE)
+        versionName VERSION_NAME + "." + buildNumber
+        versionCode buildNumber
+        project.archivesBaseName = "Zone-Beacon-${versionName}"
+
+        resValue "string", "nearby_api_key", "\"${apiKeys['NEARBY']}\""
     }
 
     signingConfigs {
@@ -38,14 +52,19 @@ android {
             keyPassword "android"
         }
         release {
-            storeFile file('../keystore.jks')
-            storePassword 'sourceallies'
-            keyAlias 'zonebeacon'
-            keyPassword 'sourceallies'
+            storeFile file("../keystore.jks")
+            storePassword props['keystorepassword']
+            keyAlias props['keyalias']
+            keyPassword props['keypassword']
         }
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled true
+            versionNameSuffix "-DEBUG"
+            signingConfig signingConfigs.debug
+        }
         release {
             minifyEnabled true
             shrinkResources true
