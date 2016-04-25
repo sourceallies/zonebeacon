@@ -8,3 +8,4 @@ local.properties
 gen/
 **/.DS_STORE
 keystore.jks
+debug.keystore
