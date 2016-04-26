@@ -2,17 +2,6 @@
 
 set -e
 
-# GRADLE
-
-GRADLE_VERSION=2.6
-
-curl -LO https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-all.zip
-
-unzip -f gradle-${GRADLE_VERSION}-all.zip
-
-GRADLE_HOME=gradle-${GRADLE_VERSION}
-PATH=$PATH:$GRADLE_HOME/bin
-
 # ANDROID
 
 # download android sdk
