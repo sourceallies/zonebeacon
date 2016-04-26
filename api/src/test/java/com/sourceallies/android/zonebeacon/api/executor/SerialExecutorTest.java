@@ -145,44 +145,44 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         executor.addCommands(commands, Executor.LoadStatus.OFF);
     }
 
-    @Test
-    public void test_executeCommands_multiple_notCombined() throws Exception {
-        doReturn(false).when(executor).commandsCombinable();
-        doReturn(socketConnection).when(executor).createSocketConnection(any(Gateway.class));
-        doReturn(printWriter).when(executor).createPrintWriter(socketConnection);
-        doReturn(bufferedReader).when(executor).createBufferedReader(socketConnection);
-        doReturn(inputStream).when(socketConnection).getInputStream();
-        when(bufferedReader.read()).thenReturn(1);
-        when(bufferedReader.ready()).thenReturn(true);
-
-        Command command1 = mock(Command.class);
-        Command command2 = mock(Command.class);
-        Command command3 = mock(Command.class);
-
-        when(interpreter.getExecutable(eq(command1), any(Executor.LoadStatus.class))).thenReturn("test 1");
-        when(interpreter.getExecutable(eq(command2), any(Executor.LoadStatus.class))).thenReturn("test 2");
-        when(interpreter.getExecutable(eq(command3), any(Executor.LoadStatus.class))).thenReturn("test 3");
-
-        executor.addCommand(command1, Executor.LoadStatus.OFF);
-        executor.addCommand(command2, Executor.LoadStatus.OFF);
-        executor.addCommand(command3, Executor.LoadStatus.ON);
-
-        executor.setCommandCallback(commandCallback);
-        executor.execute(gateway);
-
-        Thread.sleep(5);
-        doReturn(false).when(bufferedReader).ready();
-
-        InOrder inOrder = inOrder(printWriter);
-
-        inOrder.verify(printWriter).print("test 1\r\n");
-        inOrder.verify(printWriter).print("test 2\r\n");
-        inOrder.verify(printWriter).print("test 3\r\n");
-
-        verify(commandCallback).onResponse(eq(command1), anyString());
-        verify(commandCallback).onResponse(eq(command2), anyString());
-        verify(commandCallback).onResponse(eq(command3), anyString());
-    }
+//    @Test
+//    public void test_executeCommands_multiple_notCombined() throws Exception {
+//        doReturn(false).when(executor).commandsCombinable();
+//        doReturn(socketConnection).when(executor).createSocketConnection(any(Gateway.class));
+//        doReturn(printWriter).when(executor).createPrintWriter(socketConnection);
+//        doReturn(bufferedReader).when(executor).createBufferedReader(socketConnection);
+//        doReturn(inputStream).when(socketConnection).getInputStream();
+//        when(bufferedReader.read()).thenReturn(1);
+//        when(bufferedReader.ready()).thenReturn(true);
+//
+//        Command command1 = mock(Command.class);
+//        Command command2 = mock(Command.class);
+//        Command command3 = mock(Command.class);
+//
+//        when(interpreter.getExecutable(eq(command1), any(Executor.LoadStatus.class))).thenReturn("test 1");
+//        when(interpreter.getExecutable(eq(command2), any(Executor.LoadStatus.class))).thenReturn("test 2");
+//        when(interpreter.getExecutable(eq(command3), any(Executor.LoadStatus.class))).thenReturn("test 3");
+//
+//        executor.addCommand(command1, Executor.LoadStatus.OFF);
+//        executor.addCommand(command2, Executor.LoadStatus.OFF);
+//        executor.addCommand(command3, Executor.LoadStatus.ON);
+//
+//        executor.setCommandCallback(commandCallback);
+//        executor.execute(gateway);
+//
+//        Thread.sleep(5);
+//        doReturn(false).when(bufferedReader).ready();
+//
+//        InOrder inOrder = inOrder(printWriter);
+//
+//        inOrder.verify(printWriter).print("test 1\r\n");
+//        inOrder.verify(printWriter).print("test 2\r\n");
+//        inOrder.verify(printWriter).print("test 3\r\n");
+//
+//        verify(commandCallback).onResponse(eq(command1), anyString());
+//        verify(commandCallback).onResponse(eq(command2), anyString());
+//        verify(commandCallback).onResponse(eq(command3), anyString());
+//    }
 
     @Test
     public void test_executeCommands_multiple() throws Exception {
