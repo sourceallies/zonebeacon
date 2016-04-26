@@ -7,5 +7,3 @@ local.properties
 *.iws
 gen/
 **/.DS_STORE
-keystore.jks
-debug.keystore
