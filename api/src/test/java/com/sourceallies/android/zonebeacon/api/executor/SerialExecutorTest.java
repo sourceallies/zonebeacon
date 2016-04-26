@@ -171,7 +171,7 @@ public class SerialExecutorTest extends ZoneBeaconRobolectricSuite {
         executor.execute(gateway);
 
         Thread.sleep(5);
-        when(bufferedReader.ready()).thenReturn(false);
+        doReturn(false).when(bufferedReader).ready();
 
         InOrder inOrder = inOrder(printWriter);
 
