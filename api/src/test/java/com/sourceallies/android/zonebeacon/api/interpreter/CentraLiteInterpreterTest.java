@@ -195,13 +195,47 @@ public class CentraLiteInterpreterTest extends ZoneBeaconSuite {
 
     @Test
     public void test_mattMultiMcp() {
-        // load 173 on MCP #1 should be on
+        // list that matt provided for testing multi mcp load statuses
 
         // this is the status returned from ^g1
         Map<Integer, Executor.LoadStatus> map = interpreter.processActiveLoadsResponse(
                 "08E50010000000000C000000000400000200000000900100"
         );
+        assertEquals(Executor.LoadStatus.ON, map.get(173));
 
+        map = interpreter.processActiveLoadsResponse(
+                "00C400100000000008000000000400000000004400500590"
+        );
+        assertEquals(Executor.LoadStatus.ON, map.get(173));
+
+        map = interpreter.processActiveLoadsResponse(
+                "00C400100000000008000000000400000000004400400590"
+        );
+        assertEquals(Executor.LoadStatus.OFF, map.get(173));
+
+        map = interpreter.processActiveLoadsResponse(
+                "00C400100000000008000000000400000000004400500590"
+        );
+        assertEquals(Executor.LoadStatus.ON, map.get(173));
+
+        map = interpreter.processActiveLoadsResponse(
+                "00C400100000000008000000000400000000004400400590"
+        );
+        assertEquals(Executor.LoadStatus.OFF, map.get(173));
+
+        map = interpreter.processActiveLoadsResponse(
+                "004000020000010000080000000000000004000000000000"
+        );
+        assertEquals(Executor.LoadStatus.OFF, map.get(173));
+
+        map = interpreter.processActiveLoadsResponse(
+                "004000020000010000080000000000000004000000100000"
+        );
+        assertEquals(Executor.LoadStatus.ON, map.get(173));
+
+        map = interpreter.processActiveLoadsResponse(
+                "00C400100000000008000000000400000000004400500590"
+        );
         assertEquals(Executor.LoadStatus.ON, map.get(173));
     }
 
