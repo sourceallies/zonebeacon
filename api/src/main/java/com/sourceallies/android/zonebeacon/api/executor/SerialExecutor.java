@@ -38,7 +38,7 @@ import lombok.Getter;
  */
 public class SerialExecutor extends Executor {
 
-    private static final long READER_TIMEOUT = 1000;
+    private static final long READER_TIMEOUT = 8000;
 
     private Handler handler;
     private SocketConnection connection;

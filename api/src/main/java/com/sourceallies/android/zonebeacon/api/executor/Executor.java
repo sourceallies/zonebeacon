@@ -249,9 +249,11 @@ public abstract class Executor {
      * @param text the text response from the executed command
      */
     protected void loadMapFromResponse(Map<Integer, Map<Integer, LoadStatus>> map, List<Integer> controllerNumbers, Interpreter interpreter, String text) {
-        for (int i = 0; i < controllerNumbers.size(); i++) {
-            String subResponse = text.substring(i * 48, (i * 48) + 48);
-            map.put(controllerNumbers.get(i), interpreter.processActiveLoadsResponse(subResponse));
+        if (!text.equals("No Response")) {
+            for (int i = 0; i < controllerNumbers.size(); i++) {
+                String subResponse = text.substring(i * 48, (i * 48) + 48);
+                map.put(controllerNumbers.get(i), interpreter.processActiveLoadsResponse(subResponse));
+            }
         }
     }
 
