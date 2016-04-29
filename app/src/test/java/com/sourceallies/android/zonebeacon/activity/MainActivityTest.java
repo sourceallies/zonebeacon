@@ -57,6 +57,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -394,5 +395,14 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         activity.getRefreshListener(activity).onRefresh();
 
         verify(activity).setRecycler();
+    }
+
+    @Test
+    public void test_justCreated() {
+        activity.setJustCreated(true);
+        activity.onResume();
+
+        verify(activity, never()).setRecycler();
+        assertFalse(activity.isJustCreated());
     }
 }

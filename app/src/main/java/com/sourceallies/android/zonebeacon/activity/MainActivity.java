@@ -17,8 +17,6 @@
 package com.sourceallies.android.zonebeacon.activity;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 //import android.app.FragmentManager;
 //import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -27,15 +25,10 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -56,11 +49,8 @@ import com.sourceallies.android.zonebeacon.data.DataSource;
 import com.sourceallies.android.zonebeacon.data.model.Button;
 import com.sourceallies.android.zonebeacon.data.model.Gateway;
 import com.sourceallies.android.zonebeacon.data.model.Zone;
-import com.sourceallies.android.zonebeacon.fragment.BrightnessControlFragment;
 import com.sourceallies.android.zonebeacon.util.ControllerUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +104,9 @@ public class MainActivity extends RoboAppCompatActivity {
 
     @Getter
     private boolean startedIntro = false;
+
+    @Getter @Setter
+    private boolean justCreated = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -516,8 +509,12 @@ public class MainActivity extends RoboAppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        // Add the data to the spinnerAdapter and display it in the recycler
-        setRecycler();
+        if (!justCreated) {
+            // Add the data to the spinnerAdapter and display it in the recycler
+            setRecycler();
+        }
+
+        justCreated = false;
     }
 
     @Override
