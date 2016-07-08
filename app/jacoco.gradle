@@ -56,6 +56,8 @@ project.afterEvaluate {
             reports {
                 xml.enabled = true
                 html.enabled = true
+                
+                xml.destination = "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
             }
         }
     }

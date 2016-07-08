@@ -42,7 +42,7 @@ dependencies {
     compile "org.roboguice:roboguice:${ROBOGUICE_VERSION}"
 
     compile 'junit:junit:4.12'
-    compile "org.robolectric:robolectric:3.0"
+    compile "org.robolectric:robolectric:3.1"
     compile 'org.mockito:mockito-all:1.9.5'
     compile 'org.powermock:powermock-mockito-release-full:1.6.1'
     compile 'org.powermock:powermock-module-junit4-rule:1.6.0'
