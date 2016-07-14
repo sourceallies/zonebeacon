@@ -33,6 +33,7 @@ public class IntroActivityTest extends ZoneBeaconRobolectricSuite {
     @Before
     public void setUp() {
         activity = Robolectric.setupActivity(IntroActivity.class);
+        setActivityToBeTornDown(activity);
     }
 
     @Test

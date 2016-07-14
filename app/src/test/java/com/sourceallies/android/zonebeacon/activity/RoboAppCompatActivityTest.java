@@ -75,6 +75,7 @@ public class RoboAppCompatActivityTest extends ZoneBeaconRobolectricSuite {
     @Before
     public void setUp() {
         activity = Robolectric.setupActivity(RoboAppCompatActivity.class);
+        setActivityToBeTornDown(activity);
     }
 
     @Test

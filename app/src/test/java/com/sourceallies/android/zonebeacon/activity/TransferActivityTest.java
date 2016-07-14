@@ -66,6 +66,7 @@ public class TransferActivityTest extends ZoneBeaconRobolectricSuite {
     @Before
     public void setUp() {
         activity = getActivity();
+        setActivityToBeTornDown(activity);
     }
 
     private TransferActivity getActivity() {

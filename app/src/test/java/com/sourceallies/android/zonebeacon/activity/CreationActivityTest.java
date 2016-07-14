@@ -16,6 +16,8 @@
 
 package com.sourceallies.android.zonebeacon.activity;
 
+import android.support.v4.app.Fragment;
+
 import com.sourceallies.android.zonebeacon.ZoneBeaconRobolectricSuite;
 import com.sourceallies.android.zonebeacon.fragment.AddButtonFragment;
 import com.sourceallies.android.zonebeacon.fragment.AddZoneFragment;
@@ -37,6 +39,10 @@ public class CreationActivityTest extends ZoneBeaconRobolectricSuite {
     public void setUp() {
         activity = Robolectric.setupActivity(CreationActivity.class);
         activity = Mockito.spy(activity);
+
+        Mockito.doNothing().when(activity).addSlide(Mockito.any(Fragment.class));
+
+        setActivityToBeTornDown(activity);
     }
 
     @Test

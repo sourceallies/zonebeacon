@@ -100,6 +100,8 @@ public class MainActivityTest extends ZoneBeaconRobolectricSuite {
         activity.setSpinnerAdapter(adapter);
         activity.getSpinner().setAdapter(adapter);
         activity.setRecycler(recycler);
+
+        setActivityToBeTornDown(activity);
     }
 
     @Test

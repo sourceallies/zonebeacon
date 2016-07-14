@@ -46,6 +46,8 @@ public class NearbyBackgroundLayoutTest extends ZoneBeaconRobolectricSuite {
         Activity activity = Robolectric.setupActivity(Activity.class);
         layout = new NearbyBackgroundLayout(activity);
         activity.setContentView(layout);
+
+        setActivityToBeTornDown(activity);
     }
 
     @Test

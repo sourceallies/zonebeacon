@@ -38,6 +38,8 @@ public class GetHelpActivityTest extends ZoneBeaconRobolectricSuite {
     @Before
     public void setUp() {
         activity = Mockito.spy(Robolectric.setupActivity(GetHelpActivity.class));
+
+        setActivityToBeTornDown(activity);
     }
 
     @Test
