@@ -19,11 +19,14 @@ ENV PATH ${ANDROID_HOME}/tools:$ANDROID_HOME/platform-tools:$PATH
 # Install Android SDK components
 
 # License Id: android-sdk-license-ed0d0a5b
-ENV ANDROID_COMPONENTS platform-tools,build-tools-24.0.0,android-23
+ENV ANDROID_COMPONENTS platform-tools,build-tools-24.0.1
+# License Id: android-preview-sdk-license
+ENV PREVIEW_COMPONENTS android-24
 # License Id: android-sdk-license-5be876d5
 ENV GOOGLE_COMPONENTS extra-android-m2repository,extra-google-m2repository
 
 RUN echo y | android update sdk --no-ui --all --filter "${ANDROID_COMPONENTS}" ; \
+    echo y | android update sdk --no-ui --all --filter "${PREVIEW_COMPONENTS}" ; \
     echo y | android update sdk --no-ui --all --filter "${GOOGLE_COMPONENTS}"
 
 # Support Gradle

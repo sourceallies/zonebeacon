@@ -1,4 +1,4 @@
-wget -O keystore.jks ${LINK_TO_KEYSTORE}
+curl -o keystore.jks ${LINK_TO_KEYSTORE}
 
 cat > keystore.properties << EOF
 keystorepassword=${KEY_STORE_PASSWORD}
