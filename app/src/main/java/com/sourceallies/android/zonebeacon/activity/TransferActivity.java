@@ -228,7 +228,7 @@ public class TransferActivity extends RoboAppCompatActivity
      * Unpublishes my message so that no one can detect it anymore.
      */
     public void unpublish(GoogleApiClient client, Message message) {
-        if (client != null) {
+        if (client != null && client.isConnected()) {
             Nearby.Messages.unpublish(client, message);
         }
     }
@@ -237,7 +237,7 @@ public class TransferActivity extends RoboAppCompatActivity
      * Unsubscribes from listening for message.
      */
     public void unsubscribe(GoogleApiClient client, MessageListener listener) {
-        if (client != null) {
+        if (client != null && client.isConnected()) {
             Nearby.Messages.unsubscribe(client, listener);
         }
     }
