@@ -34,22 +34,26 @@ the app up on a build server like Jenkins and replacing the `keystore.jks` file 
 version. To do this, a shell script like the following would work well:
 
 ```
-wget -O keystore.jks <url-to-your-release-keystore-to-download>
+curl -o keystore.jks <url-to-your-release-keystore-to-download>
 
-cat > keystore.properties <<-EOF
+cat > keystore.properties << EOF
 keystorepassword=<your-keystore-password>
 keyalias=<your-key-alias>
 keypassword=<your-key-password>
 EOF
 
-cat > api_keys.properties <<-EOF
+cat > api_keys.properties << EOF
 NEARBY=<your-google-nearby-api-key>
 EOF
 
-./gradlew clean build testDebugUnitTestCoverage
+./gradlew clean assemble testDebugUnitTestCoverage
 ```
 
 After running the above and replacing the appropriate fields, you'll have a build of the
 app in `app/build/outputs/apk/Zone-Beacon-<version-number>-release.apk`. You'll also have
 a test coverage file taken using JaCoCo in 
-`app/build/reports/jacoco/testDebugUnitTestCoverage/html/index.html`
+`app/build/reports/jacoco/testDebugUnitTestCoverage/html/index.html`.
+
+#### From CI 
+
+This Play Store release system is designed to be done on a continuous integration server. You can look at the `build_script.sh` file to see how we have used environment variables from our build server to configurate the Play Store release build.
