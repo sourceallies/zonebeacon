@@ -57,3 +57,11 @@ a test coverage file taken using JaCoCo in
 #### From CI 
 
 This Play Store release system is designed to be done on a continuous integration server. You can look at the `build_script.sh` file to see how we have used environment variables from our build server to configurate the Play Store release build.
+
+### Google Play Services "Nearby" Integration
+
+Nearby is used to transfer the settings from one device to the other on the initial setup. Currently, if you make a debug version of this app, this functionality will not work, because the API Key that is provided in this repo corresponds to the release keystore that is included. If you make a release build (without using the steps above for a Play Store release), then the nearby integration will work as expected.
+
+For a Play Store release, you will have to set up a new API key that corresponds with the signing configuration keystore that you use.
+
+https://developers.google.com/nearby/messages/android/get-started
