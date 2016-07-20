@@ -21,6 +21,8 @@ import android.app.UiModeManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatDelegate;
 
+import roboguice.RoboGuice;
+
 /**
  * Base application for zone beacon responsible for initializing any analytics information and
  * other things that need to be active app-wide.
@@ -28,6 +30,7 @@ import android.support.v7.app.AppCompatDelegate;
 public class ZoneBeaconApplication extends Application {
     static {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
+        RoboGuice.setUseAnnotationDatabases(false);
     }
 
     @Override

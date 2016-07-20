@@ -20,6 +20,9 @@
 
     <uses-permission android:name="android.permission.INTERNET"/>
 
+    <!-- for roboblender (which we disabled...) -->
+    <meta-data android:name="roboguice.annotations.packages" android:value="com.sourceallies.android.zonebeacon"/>
+
     <application
         android:name=".ZoneBeaconApplication"
         android:allowBackup="true"

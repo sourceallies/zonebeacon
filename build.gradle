@@ -32,11 +32,10 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
     }
-}
 
-subprojects {
-    tasks.withType(Test) {
-        maxHeapSize = "3g"
+    // for roboblender (which we disabled..)
+    project.tasks.withType(JavaCompile) { task ->
+        options.compilerArgs << "-AguiceAnnotationDatabasePackageName=com.sourceallies.android.zonebeacon"
     }
 }
 
