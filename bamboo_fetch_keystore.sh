@@ -8,7 +8,7 @@ adminARN="$(printenv bamboo_SAI_${DEPLOYMENT_ENVIRONMENT}_ADMIN_ARN )"
 echo "Assuming role: $adminARN"
 source /bin/assumeRole $adminARN
 
-aws cp s3://${KEYSTORE_S3_BUCKET}/zonebeacon/keystore.jks keystore.jks
+aws --region us-east-1 s3 cp s3://${KEYSTORE_S3_BUCKET}/zonebeacon/keystore.jks keystore.jks
 
 cat > keystore.properties << EOF
 keystorepassword=${KEY_STORE_PASSWORD}
