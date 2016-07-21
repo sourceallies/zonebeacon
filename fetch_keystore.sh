@@ -1,4 +1,4 @@
-if [[ ${LINK_TO_KEYSTORE} == *"s3.amazonaws.com"* ]]; then
+if [[ ${PRIVATE_ON_S3} == "true" ]]; then
 	# if the key is stored in amazon s3, then we will assume the bucket is private.
 	contentType="application/octet-stream" 
 	dateValue="`date +'%a, %d %b %Y %H:%M:%S %z'`" 
