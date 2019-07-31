@@ -33,6 +33,10 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 
+    tasks.withType(Test) {
+        maxHeapSize = "2g"
+    }
+
     // for roboblender (which we disabled..)
     project.tasks.withType(JavaCompile) { task ->
         options.compilerArgs << "-AguiceAnnotationDatabasePackageName=com.sourceallies.android.zonebeacon"
@@ -42,6 +46,8 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+
 
 ext {
     success = 0

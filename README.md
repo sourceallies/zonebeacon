@@ -56,7 +56,7 @@ a test coverage file taken using JaCoCo in
 
 #### From CI 
 
-This Play Store release system is designed to be done on a continuous integration server. You can look at the `build_script.sh` file to see how we have used environment variables from our build server to configurate the Play Store release build.
+This Play Store release system is designed to be done on a continuous integration server. You can look at files in the cicd folder to see how we have used environment variables from our build server to configurate the Play Store release build.  These files may need to be altered to work on your own AWS account.
 
 ### Google Play Services "Nearby" Integration
 
