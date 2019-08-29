@@ -1,0 +1,183 @@
+Description: zonebeacon pipeline
+Parameters: 
+  GithubAccessToken:
+    Type: String
+    NoEcho: true
+    Description: OAuth token for GitHub
+  GithubUsername:
+    Type: String
+    Description: Github username containing the project's repository
+    Default: sourceallies
+  GithubRepository:
+    Type: String
+    Description: Github repository where the project is located
+    Default: zonebeacon
+  GithubBranch:
+    Type: String
+    Description: Github branch to track
+    Default: master
+Mappings:
+  Accounts:
+    Shared:
+      Name: Shared
+      Id: "018303830101"
+      PipelineRoleArn: arn:aws:iam::018303830101:role/Pipeline
+    Dev:
+      Name: Dev
+      Id: "729161019481"
+      DeployerRoleArn: arn:aws:iam::729161019481:role/Deployer
+    Qual:
+      Name: Qual
+      Id: "035409092456"
+      DeployerRoleArn: arn:aws:iam::035409092456:role/Deployer
+    Prod:
+      Name: Prod
+      Id: "487696863217"
+      DeployerRoleArn: arn:aws:iam::487696863217:role/Deployer
+Resources:
+  ArtifactStore:
+    Type: AWS::S3::Bucket
+  ArtifactStorePolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref ArtifactStore
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: s3:*
+            Resource:
+              - !Sub arn:aws:s3:::${ArtifactStore}
+              - !Sub arn:aws:s3:::${ArtifactStore}/*
+            Principal:
+              AWS:
+                - !FindInMap [Accounts, Shared, PipelineRoleArn] 
+                - !FindInMap [Accounts, Dev, DeployerRoleArn]
+                - !FindInMap [Accounts, Qual, DeployerRoleArn] 
+                - !FindInMap [Accounts, Prod, DeployerRoleArn]
+  ArtifactKey: #Needed to allow Dev/Qual/Prod to decrypt artifacts in the Shared account's ArtifactStore
+    Type: AWS::KMS::Key
+    Properties:
+      Description: Key used for encrypting artifacts
+      KeyPolicy:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - kms:*
+            Resource: "*"
+            Principal:
+              AWS:
+                - !FindInMap [Accounts, Shared, Id]
+                - !FindInMap [Accounts, Dev, DeployerRoleArn]
+                - !FindInMap [Accounts, Qual, DeployerRoleArn]
+                - !FindInMap [Accounts, Prod, DeployerRoleArn]
+          - Effect: Allow
+            Action:
+              - kms:Decrypt
+            Resource: "*"
+            Principal:
+              AWS: 
+                Fn::Sub:
+                  - arn:aws:iam::${AWS::AccountId}:role/${RoleName}
+                  - RoleName: !ImportValue CognitoSAI-FederatedUserRole
+  BranchedBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${AWS::StackName}-branched-build
+      ServiceRole: !FindInMap [Accounts, Shared, PipelineRoleArn]
+      EncryptionKey: !GetAtt ArtifactKey.Arn
+      BadgeEnabled: true
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: !ImportValue aws-shared-services-pipeline-BuildEnvImage
+        PrivilegedMode: true
+        EnvironmentVariables:
+          - Name: ARTIFACT_STORE
+            Value: !Ref ArtifactStore
+      Cache:
+        Type: LOCAL
+        Modes:
+          - LOCAL_CUSTOM_CACHE
+          - LOCAL_DOCKER_LAYER_CACHE
+      Source:
+        Type: GITHUB
+        Location: !Sub https://github.com/${GithubUsername}/${GithubRepository}.git
+        ReportBuildStatus: true
+        BuildSpec: cicd/buildspec.yml
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Triggers:
+        Webhook: true
+        FilterGroups:
+          - - Pattern: ^refs/heads/master$
+              ExcludeMatchedPattern: true
+              Type: HEAD_REF
+            - Pattern: PUSH,PULL_REQUEST_CREATED,PULL_REQUEST_UPDATED,PULL_REQUEST_REOPENED
+              Type: EVENT
+  BuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${AWS::StackName}-build
+      ServiceRole: !FindInMap [Accounts, Shared, PipelineRoleArn]
+      EncryptionKey: !GetAtt ArtifactKey.Arn
+      Cache:
+        Type: LOCAL
+        Modes:
+          - LOCAL_CUSTOM_CACHE
+          - LOCAL_DOCKER_LAYER_CACHE
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: !ImportValue aws-shared-services-pipeline-BuildEnvImage
+        PrivilegedMode: true
+        EnvironmentVariables:
+          - Name: ARTIFACT_STORE
+            Value: !Ref ArtifactStore
+      Source:
+        Type: CODEPIPELINE
+        BuildSpec: cicd/buildspec.yml
+      Artifacts:
+        Type: CODEPIPELINE
+  Pipeline:
+    Type: AWS::CodePipeline::Pipeline
+    Properties:
+      Name: !Ref AWS::StackName
+      ArtifactStore:
+        Type: S3
+        Location: !Ref ArtifactStore
+        EncryptionKey:
+          Id: !GetAtt ArtifactKey.Arn
+          Type: KMS
+      RoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/Pipeline
+      RestartExecutionOnUpdate: true
+      Stages:
+        - Name: Source
+          Actions:
+            - Name: Source
+              ActionTypeId:
+                Category: Source
+                Provider: GitHub
+                Owner: ThirdParty
+                Version: 1
+              OutputArtifacts:
+                - Name: sourceCode
+              Configuration:
+                Owner: !Ref GithubUsername
+                Repo: !Ref GithubRepository
+                Branch: !Ref GithubBranch
+                OAuthToken: !Ref GithubAccessToken
+        - Name: Build
+          Actions:
+            - Name: Build
+              ActionTypeId:
+                Category: Build
+                Owner: AWS
+                Provider: CodeBuild
+                Version: 1
+              InputArtifacts:
+                - Name: sourceCode
+              OutputArtifacts:
+                - Name: buildResults
+              Configuration:
+                ProjectName: !Ref BuildProject
