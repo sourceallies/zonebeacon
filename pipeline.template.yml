@@ -139,6 +139,19 @@ Resources:
         BuildSpec: cicd/buildspec.yml
       Artifacts:
         Type: CODEPIPELINE
+  PipelineWebhook:
+    Type: AWS::CodePipeline::Webhook
+    Properties:
+      Authentication: GITHUB_HMAC
+      AuthenticationConfiguration:
+        SecretToken: !Ref GithubAccessToken
+      Filters:
+        - JsonPath: $.ref
+          MatchEquals: "refs/heads/{Branch}"
+      TargetPipeline: !Ref Pipeline
+      TargetAction: Source
+      TargetPipelineVersion: !GetAtt Pipeline.Version
+      RegisterWithThirdParty: true
   Pipeline:
     Type: AWS::CodePipeline::Pipeline
     Properties:
@@ -167,6 +180,7 @@ Resources:
                 Repo: !Ref GithubRepository
                 Branch: !Ref GithubBranch
                 OAuthToken: !Ref GithubAccessToken
+                PollForSourceChanges: false
         - Name: Build
           Actions:
             - Name: Build
